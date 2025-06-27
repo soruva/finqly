@@ -1,0 +1,61 @@
+{
+  "@@locale": "de",
+
+  "appTitle": "Finqly",
+  "emotionPrompt": "Wie fühlen Sie sich heute in Bezug auf Ihre Finanzen?",
+  "startButton": "Jetzt starten",
+
+  "diagnosisTitle": "Diagnose",
+  "diagnosisQuestion": "Wie fühlen Sie sich momentan in Bezug auf den Markt?",
+  "optionOptimistic": "Optimistisch",
+  "optionNeutral": "Neutral",
+  "optionWorried": "Besorgt",
+  "optionConfused": "Verwirrt",
+  "optionExcited": "Aufgeregt",
+  "optionCautious": "Vorsichtig",
+
+  "badgeOptimistic": "Sie sind optimistisch in Bezug auf den Markt!",
+  "badgeNeutral": "Sie fühlen sich heute neutral.",
+  "badgeWorried": "Sie machen sich Sorgen um Ihre Investitionen.",
+  "badgeConfused": "Sie fühlen sich unsicher oder verwirrt.",
+  "badgeExcited": "Sie sind voller Energie und bereit!",
+  "badgeCautious": "Sie gehen den Markt mit Vorsicht an.",
+
+  "investmentTipsTitle": "Investment-Tipps",
+  "investmentTips1": "Diversifizieren Sie Ihre Investitionen, um Risiken zu minimieren.",
+  "investmentTips2": "Lassen Sie sich bei langfristigen Entscheidungen nicht von kurzfristigen Emotionen leiten.",
+  "investmentTips3": "Verstehen Sie Ihre Risikobereitschaft, bevor Sie investieren.",
+  "investmentTips4": "Bleiben Sie informiert, aber vermeiden Sie Panikverkäufe.",
+  "investmentTips5": "Investieren ist eine langfristige Reise – kein Sprint.",
+
+  "forecastTitle": "Ihre Investitionsprognose",
+  "forecastMessage": "Basierend auf Ihrer Einstellung und bisherigen Trends wird ein Wachstum von {percent}% in diesem Monat erwartet.",
+  "@forecastMessage": {
+    "description": "Prognoseanzeige basierend auf Emotionen und Verlauf",
+    "placeholders": {
+      "percent": {}
+    }
+  },
+
+  "premiumPrompt": "Sie sind kurz davor, noch tiefere Einblicke freizuschalten.",
+  "premiumCTA": "Premium-Prognose freischalten",
+
+  "language": "Sprache",
+  "settingsTitle": "Einstellungen",
+  "darkMode": "Dunkler Modus",
+  "lightMode": "Heller Modus",
+
+  "premiumUnlockTitle": "Premium-Inhalte freischalten",
+  "premiumUnlockMessage": "Erhalten Sie Zugang zu erweiterten Prognosen, emotionalen Trends und Experten-Tipps.",
+  "premiumUnlockButton": "Jetzt freischalten",
+  "premiumDisclaimer": "Jederzeit kündbar. Keine versteckten Kosten.",
+
+  "upgradeToPremium": "Upgrade auf Finqly Plus",
+  "unlockInsights": "💡 Tiefere Einblicke freischalten",
+  "premiumFeature1": "Erweiterte Prognosen mit Emotionsdaten.",
+  "premiumFeature2": "Emotionale Trends im Zeitverlauf verfolgen.",
+  "premiumFeature3": "Experten-Tipps zur Geldanlage erhalten.",
+  "premiumUnlockSuccess": "Premium erfolgreich freigeschaltet!",
+  "premiumUnlockError": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+  "other": "Andere"
+}

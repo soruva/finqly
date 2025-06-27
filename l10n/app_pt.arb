@@ -1,0 +1,104 @@
+{
+  "@@locale": "pt",
+
+  "appTitle": "Finqly",
+
+  "emotionPrompt": "Como você está se sentindo em relação às suas finanças hoje?",
+  "@emotionPrompt": {
+    "description": "Pergunta principal da tela inicial"
+  },
+
+  "startButton": "Começar agora",
+  "@startButton": {
+    "description": "Botão para iniciar o diagnóstico"
+  },
+
+  "diagnosisTitle": "Diagnóstico",
+  "@diagnosisTitle": {
+    "description": "Título da tela de diagnóstico"
+  },
+
+  "diagnosisQuestion": "Como você se sente sobre o mercado neste momento?",
+  "@diagnosisQuestion": {
+    "description": "Pergunta sobre o sentimento do usuário sobre o mercado"
+  },
+
+  "optionOptimistic": "Otimista",
+  "optionNeutral": "Neutro",
+  "optionWorried": "Preocupado",
+  "optionConfused": "Confuso",
+  "optionExcited": "Animado",
+  "optionCautious": "Cauteloso",
+
+  "badgeOptimistic": "Você está otimista em relação ao mercado!",
+  "badgeNeutral": "Você está se sentindo neutro hoje.",
+  "badgeWorried": "Você está preocupado com seus investimentos.",
+  "badgeConfused": "Você está se sentindo inseguro ou confuso.",
+  "badgeExcited": "Você está cheio de energia e pronto!",
+  "badgeCautious": "Você está abordando o mercado com cautela.",
+
+  "investmentTipsTitle": "Dicas de investimento",
+  "investmentTips1": "Diversifique seus investimentos para reduzir riscos.",
+  "investmentTips2": "Não deixe emoções de curto prazo influenciarem decisões de longo prazo.",
+  "investmentTips3": "Entenda sua tolerância ao risco antes de investir.",
+  "investmentTips4": "Mantenha-se informado, mas evite vender em pânico.",
+  "investmentTips5": "Investir é uma jornada de longo prazo — não uma corrida.",
+
+  "forecastTitle": "Previsão de Investimento",
+  "@forecastTitle": {
+    "description": "Título da tela de previsão"
+  },
+
+  "forecastMessage": "Com base na sua mentalidade e histórico, prevê-se um crescimento de {percent} neste mês.",
+  "@forecastMessage": {
+    "description": "Mensagem com previsão baseada na emoção e histórico",
+    "placeholders": {
+      "percent": {}
+    }
+  },
+
+  "premiumPrompt": "Você está prestes a desbloquear insights ainda melhores.",
+  "premiumCTA": "Obter Previsão Premium",
+
+  "language": "Idioma",
+  "settingsTitle": "Configurações",
+  "darkMode": "Modo escuro",
+  "lightMode": "Modo claro",
+
+  "premiumUnlockTitle": "Desbloqueie Insights Premium",
+  "@premiumUnlockTitle": {
+    "description": "Título da página para recursos premium"
+  },
+
+  "premiumUnlockMessage": "Acesse previsões avançadas, tendências emocionais e dicas de especialistas.",
+  "@premiumUnlockMessage": {
+    "description": "Mensagem de marketing para destacar os benefícios premium"
+  },
+
+  "premiumUnlockButton": "Desbloquear agora",
+  "@premiumUnlockButton": {
+    "description": "Botão para ativar a versão premium"
+  },
+
+  "premiumDisclaimer": "Você pode cancelar a qualquer momento. Sem taxas ocultas.",
+  "@premiumDisclaimer": {
+    "description": "Mensagem de confiança para o usuário"
+  },
+
+  "upgradeToPremium": "Atualizar para o Finqly Plus",
+  "@upgradeToPremium": {
+    "description": "Texto do botão que leva o usuário à página premium"
+  },
+
+  "unlockInsights": "💡 Desbloqueie insights mais profundos",
+  "@unlockInsights": {
+    "description": "Texto do botão para incentivar upgrade na tela de resultados"
+  },
+
+  "premiumFeature1": "Previsões avançadas com base em dados emocionais.",
+  "premiumFeature2": "Acompanhe tendências emocionais ao longo do tempo.",
+  "premiumFeature3": "Receba dicas de especialistas em investimentos.",
+  "premiumUnlockSuccess": "Premium desbloqueado com sucesso!",
+  "premiumUnlockError": "Algo deu errado. Tente novamente.",
+  "other": "Outros"
+}

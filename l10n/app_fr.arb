@@ -1,0 +1,91 @@
+{
+  "@@locale": "fr",
+
+  "appTitle": "Finqly",
+
+  "emotionPrompt": "Comment vous sentez-vous aujourd'hui à propos de vos finances ?",
+  "startButton": "Commencer maintenant",
+
+  "diagnosisTitle": "Diagnostic",
+  "diagnosisQuestion": "Comment vous sentez-vous par rapport au marché en ce moment ?",
+
+  "optionOptimistic": "Optimiste",
+  "optionNeutral": "Neutre",
+  "optionWorried": "Inquiet",
+  "optionConfused": "Confus",
+  "optionExcited": "Excité",
+  "optionCautious": "Prudent",
+
+  "badgeOptimistic": "Vous êtes optimiste concernant le marché !",
+  "badgeNeutral": "Vous vous sentez neutre aujourd'hui.",
+  "badgeWorried": "Vous êtes inquiet pour vos investissements.",
+  "badgeConfused": "Vous vous sentez incertain ou confus.",
+  "badgeExcited": "Vous êtes plein d'énergie et prêt !",
+  "badgeCautious": "Vous abordez le marché avec prudence.",
+
+  "investmentTipsTitle": "Conseils d'investissement",
+  "investmentTips1": "Diversifiez vos investissements pour réduire les risques.",
+  "investmentTips2": "Ne laissez pas les émotions à court terme influencer vos décisions à long terme.",
+  "investmentTips3": "Comprenez votre tolérance au risque avant d'investir.",
+  "investmentTips4": "Restez informé, mais évitez de vendre dans la panique.",
+  "investmentTips5": "Investir est un voyage à long terme — pas un sprint.",
+
+  "forecastTitle": "Prévisions d'investissement",
+  "@forecastTitle": {
+    "description": "Titre de la page de prévision"
+  },
+
+  "forecastMessage": "Selon votre état d'esprit et votre historique, vous devriez croître de {percent} ce mois-ci.",
+  "@forecastMessage": {
+    "description": "Message indiquant la prévision de croissance basée sur l'émotion et l'historique",
+    "placeholders": {
+      "percent": {}
+    }
+  },
+
+  "premiumPrompt": "Vous êtes sur le point de débloquer des informations encore meilleures.",
+  "premiumCTA": "Obtenir les prévisions Premium",
+
+  "language": "Langue",
+  "settingsTitle": "Paramètres",
+  "darkMode": "Mode sombre",
+  "lightMode": "Mode clair",
+
+  "premiumUnlockTitle": "Débloquez des informations Premium",
+  "@premiumUnlockTitle": {
+    "description": "Titre de l'écran pour activer les fonctionnalités premium"
+  },
+
+  "premiumUnlockMessage": "Accédez à des prévisions avancées, des tendances émotionnelles et des conseils d'experts.",
+  "@premiumUnlockMessage": {
+    "description": "Texte marketing pour mettre en valeur les avantages premium"
+  },
+
+  "premiumUnlockButton": "Débloquer maintenant",
+  "@premiumUnlockButton": {
+    "description": "Bouton pour activer l'abonnement premium"
+  },
+
+  "premiumDisclaimer": "Vous pouvez annuler à tout moment. Aucun frais caché.",
+  "@premiumDisclaimer": {
+    "description": "Message rassurant pour l'utilisateur"
+  },
+
+  "upgradeToPremium": "Passez à Finqly Plus",
+  "@upgradeToPremium": {
+    "description": "Texte du bouton pour accéder à la page premium"
+  },
+
+  "unlockInsights": "💡 Débloquez des connaissances plus approfondies",
+  "@unlockInsights": {
+    "description": "Texte du bouton incitant à débloquer les fonctionnalités premium depuis l’écran de résultats"
+  },
+
+  "premiumFeature1": "Prévisions avancées basées sur les émotions.",
+  "premiumFeature2": "Suivez l’évolution de vos émotions dans le temps.",
+  "premiumFeature3": "Recevez des conseils d'experts en investissement.",
+
+  "premiumUnlockSuccess": "Premium débloqué avec succès !",
+  "premiumUnlockError": "Une erreur s'est produite. Veuillez réessayer.",
+  "other": "Autres"
+}

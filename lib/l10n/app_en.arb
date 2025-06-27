@@ -1,0 +1,67 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "Finqly",
+  "emotionPrompt": "How are you feeling about your finances today?",
+  "startButton": "Start Now",
+
+  "diagnosisTitle": "Diagnosis",
+  "diagnosisQuestion": "How do you feel about the market right now?",
+  "diagnosisButton": "Run Diagnosis",
+
+  "optionOptimistic": "Optimistic",
+  "optionNeutral": "Neutral",
+  "optionWorried": "Worried",
+  "optionConfused": "Confused",
+  "optionExcited": "Excited",
+  "optionCautious": "Cautious",
+
+  "badgeOptimistic": "You're optimistic about the market!",
+  "badgeNeutral": "You’re feeling neutral today.",
+  "badgeWorried": "You’re worried about your investments.",
+  "badgeConfused": "You feel unsure or confused.",
+  "badgeExcited": "You’re feeling energized and ready!",
+  "badgeCautious": "You’re approaching the market with care.",
+
+  "investmentTipsTitle": "Investment Tips",
+  "investmentTips1": "Diversify your investments to reduce risk.",
+  "investmentTips2": "Don’t let short-term emotions drive long-term decisions.",
+  "investmentTips3": "Understand your risk tolerance before investing.",
+  "investmentTips4": "Stay informed but avoid panic-selling.",
+  "investmentTips5": "Investing is a long-term journey — not a sprint.",
+
+  "forecastTitle": "Your Investment Forecast",
+  "forecastMessage": "Based on your mindset and history, you're expected to grow by {percent} this month.",
+  "@forecastMessage": {
+    "description": "Message showing the forecasted investment growth based on emotion and history",
+    "placeholders": {
+      "percent": {}
+    }
+  },
+
+  "premiumPrompt": "You're close to unlocking even better insights.",
+  "premiumCTA": "Get Premium Forecast",
+
+  "language": "Language",
+  "settingsTitle": "Settings",
+  "darkMode": "Dark Mode",
+  "lightMode": "Light Mode",
+
+  "premiumUnlockTitle": "Unlock Premium Insights",
+  "premiumUnlockMessage": "Get access to advanced forecasts, emotional trends, and expert tips.",
+  "premiumUnlockButton": "Unlock Now",
+  "premiumDisclaimer": "You can cancel anytime. No hidden fees.",
+
+  "upgradeToPremium": "Upgrade to Finqly Plus",
+  "unlockInsights": "💡 Unlock deeper insights",
+  "premiumFeature1": "Advanced forecasts with emotion data.",
+  "premiumFeature2": "Track emotional trends over time.",
+  "premiumFeature3": "Get expert investing tips.",
+  "premiumUnlockSuccess": "Premium unlocked successfully!",
+  "premiumUnlockError": "Something went wrong. Please try again.",
+
+  "emotionHistoryTitle": "Emotion History",
+  "emotionHistoryEmpty": "No history found.",
+  "educationTitle": "Financial Education",
+  "other": "Other"
+}
