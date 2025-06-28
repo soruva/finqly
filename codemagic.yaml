@@ -7,11 +7,14 @@ workflows:
       groups:
         - finqly_signing
       android_signing:
-        - finqly_keystore   # ← ここを「finqly_signing」から「finqly_keystore」に修正！
+        - finqly_keystore   # ← 修正済（以前: finqly_signing）
     scripts:
       - name: Get packages
         script: |
           flutter pub get
+      - name: Generate launcher icons
+        script: |
+          flutter pub run flutter_launcher_icons:main
       - name: Build release APK
         script: |
           flutter build apk --release
