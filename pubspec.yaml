@@ -38,6 +38,7 @@ flutter:
     - assets/images/badges/neutral.png
     - assets/images/badges/optimistic.png
     - assets/images/badges/worried.png
+    - assets/legal/legal_center.html
     - assets/legal/terms.html
     - assets/legal/privacy.html
     - assets/legal/disclaimer.html

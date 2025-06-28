@@ -18,25 +18,36 @@ class LegalWebViewPage extends StatefulWidget {
 
 class _LegalWebViewPageState extends State<LegalWebViewPage> {
   late final WebViewController _controller;
+  late Future<void> _loadingFuture;
 
   @override
   void initState() {
     super.initState();
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted);
-    _loadHtmlFromAssets();
+
+    _loadingFuture = _loadHtmlFromAssets();
   }
 
   Future<void> _loadHtmlFromAssets() async {
     final String fileHtmlContents = await rootBundle.loadString(widget.assetPath);
-    _controller.loadHtmlString(fileHtmlContents);
+    await _controller.loadHtmlString(fileHtmlContents);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
-      body: WebViewWidget(controller: _controller),
+      body: FutureBuilder<void>(
+        future: _loadingFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return WebViewWidget(controller: _controller);
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
     );
   }
 }
