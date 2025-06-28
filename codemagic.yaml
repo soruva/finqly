@@ -5,9 +5,9 @@ workflows:
     environment:
       flutter: stable
       groups:
-        - finqly_signing
+        - finqly_signing     # ← ここを signing に戻す！
       android_signing:
-        - finqly_signing
+        - finqly_signing     # ← ここも signing に合わせる！
     scripts:
       - name: Get packages
         script: |
