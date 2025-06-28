@@ -1,0 +1,32 @@
+workflows:
+  android-release-build:
+    name: Android Signed Release Build
+    max_build_duration: 30
+    environment:
+      flutter: stable
+      groups:
+        - finqly_signing  # 👈 これが必要！
+      vars:
+        PACKAGE_NAME: "com.soruvalab.finqly"
+        BUILD_NUMBER: "30"
+      android_signing:
+        keystore: CM_KEYSTORE
+        keystore_password: CM_KEYSTORE_PASSWORD
+        key_alias: CM_KEY_ALIAS
+        key_password: CM_KEY_PASSWORD
+
+    scripts:
+      - name: Get dependencies
+        script: flutter pub get
+
+      - name: Analyze
+        script: flutter analyze
+
+      - name: Build APK
+        script: |
+          flutter build apk \
+            --release \
+            --build-number=$BUILD_NUMBER
+
+    artifacts:
+      - build/app/outputs/flutter-apk/app-release.apk
