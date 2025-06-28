@@ -5,9 +5,9 @@ workflows:
     environment:
       flutter: stable
       groups:
-        - finqly_keystore
+        - finqly_signing
       android_signing:
-        - finqly_keystore
+        - finqly_signing
     scripts:
       - name: Get packages
         script: |
