@@ -7,6 +7,7 @@ import 'package:finqly/screens/settings_page.dart';
 import 'package:finqly/screens/education_page.dart';
 import 'package:finqly/screens/premium_unlock_page.dart';
 import 'package:finqly/screens/forecast_page.dart';
+import 'package:finqly/screens/splash_screen.dart';
 import 'package:finqly/services/subscription_manager.dart';
 
 void main() {
@@ -69,7 +70,7 @@ class _FinqlyAppState extends State<FinqlyApp> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      home: MyHomePage(
+      home: SplashScreen(
         subscriptionManager: _subscriptionManager,
         currentLocale: _locale,
         onLocaleChanged: _setLocale,
