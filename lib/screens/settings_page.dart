@@ -75,12 +75,27 @@ class _SettingsPageState extends State<SettingsPage> {
               onChanged: (Locale? newLocale) {
                 if (newLocale != null) _changeLanguage(newLocale);
               },
-              items: const [
-                DropdownMenuItem(value: Locale('en'), child: Text('English')),
-                DropdownMenuItem(value: Locale('es'), child: Text('Español')),
-                DropdownMenuItem(value: Locale('fr'), child: Text('Français')),
-                DropdownMenuItem(value: Locale('pt'), child: Text('Português')),
-                DropdownMenuItem(value: Locale('de'), child: Text('Deutsch')),
+              items: [
+                DropdownMenuItem(
+                  value: const Locale('en'), 
+                  child: Text(AppLocalizations.of(context)!.languageEnglish),
+                ),  
+                DropdownMenuItem(
+                  value: const Locale('es'), 
+                  child: Text(AppLocalizations.of(context)!.languageSpanish),
+                ),  
+                DropdownMenuItem(
+                  value: const Locale('fr'), 
+                  child: Text(AppLocalizations.of(context)!.languageFrench),
+                ),  
+                DropdownMenuItem(
+                  value: const Locale('pt'), 
+                  child: Text(AppLocalizations.of(context)!.languagePortuguese),
+                ),  
+                DropdownMenuItem(
+                  value: const Locale('de'), 
+                  child: Text(AppLocalizations.of(context)!.languageGerman),
+                ),  
               ],
             ),
             const SizedBox(height: 24),
