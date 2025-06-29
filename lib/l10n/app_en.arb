@@ -43,6 +43,12 @@
   "premiumCTA": "Get Premium Forecast",
 
   "language": "Language",
+  "languageEnglish": "English",
+  "languageSpanish": "Español",
+  "languageFrench": "Français",
+  "languagePortuguese": "Português",
+  "languageGerman": "Deutsch",
+  
   "settingsTitle": "Settings",
   "darkMode": "Dark Mode",
   "lightMode": "Light Mode",

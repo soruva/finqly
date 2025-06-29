@@ -41,6 +41,11 @@
   "premiumCTA": "Premium-Prognose freischalten",
 
   "language": "Sprache",
+  "languageEnglish": "Englisch",
+  "languageSpanish": "Spanisch",
+  "languageFrench": "Französisch",
+  "languagePortuguese": "Portugiesisch",
+  "languageGerman": "Deutsch",
   "settingsTitle": "Einstellungen",
   "darkMode": "Dunkler Modus",
   "lightMode": "Heller Modus",

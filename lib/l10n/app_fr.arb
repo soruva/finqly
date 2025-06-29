@@ -47,6 +47,11 @@
   "premiumCTA": "Obtenir les prévisions Premium",
 
   "language": "Langue",
+  "languageEnglish": "Anglais",
+  "languageSpanish": "Espagnol",
+  "languageFrench": "Français",
+  "languagePortuguese": "Portugais",
+  "languageGerman": "Allemand",
   "settingsTitle": "Paramètres",
   "darkMode": "Mode sombre",
   "lightMode": "Mode clair",

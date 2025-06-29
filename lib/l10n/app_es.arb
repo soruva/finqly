@@ -108,6 +108,11 @@
 
   "settingsTitle": "Configuraciones",
   "language": "Idioma",
+  "languageEnglish": "Inglés",
+  "languageSpanish": "Español",
+  "languageFrench": "Francés",
+  "languagePortuguese": "Portugués",
+  "languageGerman": "Alemán",
   "darkMode": "Modo oscuro",
   "lightMode": "Modo claro",
 
