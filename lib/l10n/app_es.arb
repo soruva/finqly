@@ -152,5 +152,19 @@
 
   "premiumUnlockSuccess": "¡Premium desbloqueado con éxito!",
   "premiumUnlockError": "Algo salió mal. Por favor, inténtalo de nuevo.",
+
+  "emotionHistoryTitle": "Historial emocional",
+  "@emotionHistoryTitle": {
+    "description": "Título de la página del historial de emociones"
+  },
+  "emotionHistoryEmpty": "No se encontró historial.",
+  "@emotionHistoryEmpty": {
+    "description": "Mensaje cuando no hay datos emocionales registrados"
+  },
+  "educationTitle": "Educación financiera",
+  "@educationTitle": {
+    "description": "Título de la sección educativa o consejos financieros"
+  },
+
   "other": "Otros"
 }
