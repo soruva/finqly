@@ -19,10 +19,18 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
 
   Future<void> _unlock() async {
     setState(() => isLoading = true);
-    await widget.subscriptionManager.buyPremium();
+    final success = await widget.subscriptionManager.buyPremium();
     await widget.subscriptionManager.refreshSubscriptionStatus();
     if (context.mounted) {
-      Navigator.pop(context);
+      setState(() => isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(success
+              ? AppLocalizations.of(context).premiumUnlockSuccess
+              : AppLocalizations.of(context).premiumUnlockError),
+        ),
+      );
+      if (success) Navigator.pop(context);
     }
   }
 
@@ -33,24 +41,46 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
     return Scaffold(
       appBar: AppBar(title: Text(loc.premiumUnlockTitle)),
       body: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.star, size: 80, color: Colors.purple),
+            const Icon(Icons.star_rounded, size: 80, color: Colors.amber),
             const SizedBox(height: 24),
             Text(
               loc.premiumUnlockMessage,
-              style: const TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: isLoading ? null : _unlock,
-              child: isLoading
-                  ? const CircularProgressIndicator(color: Colors.white)
-                  : Text(loc.premiumUnlockButton),
+
+            // ✅ プレミアム特典リスト
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildFeatureItem(Icons.show_chart, loc.premiumFeature1),
+                _buildFeatureItem(Icons.timeline, loc.premiumFeature2),
+                _buildFeatureItem(Icons.tips_and_updates, loc.premiumFeature3),
+              ],
             ),
+            const SizedBox(height: 32),
+
+            // ✅ 購入ボタン
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.lock_open),
+                onPressed: isLoading ? null : _unlock,
+                label: isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : Text(loc.premiumUnlockButton),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  textStyle: const TextStyle(fontSize: 16),
+                ),
+              ),
+            ),
+
             const SizedBox(height: 16),
             Text(
               loc.premiumDisclaimer,
@@ -59,6 +89,24 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildFeatureItem(IconData icon, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.purpleAccent, size: 20),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(fontSize: 15),
+            ),
+          ),
+        ],
       ),
     );
   }
