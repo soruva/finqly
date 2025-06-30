@@ -7,6 +7,8 @@
 
   "diagnosisTitle": "Diagnose",
   "diagnosisQuestion": "Wie fühlen Sie sich momentan in Bezug auf den Markt?",
+  "diagnosisButton": "Diagnose starten",
+
   "optionOptimistic": "Optimistisch",
   "optionNeutral": "Neutral",
   "optionWorried": "Besorgt",
@@ -46,6 +48,7 @@
   "languageFrench": "Französisch",
   "languagePortuguese": "Portugiesisch",
   "languageGerman": "Deutsch",
+
   "settingsTitle": "Einstellungen",
   "darkMode": "Dunkler Modus",
   "lightMode": "Heller Modus",
@@ -62,5 +65,9 @@
   "premiumFeature3": "Experten-Tipps zur Geldanlage erhalten.",
   "premiumUnlockSuccess": "Premium erfolgreich freigeschaltet!",
   "premiumUnlockError": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+
+  "emotionHistoryTitle": "Emotionsverlauf",
+  "emotionHistoryEmpty": "Keine Einträge gefunden.",
+  "educationTitle": "Finanzbildung",
   "other": "Andere"
 }
