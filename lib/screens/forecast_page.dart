@@ -4,6 +4,7 @@ import 'package:finqly/l10n/generated/app_localizations.dart';
 import 'package:finqly/services/user_subscription_status.dart';
 import 'package:finqly/screens/premium_unlock_page.dart';
 import 'package:finqly/services/subscription_manager.dart';
+import 'package:finqly/screens/particle_background.dart';
 import 'dart:math';
 
 class ForecastPage extends StatefulWidget {
@@ -30,7 +31,7 @@ class _ForecastPageState extends State<ForecastPage>
     setState(() {
       isPremium = status;
       if (isPremium) {
-        forecastPercent = 3 + Random().nextDouble() * 5; // 3〜8%
+        forecastPercent = 3 + Random().nextDouble() * 5;
       }
     });
   }
@@ -45,17 +46,25 @@ class _ForecastPageState extends State<ForecastPage>
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
       ),
-      body: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(24),
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [AppColors.primary, AppColors.accentPurple],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+      body: Stack(
+        children: [
+          if (!isPremium) const ParticleBackground(), // 粒子背景
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              gradient: isPremium
+                  ? const LinearGradient(
+                      colors: [AppColors.primary, AppColors.accentPurple],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    )
+                  : null,
+              color: isPremium ? null : Colors.black.withOpacity(0.5),
+            ),
+            child: isPremium ? _buildPremiumView(loc) : _buildLockedView(loc),
           ),
-        ),
-        child: isPremium ? _buildPremiumView(loc) : _buildLockedView(loc),
+        ],
       ),
     );
   }
