@@ -23,6 +23,14 @@
   "badgeExcited": "Vous êtes plein d'énergie et prêt !",
   "badgeCautious": "Vous abordez le marché avec prudence.",
 
+  "badgeLabel": "Votre état actuel : {emotion}",
+  "@badgeLabel": {
+    "description": "Étiquette indiquant le type d'émotion diagnostiquée",
+    "placeholders": {
+      "emotion": {}
+    }
+  },
+
   "investmentTipsTitle": "Conseils d'investissement",
   "investmentTips1": "Diversifiez vos investissements pour réduire les risques.",
   "investmentTips2": "Ne laissez pas les émotions à court terme influencer vos décisions à long terme.",
@@ -40,6 +48,14 @@
     "description": "Message indiquant la prévision de croissance basée sur l'émotion et l'historique",
     "placeholders": {
       "percent": {}
+    }
+  },
+
+  "reportForecast": "Prévision hebdomadaire : {trend}",
+  "@reportForecast": {
+    "description": "Texte indiquant la tendance prévue pour la semaine",
+    "placeholders": {
+      "trend": {}
     }
   },
 
@@ -92,5 +108,21 @@
 
   "premiumUnlockSuccess": "Premium débloqué avec succès !",
   "premiumUnlockError": "Une erreur s'est produite. Veuillez réessayer.",
+
+  "emotionHistoryTitle": "Historique des émotions",
+  "@emotionHistoryTitle": {
+    "description": "Titre de la page d'historique émotionnel"
+  },
+
+  "emotionHistoryEmpty": "Aucun historique trouvé.",
+  "@emotionHistoryEmpty": {
+    "description": "Message affiché lorsqu'aucune donnée n'est disponible"
+  },
+
+  "educationTitle": "Éducation financière",
+  "@educationTitle": {
+    "description": "Titre de la section éducative ou de conseils"
+  },
+
   "other": "Autres"
 }
