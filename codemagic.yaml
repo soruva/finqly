@@ -7,7 +7,7 @@ workflows:
       groups:
         - finqly_signing
       android_signing:
-        - finqly_keystore   # ← OK（署名キーグループ）
+        - finqly_keystore
     scripts:
       - name: Get packages
         script: |
@@ -17,6 +17,10 @@ workflows:
           flutter pub run flutter_launcher_icons:main
       - name: Build release AAB
         script: |
-          flutter build appbundle --release   # ← ここを変更！
+          flutter build appbundle --release
+      - name: Build release APK         # ← 追加
+        script: |
+          flutter build apk --release   # ← 追加
     artifacts:
-      - build/app/outputs/bundle/release/app-release.aab  # ← AABの出力先
+      - build/app/outputs/bundle/release/app-release.aab
+      - build/app/outputs/flutter-apk/app-release.apk    # ← APKも成果物に追加
