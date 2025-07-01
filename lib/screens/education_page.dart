@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:finqly/l10n/generated/app_localizations.dart';
 import 'package:finqly/screens/premium_unlock_page.dart';
+import 'package:finqly/services/subscription_manager.dart'; // 追加
 import 'dart:math';
 
 class EducationPage extends StatefulWidget {
-  const EducationPage({super.key});
+  final SubscriptionManager subscriptionManager;
+
+  const EducationPage({super.key, required this.subscriptionManager});
 
   @override
   State<EducationPage> createState() => _EducationPageState();
@@ -46,7 +49,7 @@ class _EducationPageState extends State<EducationPage>
           indicatorColor: Colors.white,
           controller: TabController(length: 2, vsync: this, initialIndex: selectedTab),
           onTap: (index) => setState(() => selectedTab = index),
-          tabs: [
+          tabs: const [
             Tab(text: 'Beginner'),
             Tab(text: 'Pro'),
           ],
@@ -124,7 +127,11 @@ class _EducationPageState extends State<EducationPage>
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => PremiumUnlockPage(subscriptionManager: subscriptionManager)),
+                  MaterialPageRoute(
+                    builder: (_) => PremiumUnlockPage(
+                      subscriptionManager: widget.subscriptionManager,
+                    ),
+                  ),
                 );
               },
             ),
