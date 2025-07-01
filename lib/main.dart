@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:finqly/l10n/app_localizations.dart';
 import 'package:finqly/theme/colors.dart';
-import 'package:finqly/screens/diagnosis_page.dart';
-import 'package:finqly/screens/settings_page.dart';
-import 'package:finqly/screens/education_page.dart';
-import 'package:finqly/screens/premium_unlock_page.dart';
-import 'package:finqly/screens/forecast_page.dart';
+import 'package:finqly/screens/home_page.dart';          // 追加！
 import 'package:finqly/screens/splash_screen.dart';
 import 'package:finqly/services/subscription_manager.dart';
 
@@ -25,12 +21,6 @@ class _FinqlyAppState extends State<FinqlyApp> {
   final SubscriptionManager _subscriptionManager = SubscriptionManager();
   Locale _locale = const Locale('en');
   ThemeMode _themeMode = ThemeMode.light;
-
-  @override
-  void initState() {
-    super.initState();
-    //_subscriptionManager.loadSubscriptionStatus();
-  }
 
   void _setLocale(Locale newLocale) {
     setState(() {

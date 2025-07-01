@@ -27,9 +27,10 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
 
     setState(() => isLoading = false);
 
+    // ★ここ修正！null safety
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(AppLocalizations.of(context).premiumUnlockSuccess),
+        content: Text(AppLocalizations.of(context)!.premiumUnlockSuccess),
       ),
     );
 
@@ -40,7 +41,8 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
 
   @override
   Widget build(BuildContext context) {
-    final loc = AppLocalizations.of(context);
+    // ★null safetyのため「!」付与
+    final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(title: Text(loc.premiumUnlockTitle)),

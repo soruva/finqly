@@ -1,11 +1,23 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:finqly/main.dart';
-import 'package:finqly/screens/particle_background.dart'; // ⬅️ 下記ファイルをインポート
+import 'package:finqly/screens/home_page.dart';
+import 'package:finqly/screens/particle_background.dart';
+import 'package:finqly/services/subscription_manager.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+  final SubscriptionManager subscriptionManager;
+  final Locale currentLocale;
+  final Function(Locale) onLocaleChanged;
+  final Function(bool) onThemeChanged;
+
+  const SplashScreen({
+    super.key,
+    required this.subscriptionManager,
+    required this.currentLocale,
+    required this.onLocaleChanged,
+    required this.onThemeChanged,
+  });
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -50,16 +62,16 @@ class _SplashScreenState extends State<SplashScreen>
 
     _logoController.forward().then((_) => _textController.forward());
 
+    // 👇 ここをMyHomePageに修正！
     Timer(const Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(
-        PageRouteBuilder(
-          transitionDuration: const Duration(milliseconds: 600),
-          pageBuilder: (context, animation, secondaryAnimation) =>
-              const FinqlyApp(),
-          transitionsBuilder:
-              (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
+        MaterialPageRoute(
+          builder: (context) => MyHomePage(
+            subscriptionManager: widget.subscriptionManager,
+            currentLocale: widget.currentLocale,
+            onLocaleChanged: widget.onLocaleChanged,
+            onThemeChanged: widget.onThemeChanged,
+          ),
         ),
       );
     });

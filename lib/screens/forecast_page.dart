@@ -15,8 +15,7 @@ class ForecastPage extends StatefulWidget {
   State<ForecastPage> createState() => _ForecastPageState();
 }
 
-class _ForecastPageState extends State<ForecastPage>
-    with SingleTickerProviderStateMixin {
+class _ForecastPageState extends State<ForecastPage> with SingleTickerProviderStateMixin {
   bool isPremium = false;
   double forecastPercent = 0;
 
@@ -48,7 +47,7 @@ class _ForecastPageState extends State<ForecastPage>
       ),
       body: Stack(
         children: [
-          if (!isPremium) const ParticleBackground(), // 粒子背景
+          if (!isPremium) const ParticleBackground(),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(24),

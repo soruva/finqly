@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:finqly/l10n/app_localizations.dart'
+import 'package:finqly/l10n/app_localizations.dart'; // ← セミコロン忘れずに
 import 'package:finqly/theme/colors.dart';
 import 'package:finqly/services/subscription_manager.dart';
 import 'package:finqly/screens/legal_webview_page.dart';
@@ -55,7 +55,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final loc = AppLocalizations.of(context)!;
+    final loc = AppLocalizations.of(context)!; // ← Null safety！
 
     return Scaffold(
       appBar: AppBar(
@@ -78,23 +78,23 @@ class _SettingsPageState extends State<SettingsPage> {
               items: [
                 DropdownMenuItem(
                   value: const Locale('en'), 
-                  child: Text(AppLocalizations.of(context)!.languageEnglish),
+                  child: Text(loc.languageEnglish),
                 ),  
                 DropdownMenuItem(
                   value: const Locale('es'), 
-                  child: Text(AppLocalizations.of(context)!.languageSpanish),
+                  child: Text(loc.languageSpanish),
                 ),  
                 DropdownMenuItem(
                   value: const Locale('fr'), 
-                  child: Text(AppLocalizations.of(context)!.languageFrench),
+                  child: Text(loc.languageFrench),
                 ),  
                 DropdownMenuItem(
                   value: const Locale('pt'), 
-                  child: Text(AppLocalizations.of(context)!.languagePortuguese),
+                  child: Text(loc.languagePortuguese),
                 ),  
                 DropdownMenuItem(
                   value: const Locale('de'), 
-                  child: Text(AppLocalizations.of(context)!.languageGerman),
+                  child: Text(loc.languageGerman),
                 ),  
               ],
             ),

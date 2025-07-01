@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:finqly/l10n/app_localizations.dart';
 import 'package:finqly/screens/premium_unlock_page.dart';
-import 'package:finqly/services/subscription_manager.dart'; // 追加
+import 'package:finqly/services/subscription_manager.dart';
 import 'dart:math';
 
 class EducationPage extends StatefulWidget {
@@ -13,8 +13,8 @@ class EducationPage extends StatefulWidget {
   State<EducationPage> createState() => _EducationPageState();
 }
 
-class _EducationPageState extends State<EducationPage>
-    with TickerProviderStateMixin {
+class _EducationPageState extends State<EducationPage> with TickerProviderStateMixin {
+  late TabController _tabController;
   late List<Map<String, String>> beginnerTips;
   late List<Map<String, String>> proTips;
   int selectedTab = 0;
@@ -22,23 +22,43 @@ class _EducationPageState extends State<EducationPage>
   @override
   void initState() {
     super.initState();
-    final loc = AppLocalizations.of(context)!;
+    _tabController = TabController(length: 2, vsync: this, initialIndex: selectedTab);
+    _tabController.addListener(() {
+      if (_tabController.index != selectedTab) {
+        setState(() => selectedTab = _tabController.index);
+      }
+    });
+    // tipsはここでは初期化しない（build内でloc取得後に初期化する）
+  }
 
-    beginnerTips = [
-      {'icon': '📈', 'text': loc.investmentTips1},
-      {'icon': '💡', 'text': loc.investmentTips2},
-      {'icon': '📊', 'text': loc.investmentTips3},
-    ]..shuffle(Random());
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
-    proTips = [
-      {'icon': '🚀', 'text': loc.investmentTips4},
-      {'icon': '💰', 'text': loc.investmentTips5},
-    ]..shuffle(Random());
+  void _initTips(AppLocalizations loc) {
+    // tipsがまだ未初期化なら初期化
+    if (beginnerTips == null || proTips == null) {
+      beginnerTips = [
+        {'icon': '📈', 'text': loc.investmentTips1},
+        {'icon': '💡', 'text': loc.investmentTips2},
+        {'icon': '📊', 'text': loc.investmentTips3},
+      ]..shuffle(Random());
+
+      proTips = [
+        {'icon': '🚀', 'text': loc.investmentTips4},
+        {'icon': '💰', 'text': loc.investmentTips5},
+      ]..shuffle(Random());
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
+    // tipsを言語変更のたびに初期化
+    _initTips(loc);
+
     final currentTips = selectedTab == 0 ? beginnerTips : proTips;
 
     return Scaffold(
@@ -47,8 +67,7 @@ class _EducationPageState extends State<EducationPage>
         centerTitle: true,
         bottom: TabBar(
           indicatorColor: Colors.white,
-          controller: TabController(length: 2, vsync: this, initialIndex: selectedTab),
-          onTap: (index) => setState(() => selectedTab = index),
+          controller: _tabController,
           tabs: const [
             Tab(text: 'Beginner'),
             Tab(text: 'Pro'),

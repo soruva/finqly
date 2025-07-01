@@ -3,9 +3,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:finqly/l10n/app_localizations.dart';
 import 'package:finqly/services/user_subscription_status.dart';
 import 'package:finqly/screens/premium_unlock_page.dart';
+import 'package:finqly/services/subscription_manager.dart';
 
 class EmotionHistoryPage extends StatefulWidget {
-  const EmotionHistoryPage({super.key});
+  // 必要ならSubscriptionManagerを受け取れるように
+  final SubscriptionManager? subscriptionManager;
+  const EmotionHistoryPage({super.key, this.subscriptionManager});
 
   @override
   State<EmotionHistoryPage> createState() => _EmotionHistoryPageState();
@@ -39,6 +42,7 @@ class _EmotionHistoryPageState extends State<EmotionHistoryPage> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
+    final subscriptionManager = widget.subscriptionManager ?? SubscriptionManager();
 
     return Scaffold(
       appBar: AppBar(title: Text(loc.emotionHistoryTitle)),
@@ -46,7 +50,7 @@ class _EmotionHistoryPageState extends State<EmotionHistoryPage> {
         padding: const EdgeInsets.all(24),
         child: isPremiumUser
             ? emotionHistory.isEmpty
-                ? Center(child: Text(loc.noHistoryFound))
+                ? Center(child: Text(loc.emotionHistoryEmpty))
                 : ListView.separated(
                     itemCount: emotionHistory.length,
                     separatorBuilder: (_, __) => const SizedBox(height: 12),
@@ -57,7 +61,7 @@ class _EmotionHistoryPageState extends State<EmotionHistoryPage> {
                       return Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Theme.of(context).cardColor,
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: const [
                             BoxShadow(
@@ -103,7 +107,9 @@ class _EmotionHistoryPageState extends State<EmotionHistoryPage> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => PremiumUnlockPage(subscriptionManager: subscriptionManager)),
+                          MaterialPageRoute(
+                            builder: (_) => PremiumUnlockPage(subscriptionManager: subscriptionManager),
+                          ),
                         );
                       },
                       child: Text(loc.upgradeToPremium),
