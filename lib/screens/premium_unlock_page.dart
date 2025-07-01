@@ -19,26 +19,23 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
 
   Future<void> _unlock() async {
     setState(() => isLoading = true);
-    final success = await widget.subscriptionManager.buyPremium();
+
+    await widget.subscriptionManager.buyPremium(); // ← 返り値は使わない
     await widget.subscriptionManager.refreshSubscriptionStatus();
+
     if (!mounted) return;
 
     setState(() => isLoading = false);
 
-    final snackBar = SnackBar(
-      content: Text(
-        success
-            ? AppLocalizations.of(context).premiumUnlockSuccess
-            : AppLocalizations.of(context).premiumUnlockError,
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(AppLocalizations.of(context).premiumUnlockSuccess),
       ),
     );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-    if (success) {
-      Future.delayed(const Duration(milliseconds: 300), () {
-        if (mounted) Navigator.pop(context);
-      });
-    }
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (mounted) Navigator.pop(context);
+    });
   }
 
   @override
@@ -60,8 +57,6 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32),
-
-            // ✅ プレミアム特典リスト
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -71,8 +66,6 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
               ],
             ),
             const SizedBox(height: 32),
-
-            // ✅ 購入ボタン
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
@@ -91,7 +84,6 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
                 ),
               ),
             ),
-
             const SizedBox(height: 16),
             Text(
               loc.premiumDisclaimer,
