@@ -21,16 +21,23 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
     setState(() => isLoading = true);
     final success = await widget.subscriptionManager.buyPremium();
     await widget.subscriptionManager.refreshSubscriptionStatus();
-    if (context.mounted) {
-      setState(() => isLoading = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(success
-              ? AppLocalizations.of(context).premiumUnlockSuccess
-              : AppLocalizations.of(context).premiumUnlockError),
-        ),
-      );
-      if (success) Navigator.pop(context);
+    if (!mounted) return;
+
+    setState(() => isLoading = false);
+
+    final snackBar = SnackBar(
+      content: Text(
+        success
+            ? AppLocalizations.of(context).premiumUnlockSuccess
+            : AppLocalizations.of(context).premiumUnlockError,
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+    if (success) {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (mounted) Navigator.pop(context);
+      });
     }
   }
 
@@ -72,7 +79,11 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
                 icon: const Icon(Icons.lock_open),
                 onPressed: isLoading ? null : _unlock,
                 label: isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      )
                     : Text(loc.premiumUnlockButton),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
