@@ -55,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen>
         PageRouteBuilder(
           transitionDuration: const Duration(milliseconds: 600),
           pageBuilder: (context, animation, secondaryAnimation) =>
-              const MyApp(),
+              const FinqlyApp(),
           transitionsBuilder:
               (context, animation, secondaryAnimation, child) {
             return FadeTransition(opacity: animation, child: child);
