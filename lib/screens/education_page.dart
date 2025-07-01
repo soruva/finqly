@@ -124,7 +124,7 @@ class _EducationPageState extends State<EducationPage>
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const PremiumUnlockPage()),
+                  MaterialPageRoute(builder: (_) => PremiumUnlockPage(subscriptionManager: subscriptionManager)),
                 );
               },
             ),

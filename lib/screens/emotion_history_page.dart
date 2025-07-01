@@ -103,7 +103,7 @@ class _EmotionHistoryPageState extends State<EmotionHistoryPage> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const PremiumUnlockPage()),
+                          MaterialPageRoute(builder: (_) => PremiumUnlockPage(subscriptionManager: subscriptionManager)),
                         );
                       },
                       child: Text(loc.upgradeToPremium),
