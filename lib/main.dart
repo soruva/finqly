@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:finqly/l10n/generated/app_localizations.dart';
+import 'package:finqly/l10n/app_localizations.dart';
 import 'package:finqly/theme/colors.dart';
 import 'package:finqly/screens/diagnosis_page.dart';
 import 'package:finqly/screens/settings_page.dart';

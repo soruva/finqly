@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:finqly/l10n/generated/app_localizations.dart';
+import 'package:finqly/l10n/app_localizations.dart';
 import 'package:finqly/services/user_subscription_status.dart';
 import 'package:finqly/screens/premium_unlock_page.dart';
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:finqly/l10n/generated/app_localizations.dart';
+import 'package:finqly/l10n/app_localizations.dart';
 
 class PrivacyPage extends StatelessWidget {
   const PrivacyPage({super.key});
