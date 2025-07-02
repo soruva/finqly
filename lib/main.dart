@@ -21,12 +21,14 @@ class _FinqlyAppState extends State<FinqlyApp> {
   Locale _locale = const Locale('en');
   ThemeMode _themeMode = ThemeMode.light;
 
+  // 言語変更
   void _setLocale(Locale newLocale) {
     setState(() {
       _locale = newLocale;
     });
   }
 
+  // ダーク/ライト切替
   void _setTheme(bool isDarkMode) {
     setState(() {
       _themeMode = isDarkMode ? ThemeMode.dark : ThemeMode.light;
@@ -36,6 +38,7 @@ class _FinqlyAppState extends State<FinqlyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Finqly',
       theme: ThemeData(
         primarySwatch: Colors.indigo,
@@ -59,7 +62,7 @@ class _FinqlyAppState extends State<FinqlyApp> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      // <<==== ここが重要！SplashScreenに各種パラメータを渡す ====>>
+      // 重要：SplashScreenにPremium管理/言語/テーマを渡す
       home: SplashScreen(
         subscriptionManager: _subscriptionManager,
         currentLocale: _locale,
