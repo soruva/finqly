@@ -28,16 +28,29 @@ class MyHomePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(loc.appTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: AppColors.primary,
+        title: Text(
+          loc.appTitle,
+          style: const TextStyle(
+            fontWeight: FontWeight.w900,
+            fontSize: 26,
+            letterSpacing: 1,
+          ),
+        ),
+        backgroundColor: Colors.transparent,
         foregroundColor: Colors.white,
-        centerTitle: true,
         elevation: 0,
+        centerTitle: true,
       ),
+      extendBodyBehindAppBar: true,
       body: Container(
+        width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF7B44C6), Color(0xFF72C6EF)],
+            colors: [
+              Color(0xFF7B44C6),
+              Color(0xFF9A5DF0),
+              Color(0xFF72C6EF),
+            ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -47,18 +60,28 @@ class MyHomePage extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const SizedBox(height: 32),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(220, 56),
-                    textStyle: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-                    backgroundColor: Colors.white,
-                    foregroundColor: AppColors.primary,
-                    elevation: 2,
+                const SizedBox(height: 60),
+                Image.asset(
+                  'assets/images/finqly_logo.png',
+                  width: 88,
+                  height: 88,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  "Emotion & Investing",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white.withOpacity(0.92),
+                    fontSize: 16,
+                    letterSpacing: 0.5,
                   ),
-                  child: Text(loc.startButton),
-                  onPressed: () {
+                ),
+                const SizedBox(height: 38),
+                _homeButton(
+                  context,
+                  icon: Icons.flash_on,
+                  label: loc.startButton,
+                  onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -69,38 +92,26 @@ class MyHomePage extends StatelessWidget {
                     );
                   },
                 ),
-                const SizedBox(height: 22),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(220, 56),
-                    textStyle: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-                    backgroundColor: Colors.white,
-                    foregroundColor: AppColors.primary,
-                    elevation: 2,
-                  ),
-                  child: Text(loc.forecastTitle),
-                  onPressed: () {
+                _homeButton(
+                  context,
+                  icon: Icons.trending_up,
+                  label: loc.forecastTitle,
+                  onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => ForecastPage(subscriptionManager: subscriptionManager),
+                        builder: (_) => ForecastPage(
+                          subscriptionManager: subscriptionManager,
+                        ),
                       ),
                     );
                   },
                 ),
-                const SizedBox(height: 22),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(220, 56),
-                    textStyle: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-                    backgroundColor: Colors.white,
-                    foregroundColor: AppColors.primary,
-                    elevation: 2,
-                  ),
-                  child: Text(loc.premiumUnlockTitle),
-                  onPressed: () {
+                _homeButton(
+                  context,
+                  icon: Icons.workspace_premium,
+                  label: loc.premiumUnlockTitle,
+                  onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -111,18 +122,11 @@ class MyHomePage extends StatelessWidget {
                     );
                   },
                 ),
-                const SizedBox(height: 22),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(220, 56),
-                    textStyle: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-                    backgroundColor: Colors.white,
-                    foregroundColor: AppColors.primary,
-                    elevation: 2,
-                  ),
-                  child: Text(loc.educationTitle),
-                  onPressed: () {
+                _homeButton(
+                  context,
+                  icon: Icons.menu_book,
+                  label: loc.educationTitle,
+                  onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -133,18 +137,11 @@ class MyHomePage extends StatelessWidget {
                     );
                   },
                 ),
-                const SizedBox(height: 22),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(220, 56),
-                    textStyle: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-                    backgroundColor: Colors.white,
-                    foregroundColor: AppColors.primary,
-                    elevation: 2,
-                  ),
-                  child: Text(loc.settingsTitle),
-                  onPressed: () {
+                _homeButton(
+                  context,
+                  icon: Icons.settings,
+                  label: loc.settingsTitle,
+                  onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -158,10 +155,47 @@ class MyHomePage extends StatelessWidget {
                     );
                   },
                 ),
-                const SizedBox(height: 48),
+                const SizedBox(height: 50),
+                Text(
+                  "© SoruvaLab",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.white.withOpacity(0.7),
+                    letterSpacing: 0.3,
+                  ),
+                ),
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _homeButton(BuildContext context,
+      {required IconData icon,
+      required String label,
+      required VoidCallback onTap}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 11, horizontal: 8),
+      child: ElevatedButton.icon(
+        icon: Icon(icon, size: 26),
+        label: Text(label),
+        onPressed: onTap,
+        style: ElevatedButton.styleFrom(
+          minimumSize: const Size(240, 58),
+          backgroundColor: Colors.white.withOpacity(0.94),
+          foregroundColor: AppColors.primary,
+          textStyle: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.4,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
+          elevation: 3,
+          shadowColor: Colors.purpleAccent.withOpacity(0.08),
         ),
       ),
     );
