@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:finqly/screens/home_page.dart';
+import 'package:finqly/screens/home_page.dart'; // ←ここ重要
 import 'package:finqly/screens/particle_background.dart';
-import 'package:finqly/services/subscription_manager.dart';
 
 class SplashScreen extends StatefulWidget {
   final SubscriptionManager subscriptionManager;
@@ -62,11 +61,10 @@ class _SplashScreenState extends State<SplashScreen>
 
     _logoController.forward().then((_) => _textController.forward());
 
-    // 👇 ここをMyHomePageに修正！
-    Timer(const Duration(seconds: 3), () {
+    Timer(const Duration(seconds: 2), () {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => MyHomePage(
+          builder: (_) => MyHomePage(
             subscriptionManager: widget.subscriptionManager,
             currentLocale: widget.currentLocale,
             onLocaleChanged: widget.onLocaleChanged,
@@ -94,7 +92,7 @@ class _SplashScreenState extends State<SplashScreen>
       backgroundColor: backgroundColor,
       body: Stack(
         children: [
-          const ParticleBackground(), // 🎇 背景パーティクル
+          const ParticleBackground(),
           Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,

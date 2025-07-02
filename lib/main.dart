@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:finqly/l10n/app_localizations.dart';
 import 'package:finqly/theme/colors.dart';
-import 'package:finqly/screens/home_page.dart';          // 追加！
 import 'package:finqly/screens/splash_screen.dart';
 import 'package:finqly/services/subscription_manager.dart';
 
@@ -60,6 +59,7 @@ class _FinqlyAppState extends State<FinqlyApp> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
+      // <<==== ここが重要！SplashScreenに各種パラメータを渡す ====>>
       home: SplashScreen(
         subscriptionManager: _subscriptionManager,
         currentLocale: _locale,
