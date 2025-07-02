@@ -123,13 +123,25 @@ class _ForecastPageState extends State<ForecastPage> with SingleTickerProviderSt
           style: const TextStyle(
             fontSize: 18,
             color: Colors.white,
+            fontWeight: FontWeight.w600,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 14),
+        Text(
+          "🔒 ${loc.premiumFeatureExplain}",
+          style: const TextStyle(
+            fontSize: 15,
+            color: Colors.white70,
+            fontWeight: FontWeight.w400,
           ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 32),
         ElevatedButton.icon(
-          onPressed: () {
-            Navigator.push(
+          onPressed: () async {
+            // Premium Unlock → 戻ってきたらリフレッシュ
+            await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (_) => PremiumUnlockPage(
@@ -137,6 +149,7 @@ class _ForecastPageState extends State<ForecastPage> with SingleTickerProviderSt
                 ),
               ),
             );
+            _checkPremiumStatus();
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.white,

@@ -6,6 +6,7 @@ import 'package:finqly/screens/forecast_page.dart';
 import 'package:finqly/screens/premium_unlock_page.dart';
 import 'package:finqly/screens/education_page.dart';
 import 'package:finqly/screens/settings_page.dart';
+import 'package:finqly/screens/trend_page.dart';
 import 'package:finqly/services/subscription_manager.dart';
 
 class MyHomePage extends StatelessWidget {
@@ -107,6 +108,7 @@ class MyHomePage extends StatelessWidget {
                     );
                   },
                 ),
+                _premiumTrendButton(context, loc),
                 _homeButton(
                   context,
                   icon: Icons.workspace_premium,
@@ -167,6 +169,54 @@ class MyHomePage extends StatelessWidget {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  // TrendPage（感情トレンド）はPremium限定
+  Widget _premiumTrendButton(BuildContext context, AppLocalizations loc) {
+    final isPremium = subscriptionManager.isSubscribed;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 11, horizontal: 8),
+      child: ElevatedButton.icon(
+        icon: const Icon(Icons.show_chart, size: 26),
+        label: Text(loc.trendForecastTitle),
+        onPressed: isPremium
+            ? () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const TrendPage()),
+                );
+              }
+            : () {
+                // ロック時はPremium誘導
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => PremiumUnlockPage(
+                      subscriptionManager: subscriptionManager,
+                    ),
+                  ),
+                );
+              },
+        style: ElevatedButton.styleFrom(
+          minimumSize: const Size(240, 58),
+          backgroundColor: isPremium
+              ? Colors.white.withOpacity(0.94)
+              : Colors.white.withOpacity(0.5),
+          foregroundColor: AppColors.primary,
+          textStyle: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.4,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
+          elevation: 3,
+          shadowColor: Colors.purpleAccent.withOpacity(0.08),
         ),
       ),
     );

@@ -15,9 +15,18 @@ class DiagnosisPage extends StatefulWidget {
   State<DiagnosisPage> createState() => _DiagnosisPageState();
 }
 
-class _DiagnosisPageState extends State<DiagnosisPage> {
+class _DiagnosisPageState extends State<DiagnosisPage> with TickerProviderStateMixin {
   String? selectedEmotionKey;
   bool isPremiumUser = false;
+
+  final _emojis = {
+    'Optimistic': '😊',
+    'Neutral': '😐',
+    'Worried': '😟',
+    'Confused': '😕',
+    'Excited': '🤩',
+    'Cautious': '🤔',
+  };
 
   @override
   void initState() {
@@ -53,85 +62,99 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          loc.diagnosisTitle,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-          textAlign: TextAlign.center,
-        ),
+        title: Text(loc.diagnosisTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+        elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              loc.diagnosisQuestion,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 20,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF7B44C6), Color(0xFF72C6EF)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(28.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                loc.diagnosisQuestion,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                      fontSize: 22,
+                    ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 32),
+              ...emotionOptions.entries.map(
+                (entry) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  child: ElevatedButton.icon(
+                    icon: Text(
+                      _emojis[entry.key] ?? '',
+                      style: const TextStyle(fontSize: 26),
+                    ),
+                    label: Text(
+                      entry.value,
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(240, 54),
+                      backgroundColor: Colors.white,
+                      foregroundColor: AppColors.primary,
+                      elevation: 3,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(22),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                    ),
+                    onPressed: () async {
+                      setState(() => selectedEmotionKey = entry.key);
+                      await _saveEmotionToHistory(entry.key);
+                      if (isPremiumUser) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => BadgeScreen(
+                              emotionKey: entry.key,
+                              subscriptionManager: widget.subscriptionManager,
+                            ),
+                          ),
+                        );
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => PremiumUnlockPage(
+                              subscriptionManager: widget.subscriptionManager,
+                            ),
+                          ),
+                        );
+                      }
+                    },
                   ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 24),
-            ...emotionOptions.entries.map(
-              (entry) => Padding(
-                padding: const EdgeInsets.symmetric(vertical: 6.0),
-                child: EmotionButton(
-                  label: entry.value,
-                  onTap: () async {
-                    setState(() => selectedEmotionKey = entry.key);
-                    await _saveEmotionToHistory(entry.key);
-                    if (isPremiumUser) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => BadgeScreen(
-                            emotionKey: entry.key,
-                            subscriptionManager: widget.subscriptionManager,
-                          ),
-                        ),
-                      );
-                    } else {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => PremiumUnlockPage(
-                            subscriptionManager: widget.subscriptionManager,
-                          ),
-                        ),
-                      );
-                    }
-                  },
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 18),
+              if (!isPremiumUser)
+                Text(
+                  loc.premiumPrompt,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.white70,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+            ],
+          ),
         ),
       ),
-    );
-  }
-}
-
-class EmotionButton extends StatelessWidget {
-  final String label;
-  final VoidCallback onTap;
-
-  const EmotionButton({super.key, required this.label, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onTap,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.white,
-        foregroundColor: AppColors.primary,
-        side: const BorderSide(color: AppColors.primary, width: 1.5),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
-        textStyle: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
-      ),
-      child: Text(label),
     );
   }
 }

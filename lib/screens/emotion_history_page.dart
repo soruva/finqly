@@ -1,122 +1,194 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:finqly/l10n/app_localizations.dart';
-import 'package:finqly/services/user_subscription_status.dart';
 import 'package:finqly/screens/premium_unlock_page.dart';
 import 'package:finqly/services/subscription_manager.dart';
+import 'dart:math';
 
-class EmotionHistoryPage extends StatefulWidget {
-  // 必要ならSubscriptionManagerを受け取れるように
-  final SubscriptionManager? subscriptionManager;
-  const EmotionHistoryPage({super.key, this.subscriptionManager});
+class EducationPage extends StatefulWidget {
+  final SubscriptionManager subscriptionManager;
+
+  const EducationPage({super.key, required this.subscriptionManager});
 
   @override
-  State<EmotionHistoryPage> createState() => _EmotionHistoryPageState();
+  State<EducationPage> createState() => _EducationPageState();
 }
 
-class _EmotionHistoryPageState extends State<EmotionHistoryPage> {
-  List<String> emotionHistory = [];
-  bool isPremiumUser = false;
+class _EducationPageState extends State<EducationPage> with TickerProviderStateMixin {
+  late TabController _tabController;
+  int selectedTab = 0;
+  bool isPremium = false;
 
   @override
   void initState() {
     super.initState();
-    _loadData();
-  }
-
-  Future<void> _loadData() async {
-    final prefs = await SharedPreferences.getInstance();
-    final history = prefs.getStringList('emotionHistory') ?? [];
-    final premium = await UserSubscriptionStatus().isPremium();
-    setState(() {
-      emotionHistory = history.reversed.toList();
-      isPremiumUser = premium;
+    _tabController = TabController(length: 2, vsync: this, initialIndex: selectedTab);
+    _tabController.addListener(() {
+      if (_tabController.index != selectedTab) {
+        setState(() => selectedTab = _tabController.index);
+      }
     });
+    isPremium = widget.subscriptionManager.isSubscribed;
   }
 
-  String getImagePath(String emotion) {
-    final key = emotion.toLowerCase();
-    return 'assets/images/badges/$key.png';
+  List<Map<String, String>> _getBeginnerTips(AppLocalizations loc) {
+    return [
+      {'icon': '📈', 'text': loc.investmentTips1},
+      {'icon': '💡', 'text': loc.investmentTips2},
+      {'icon': '📊', 'text': loc.investmentTips3},
+    ]..shuffle(Random());
+  }
+
+  List<Map<String, String>> _getProTips(AppLocalizations loc) {
+    return [
+      {'icon': '🚀', 'text': loc.investmentTips4},
+      {'icon': '💰', 'text': loc.investmentTips5},
+    ]..shuffle(Random());
   }
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-    final subscriptionManager = widget.subscriptionManager ?? SubscriptionManager();
+    final beginnerTips = _getBeginnerTips(loc);
+    final proTips = _getProTips(loc);
+
+    final currentTips = selectedTab == 0 ? beginnerTips : proTips;
 
     return Scaffold(
-      appBar: AppBar(title: Text(loc.emotionHistoryTitle)),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: isPremiumUser
-            ? emotionHistory.isEmpty
-                ? Center(child: Text(loc.emotionHistoryEmpty))
-                : ListView.separated(
-                    itemCount: emotionHistory.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 12),
-                    itemBuilder: (context, index) {
-                      final emotion = emotionHistory[index];
-                      final imagePath = getImagePath(emotion);
-
-                      return Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).cardColor,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 4,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            Image.asset(
-                              imagePath,
-                              width: 48,
-                              height: 48,
-                              errorBuilder: (_, __, ___) => const Icon(Icons.emoji_emotions, size: 40),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Text(
-                                emotion,
-                                style: const TextStyle(fontSize: 16),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  )
-            : Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.lock_outline, size: 60, color: Colors.grey),
-                    const SizedBox(height: 16),
-                    Text(
-                      loc.unlockInsights,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                    const SizedBox(height: 24),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => PremiumUnlockPage(subscriptionManager: subscriptionManager),
-                          ),
-                        );
-                      },
-                      child: Text(loc.upgradeToPremium),
-                    ),
-                  ],
-                ),
+      appBar: AppBar(
+        title: Text(loc.investmentTipsTitle),
+        centerTitle: true,
+        bottom: TabBar(
+          indicatorColor: Colors.white,
+          controller: _tabController,
+          tabs: const [
+            Tab(text: 'Beginner'),
+            Tab(text: 'Pro'),
+          ],
+        ),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: selectedTab == 0
+                ? _buildTipsList(currentTips)
+                : isPremium
+                    ? _buildTipsList(currentTips)
+                    : _buildLockedProTab(loc),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+            child: Text(
+              '⚠️ This content is for general financial education only.\nNo investment advice is provided.',
+              style: TextStyle(
+                fontSize: 13,
+                color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
+                fontWeight: FontWeight.w500,
               ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          if (!isPremium)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.lock_open),
+                label: const Text('Unlock More Tips'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => PremiumUnlockPage(
+                        subscriptionManager: widget.subscriptionManager,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTipsList(List<Map<String, String>> tips) {
+    return ListView.separated(
+      padding: const EdgeInsets.all(24),
+      itemCount: tips.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 16),
+      itemBuilder: (context, index) {
+        final tip = tips[index];
+        return TweenAnimationBuilder<double>(
+          tween: Tween(begin: 0, end: 1),
+          duration: Duration(milliseconds: 400 + index * 150),
+          builder: (context, value, child) {
+            return Opacity(
+              opacity: value,
+              child: Transform.translate(
+                offset: Offset(0, (1 - value) * 20),
+                child: child,
+              ),
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardColor,
+              borderRadius: BorderRadius.circular(18),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Text(
+              '${tip['icon']}  ${tip['text']}',
+              style: const TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildLockedProTab(AppLocalizations loc) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.lock_outline, size: 54, color: Colors.grey),
+          const SizedBox(height: 18),
+          Text(
+            loc.premiumPrompt,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 16),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton.icon(
+            icon: const Icon(Icons.lock_open),
+            label: Text(loc.unlockInsights),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => PremiumUnlockPage(
+                    subscriptionManager: widget.subscriptionManager,
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }
