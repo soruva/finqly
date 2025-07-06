@@ -176,5 +176,14 @@
   "premiumFeatureExplain": "Desbloquea esta función con Premium para obtener información exclusiva.",
   "@premiumFeatureExplain": {
     "description": "Explicación breve de las ventajas de Premium"
-  }
+  },
+
+  "noTrendData": "No hay datos de tendencia disponibles.",
+  "@noTrendData": {
+    "description": "Mensaje cuando no hay datos de tendencia para mostrar"
+  },
+  "trendForecastDescription": "Tu tendencia emocional reciente se visualiza a continuación.",
+  "@trendForecastDescription": {
+    "description": "Texto explicativo bajo el gráfico de tendencia"
+  }    
 }

@@ -71,5 +71,7 @@
   "educationTitle": "Finanzbildung",
   "other": "Andere",
   "trendForecastTitle": "Emotionstrend-Diagramm",
-  "premiumFeatureExplain": "Schalte diese Funktion mit Premium frei, um exklusive Einblicke zu erhalten."
+  "premiumFeatureExplain": "Schalte diese Funktion mit Premium frei, um exklusive Einblicke zu erhalten.",
+  "noTrendData": "Keine Trenddaten verfügbar.",
+  "trendForecastDescription": "Ihr aktueller emotionaler Trend wird unten angezeigt."
 }

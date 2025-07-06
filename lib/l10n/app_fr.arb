@@ -138,5 +138,14 @@
   "premiumFeatureExplain": "Débloquez cette fonctionnalité Premium pour accéder à du contenu exclusif.",
   "@premiumFeatureExplain": {
     "description": "Brève explication des avantages Premium"
-  }
+  },
+
+  "noTrendData": "Aucune donnée de tendance disponible.",
+  "@noTrendData": {
+    "description": "Message affiché lorsqu'il n'y a pas de données de tendance"
+  },
+  "trendForecastDescription": "Votre tendance émotionnelle récente est visualisée ci-dessous.",
+  "@trendForecastDescription": {
+    "description": "Texte explicatif sous le graphique de tendance"
+  }      
 }

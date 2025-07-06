@@ -71,5 +71,7 @@
   "educationTitle": "Financial Education",
   "other": "Other",
   "trendForecastTitle": "Emotion Trend Chart",
-  "premiumFeatureExplain": "Premium unlocks all trend, chart, and pro tips features."
+  "premiumFeatureExplain": "Premium unlocks all trend, chart, and pro tips features.",
+  "noTrendData": "No trend data available.",
+  "trendForecastDescription": "Your recent emotional trend is visualized below."
 }
