@@ -166,5 +166,15 @@
     "description": "Título de la sección educativa o consejos financieros"
   },
 
-  "other": "Otros"
+  "other": "Otros",
+
+  "trendForecastTitle": "Gráfico de tendencia emocional",
+  "@trendForecastTitle": {
+    "description": "Título del gráfico de tendencias de emociones"
+  },
+
+  "premiumFeatureExplain": "Desbloquea esta función con Premium para obtener información exclusiva.",
+  "@premiumFeatureExplain": {
+    "description": "Explicación breve de las ventajas de Premium"
+  }
 }

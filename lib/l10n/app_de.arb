@@ -69,5 +69,7 @@
   "emotionHistoryTitle": "Emotionsverlauf",
   "emotionHistoryEmpty": "Keine Einträge gefunden.",
   "educationTitle": "Finanzbildung",
-  "other": "Andere"
+  "other": "Andere",
+  "trendForecastTitle": "Emotionstrend-Diagramm",
+  "premiumFeatureExplain": "Schalte diese Funktion mit Premium frei, um exklusive Einblicke zu erhalten."
 }

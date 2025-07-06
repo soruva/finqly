@@ -46,6 +46,10 @@
   },
 
   "investmentTipsTitle": "Dicas de investimento",
+  "tipsTitle": "Dicas de investimento",
+  "@tipsTitle": {
+    "description": "Título da página de dicas"
+  },
   "investmentTips1": "Diversifique seus investimentos para reduzir riscos.",
   "investmentTips2": "Não deixe emoções de curto prazo influenciarem decisões de longo prazo.",
   "investmentTips3": "Entenda sua tolerância ao risco antes de investir.",
@@ -57,7 +61,7 @@
     "description": "Título da tela de previsão"
   },
 
-  "forecastMessage": "Com base na sua mentalidade e histórico, prevê-se um crescimento de {percent} neste mês.",
+  "forecastMessage": "Com base na sua mentalidade e histórico, prevê-se um crescimento de {percent}% neste mês.",
   "@forecastMessage": {
     "description": "Mensagem com previsão baseada na emoção e histórico",
     "placeholders": {
@@ -138,5 +142,15 @@
     "description": "Título da seção de dicas/educação"
   },
 
-  "other": "Outros"
+  "other": "Outros",
+
+  "trendForecastTitle": "Gráfico de tendência emocional",
+  "@trendForecastTitle": {
+    "description": "Título do gráfico de tendência emocional"
+  },
+
+  "premiumFeatureExplain": "Desbloqueie este recurso Premium para acessar conteúdos exclusivos.",
+  "@premiumFeatureExplain": {
+    "description": "Breve explicação das vantagens do Premium"
+  }
 }
