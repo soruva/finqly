@@ -4,10 +4,10 @@ import 'package:finqly/widgets/trend_chart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:finqly/services/user_subscription_status.dart';
 import 'package:finqly/screens/premium_unlock_page.dart';
-import 'package:finqly/services/subscription_manager.dart'; // ← 必要なら
+import 'package:finqly/services/subscription_manager.dart';
 
 class TrendPage extends StatefulWidget {
-  final SubscriptionManager subscriptionManager; // ← 必須
+  final SubscriptionManager subscriptionManager;
   const TrendPage({super.key, required this.subscriptionManager});
 
   @override
@@ -99,9 +99,10 @@ class _TrendPageState extends State<TrendPage> {
                   const Icon(Icons.lock_outline, size: 70, color: Colors.grey),
                   const SizedBox(height: 20),
                   Text(
-                    loc.premiumPrompt,
+                    // 1行目: なぜ見れないか／2行目: Premiumで何が得られるか
+                    "${loc.premiumPrompt}\n\nUnlock trend charts, performance tracking, and personalized insights with Finqly Plus!",
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 17),
+                    style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 22),
                   ElevatedButton.icon(
@@ -110,8 +111,8 @@ class _TrendPageState extends State<TrendPage> {
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
                     ),
-                    onPressed: () {
-                      Navigator.push(
+                    onPressed: () async {
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (_) => PremiumUnlockPage(
@@ -119,6 +120,8 @@ class _TrendPageState extends State<TrendPage> {
                           ),
                         ),
                       );
+                      // Premiumページから戻ったら即リフレッシュ
+                      await _loadAll();
                     },
                   ),
                 ],
