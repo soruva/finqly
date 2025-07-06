@@ -171,4 +171,10 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get premiumFeatureExplain => 'Desbloqueie este recurso Premium para acessar conteúdos exclusivos.';
+
+  @override
+  String get noTrendData => 'Nenhum dado de tendência disponível.';
+
+  @override
+  String get trendForecastDescription => 'Sua tendência emocional recente está visualizada abaixo.';
 }

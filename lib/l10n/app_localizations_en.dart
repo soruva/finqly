@@ -171,4 +171,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get premiumFeatureExplain => 'Premium unlocks all trend, chart, and pro tips features.';
+
+  @override
+  String get noTrendData => 'No trend data available.';
+
+  @override
+  String get trendForecastDescription => 'Your recent emotional trend is visualized below.';
 }
