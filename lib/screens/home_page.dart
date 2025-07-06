@@ -108,7 +108,7 @@ class MyHomePage extends StatelessWidget {
                     );
                   },
                 ),
-                _premiumTrendButton(context, loc),
+                _premiumTrendButton(context, loc), // ← ここ
                 _homeButton(
                   context,
                   icon: Icons.workspace_premium,
@@ -187,7 +187,11 @@ class MyHomePage extends StatelessWidget {
             ? () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const TrendPage()),
+                  MaterialPageRoute(
+                    builder: (_) => TrendPage(
+                      subscriptionManager: subscriptionManager,
+                    ),
+                  ),
                 );
               }
             : () {
