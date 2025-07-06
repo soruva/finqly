@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'dart:io';
 
 class LegalWebViewPage extends StatefulWidget {
@@ -18,7 +19,7 @@ class _LegalWebViewPageState extends State<LegalWebViewPage> {
   void initState() {
     super.initState();
     if (Platform.isAndroid) {
-      WebView.platform = SurfaceAndroidWebView();
+      WebView.platform = AndroidWebView();
     }
     _controller = WebViewController()
       ..loadFlutterAsset(widget.assetPath);
