@@ -4,8 +4,11 @@ import 'package:finqly/l10n/app_localizations.dart';
 import 'package:finqly/theme/colors.dart';
 import 'package:finqly/screens/splash_screen.dart';
 import 'package:finqly/services/subscription_manager.dart';
+import 'package:finqly/services/user_subscription_status.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  UserSubscriptionStatus.listenToPurchaseUpdates();
   runApp(const FinqlyApp());
 }
 
