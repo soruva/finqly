@@ -85,7 +85,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String forecastMessage(Object percent) {
-    return 'Selon votre état d\'esprit et votre historique, vous devriez croître de $percent ce mois-ci.';
+    return 'Selon votre état d\'esprit et votre historique, vous devriez croître de $percent% ce mois-ci.';
   }
 
   @override
@@ -165,4 +165,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get other => 'Autres';
+
+  @override
+  String get trendForecastTitle => 'Graphique de tendance émotionnelle';
+
+  @override
+  String get premiumFeatureExplain => 'Débloquez cette fonctionnalité Premium pour accéder à du contenu exclusif.';
 }

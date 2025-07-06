@@ -165,4 +165,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get other => 'Other';
+
+  @override
+  String get trendForecastTitle => 'Emotion Trend Chart';
+
+  @override
+  String get premiumFeatureExplain => 'Premium unlocks all trend, chart, and pro tips features.';
 }

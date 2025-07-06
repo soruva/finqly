@@ -412,6 +412,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Other'**
   String get other;
+
+  /// No description provided for @trendForecastTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Emotion Trend Chart'**
+  String get trendForecastTitle;
+
+  /// No description provided for @premiumFeatureExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium unlocks all trend, chart, and pro tips features.'**
+  String get premiumFeatureExplain;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
