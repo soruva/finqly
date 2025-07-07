@@ -26,51 +26,38 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-    final isPremium = subscriptionManager.isSubscribed;
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color(0xFF7B44C6),
-              Color(0xFFD1C4E9),
-              Color(0xFFF7F7FC),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: SafeArea(
-          child: Center(
+      backgroundColor: AppColors.background,
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                const SizedBox(height: 28),
-                // ロゴ画像を削除し、Finqlyテキストのみ
+                // アプリ名だけ大きく中央表示
                 Text(
-                  "Finqly",
+                  loc.appTitle,
                   style: TextStyle(
                     fontFamily: 'Nunito',
+                    fontSize: 32,
                     fontWeight: FontWeight.w900,
-                    fontSize: 34,
-                    color: Color(0xFF7B44C6),
-                    letterSpacing: 1.2,
+                    letterSpacing: 2.0,
+                    color: AppColors.primary,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
                 Text(
                   "Emotion & Investing",
                   style: TextStyle(
-                    fontSize: 16,
-                    color: Color(0xFF6D4DB0),
                     fontWeight: FontWeight.w600,
+                    color: AppColors.accentPurple.withOpacity(0.95),
+                    fontSize: 16,
+                    letterSpacing: 0.5,
                   ),
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 40),
                 _homeButton(
                   context,
                   icon: Icons.flash_on,
@@ -101,7 +88,7 @@ class MyHomePage extends StatelessWidget {
                     );
                   },
                 ),
-                _premiumTrendButton(context, loc, isPremium),
+                _premiumTrendButton(context, loc),
                 _homeButton(
                   context,
                   icon: Icons.workspace_premium,
@@ -150,16 +137,12 @@ class MyHomePage extends StatelessWidget {
                     );
                   },
                 ),
-                const Spacer(),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 14),
-                  child: Text(
-                    "© SoruvaLab",
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.white.withOpacity(0.7),
-                      letterSpacing: 0.3,
-                    ),
+                const SizedBox(height: 40),
+                Text(
+                  "© SoruvaLab",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey.withOpacity(0.55),
                   ),
                 ),
               ],
@@ -170,77 +153,69 @@ class MyHomePage extends StatelessWidget {
     );
   }
 
-  // TrendPage（感情トレンド）はPremium限定
-  Widget _premiumTrendButton(BuildContext context, AppLocalizations loc, bool isPremium) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 8),
-      child: ElevatedButton.icon(
-        icon: const Icon(Icons.show_chart, size: 26),
-        label: Text(loc.trendForecastTitle),
-        onPressed: isPremium
-            ? () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => TrendPage(subscriptionManager: subscriptionManager),
+  // プレミアム限定のトレンドグラフボタン
+  Widget _premiumTrendButton(BuildContext context, AppLocalizations loc) {
+    final isPremium = subscriptionManager.isSubscribed;
+    return _homeButton(
+      context,
+      icon: Icons.show_chart,
+      label: loc.trendForecastTitle,
+      onTap: isPremium
+          ? () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => TrendPage(subscriptionManager: subscriptionManager),
+                ),
+              );
+            }
+          : () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => PremiumUnlockPage(
+                    subscriptionManager: subscriptionManager,
                   ),
-                );
-              }
-            : () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => PremiumUnlockPage(
-                      subscriptionManager: subscriptionManager,
-                    ),
-                  ),
-                );
-              },
-        style: ElevatedButton.styleFrom(
-          minimumSize: const Size(260, 54),
-          backgroundColor: isPremium
-              ? Colors.white
-              : Colors.white.withOpacity(0.5),
-          foregroundColor: AppColors.primary,
-          textStyle: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 0.4,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          elevation: 4,
-          shadowColor: Colors.purpleAccent.withOpacity(0.09),
-        ),
-      ),
+                ),
+              );
+            },
+      isPremium: isPremium,
     );
   }
 
+  // 共通ホームボタン（角丸・高さ揃え・カラー美化）
   Widget _homeButton(BuildContext context,
       {required IconData icon,
       required String label,
-      required VoidCallback onTap}) {
+      required VoidCallback onTap,
+      bool isPremium = false}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 8),
-      child: ElevatedButton.icon(
-        icon: Icon(icon, size: 26),
-        label: Text(label),
-        onPressed: onTap,
-        style: ElevatedButton.styleFrom(
-          minimumSize: const Size(260, 54),
-          backgroundColor: Colors.white,
-          foregroundColor: AppColors.primary,
-          textStyle: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 0.4,
+      padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 4),
+      child: SizedBox(
+        width: 290,
+        height: 60,
+        child: ElevatedButton.icon(
+          icon: Icon(icon, size: 26),
+          label: Text(label),
+          onPressed: onTap,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: isPremium
+                ? AppColors.accentPurple.withOpacity(0.13)
+                : Colors.white,
+            foregroundColor: isPremium
+                ? AppColors.accentPurple
+                : AppColors.primary,
+            textStyle: const TextStyle(
+              fontSize: 19,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.4,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18),
+            ),
+            elevation: isPremium ? 4 : 2,
+            shadowColor: Colors.purpleAccent.withOpacity(0.07),
           ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          elevation: 4,
-          shadowColor: Colors.purpleAccent.withOpacity(0.09),
         ),
       ),
     );
