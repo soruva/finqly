@@ -71,8 +71,8 @@
     }
   },
 
-  "tipsTitle": "Consejos de inversión",
-  "@tipsTitle": {
+  "investmentTipsTitle": "Consejos de inversión",
+  "@investmentTipsTitle": {
     "description": "Título de la página de educación / consejos"
   },
 

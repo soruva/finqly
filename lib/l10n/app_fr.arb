@@ -32,9 +32,8 @@
   },
 
   "investmentTipsTitle": "Conseils d'investissement",
-  "tipsTitle": "Conseils d'investissement",
-  "@tipsTitle": {
-    "description": "Titre de la page de conseils"
+  "@investmentTipsTitle": {
+    "description": "Titre de la page des conseils d'investissement"
   },
   "investmentTips1": "Diversifiez vos investissements pour réduire les risques.",
   "investmentTips2": "Ne laissez pas les émotions à court terme influencer vos décisions à long terme.",

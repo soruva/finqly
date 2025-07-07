@@ -44,7 +44,7 @@ class _EducationPageState extends State<EducationPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(loc.tipsTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(loc.investmentTipsTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,

@@ -70,8 +70,17 @@
   "emotionHistoryEmpty": "No history found.",
   "educationTitle": "Financial Education",
   "other": "Other",
+
   "trendForecastTitle": "Emotion Trend Chart",
+  "@trendForecastTitle": {
+    "description": "Title for the emotional trend chart"
+  },
+
   "premiumFeatureExplain": "Premium unlocks all trend, chart, and pro tips features.",
+  "@premiumFeatureExplain": {
+    "description": "Short explanation of Premium benefits"
+  },
+
   "noTrendData": "No trend data available.",
   "trendForecastDescription": "Your recent emotional trend is visualized below."
 }

@@ -23,7 +23,10 @@
   "badgeExcited": "Sie sind voller Energie und bereit!",
   "badgeCautious": "Sie gehen den Markt mit Vorsicht an.",
 
-  "investmentTipsTitle": "Investment-Tipps",
+  "investmentTipsTitle": "Anlagetipps",
+  "@investmentTipsTitle": {
+    "description": "Titel der Investitionstipps-Seite"
+  },  
   "investmentTips1": "Diversifizieren Sie Ihre Investitionen, um Risiken zu minimieren.",
   "investmentTips2": "Lassen Sie sich bei langfristigen Entscheidungen nicht von kurzfristigen Emotionen leiten.",
   "investmentTips3": "Verstehen Sie Ihre Risikobereitschaft, bevor Sie investieren.",

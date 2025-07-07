@@ -63,13 +63,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get badgeCautious => 'Sie gehen den Markt mit Vorsicht an.';
 
   @override
-  String get investmentTipsTitle => 'Investment-Tipps';
+  String get investmentTipsTitle => 'Anlagetipps';
 
   @override
-  String get investmentTips1 => 'Diversifizieren Sie Ihre Investitionen, um Risiken zu minimieren.';
+  String get investmentTips1 => 'Diversifizieren Sie Ihre Anlagen, um Risiken zu reduzieren.';
 
   @override
-  String get investmentTips2 => 'Lassen Sie sich bei langfristigen Entscheidungen nicht von kurzfristigen Emotionen leiten.';
+  String get investmentTips2 => 'Lassen Sie kurzfristige Emotionen nicht Ihre langfristigen Entscheidungen bestimmen.';
 
   @override
   String get investmentTips3 => 'Verstehen Sie Ihre Risikobereitschaft, bevor Sie investieren.';
@@ -78,7 +78,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get investmentTips4 => 'Bleiben Sie informiert, aber vermeiden Sie Panikverkäufe.';
 
   @override
-  String get investmentTips5 => 'Investieren ist eine langfristige Reise – kein Sprint.';
+  String get investmentTips5 => 'Investieren ist eine langfristige Reise - kein Sprint.';
 
   @override
   String get forecastTitle => 'Ihre Investitionsprognose';
@@ -170,11 +170,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get trendForecastTitle => 'Emotionstrend-Diagramm';
 
   @override
-  String get premiumFeatureExplain => 'Schalte diese Funktion mit Premium frei, um exklusive Einblicke zu erhalten.';
+  String get premiumFeatureExplain => 'Premium schaltet alle Trend-, Chart- und Profi-Tipps frei.';
 
   @override
   String get noTrendData => 'Keine Trenddaten verfügbar.';
 
   @override
-  String get trendForecastDescription => 'Ihr aktueller emotionaler Trend wird unten angezeigt.';
+  String get trendForecastDescription => 'Ihr aktueller emotionaler Trend wird unten visualisiert.';
 }
