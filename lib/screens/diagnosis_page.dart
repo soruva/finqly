@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:finqly/theme/colors.dart';
@@ -16,9 +17,10 @@ class DiagnosisPage extends StatefulWidget {
 }
 
 class _DiagnosisPageState extends State<DiagnosisPage>
-    with TickerProviderStateMixin {
+    with SingleTickerProviderStateMixin {
   String? selectedEmotionKey;
   bool isPremiumUser = false;
+  late AnimationController _controller;
 
   final _emojis = {
     'Optimistic': '😊',
@@ -29,40 +31,20 @@ class _DiagnosisPageState extends State<DiagnosisPage>
     'Cautious': '🤔',
   };
 
-  final Map<String, AnimationController> _controllers = {};
-  final Map<String, Animation<double>> _animations = {};
-
   @override
   void initState() {
     super.initState();
-    _loadPremiumStatus();
-    // エモジーボタン用アニメーション初期化
-    for (var key in _emojis.keys) {
-      final controller = AnimationController(
-        duration: const Duration(milliseconds: 400),
-        vsync: this,
-        lowerBound: 1.0,
-        upperBound: 1.12,
-      );
-      _controllers[key] = controller;
-      _animations[key] = Tween<double>(begin: 1.0, end: 1.12).animate(
-        CurvedAnimation(parent: controller, curve: Curves.elasticInOut),
-      );
-    }
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..repeat(reverse: true);
+    isPremiumUser = widget.subscriptionManager.isSubscribed;
   }
 
   @override
   void dispose() {
-    for (final c in _controllers.values) {
-      c.dispose();
-    }
+    _controller.dispose();
     super.dispose();
-  }
-
-  void _loadPremiumStatus() {
-    setState(() {
-      isPremiumUser = widget.subscriptionManager.isSubscribed;
-    });
   }
 
   Future<void> _saveEmotionToHistory(String emotion) async {
@@ -75,7 +57,6 @@ class _DiagnosisPageState extends State<DiagnosisPage>
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-
     final emotionOptions = {
       'Optimistic': loc.optionOptimistic,
       'Neutral': loc.optionNeutral,
@@ -87,15 +68,13 @@ class _DiagnosisPageState extends State<DiagnosisPage>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(loc.diagnosisTitle,
-            style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(loc.diagnosisTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         elevation: 0,
       ),
       body: Container(
-        width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [Color(0xFF7B44C6), Color(0xFF72C6EF)],
@@ -103,64 +82,58 @@ class _DiagnosisPageState extends State<DiagnosisPage>
             end: Alignment.bottomRight,
           ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                loc.diagnosisQuestion,
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white,
-                      fontSize: 23,
-                    ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 35),
-              ...emotionOptions.entries.map(
-                (entry) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0),
-                  child: GestureDetector(
-                    onTapDown: (_) => _controllers[entry.key]?.forward(),
-                    onTapUp: (_) => _controllers[entry.key]?.reverse(),
-                    onTapCancel: () => _controllers[entry.key]?.reverse(),
-                    child: ScaleTransition(
-                      scale: _animations[entry.key]!,
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 32),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  loc.diagnosisQuestion,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        fontSize: 22,
+                      ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 28),
+                // エモジ＋ボタン
+                ...emotionOptions.entries.map(
+                  (entry) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 7),
+                    child: AnimatedBuilder(
+                      animation: _controller,
+                      builder: (context, child) {
+                        double angle = 0.03 * sin(_controller.value * 2 * pi);
+                        return Transform.rotate(
+                          angle: angle,
+                          child: child,
+                        );
+                      },
                       child: ElevatedButton.icon(
                         icon: Text(
                           _emojis[entry.key] ?? '',
-                          style: const TextStyle(fontSize: 29),
+                          style: const TextStyle(fontSize: 30),
                         ),
                         label: Text(
                           entry.value,
-                          style: const TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w600),
                         ),
                         style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(56),
-                          maximumSize: const Size.fromHeight(56),
+                          minimumSize: const Size(285, 56),
                           backgroundColor: Colors.white,
                           foregroundColor: AppColors.primary,
-                          elevation: 6,
+                          elevation: 3,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(32),
+                            borderRadius: BorderRadius.circular(26),
                           ),
-                          shadowColor: Colors.indigo.withOpacity(0.15),
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 13),
                         ),
                         onPressed: () async {
                           setState(() => selectedEmotionKey = entry.key);
                           await _saveEmotionToHistory(entry.key);
-
-                          // 選択アニメを強調
-                          await _controllers[entry.key]?.forward();
-                          await Future.delayed(const Duration(milliseconds: 180));
-                          await _controllers[entry.key]?.reverse();
-
                           if (isPremiumUser) {
-                            // バッジ画面へ
-                            if (!mounted) return;
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -171,8 +144,6 @@ class _DiagnosisPageState extends State<DiagnosisPage>
                               ),
                             );
                           } else {
-                            // Premium誘導
-                            if (!mounted) return;
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -187,32 +158,19 @@ class _DiagnosisPageState extends State<DiagnosisPage>
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 26),
-              if (!isPremiumUser)
-                Text(
-                  loc.premiumPrompt,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    color: Colors.white70,
-                    fontWeight: FontWeight.w600,
+                const SizedBox(height: 22),
+                if (!isPremiumUser)
+                  Text(
+                    loc.premiumPrompt,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.white70,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-              const Spacer(),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10, top: 16),
-                child: Text(
-                  "Finqly • Emotions x Investing",
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.85),
-                    fontWeight: FontWeight.w700,
-                    fontSize: 13,
-                    letterSpacing: 0.8,
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
