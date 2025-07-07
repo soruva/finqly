@@ -26,58 +26,51 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
+    final isPremium = subscriptionManager.isSubscribed;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          loc.appTitle,
-          style: const TextStyle(
-            fontWeight: FontWeight.w900,
-            fontSize: 26,
-            letterSpacing: 1,
-          ),
-        ),
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.white,
-        elevation: 0,
-        centerTitle: true,
-      ),
       extendBodyBehindAppBar: true,
       body: Container(
         width: double.infinity,
+        height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
               Color(0xFF7B44C6),
-              Color(0xFF9A5DF0),
-              Color(0xFF72C6EF),
+              Color(0xFFD1C4E9),
+              Color(0xFFF7F7FC),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
         ),
-        child: Center(
-          child: SingleChildScrollView(
+        child: SafeArea(
+          child: Center(
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 60),
-                Image.asset(
-                  'assets/images/finqly_logo.png',
-                  width: 88,
-                  height: 88,
+                const SizedBox(height: 28),
+                // ロゴ画像を削除し、Finqlyテキストのみ
+                Text(
+                  "Finqly",
+                  style: TextStyle(
+                    fontFamily: 'Nunito',
+                    fontWeight: FontWeight.w900,
+                    fontSize: 34,
+                    color: Color(0xFF7B44C6),
+                    letterSpacing: 1.2,
+                  ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 8),
                 Text(
                   "Emotion & Investing",
                   style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white.withOpacity(0.92),
                     fontSize: 16,
-                    letterSpacing: 0.5,
+                    color: Color(0xFF6D4DB0),
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 38),
+                const SizedBox(height: 30),
                 _homeButton(
                   context,
                   icon: Icons.flash_on,
@@ -108,7 +101,7 @@ class MyHomePage extends StatelessWidget {
                     );
                   },
                 ),
-                _premiumTrendButton(context, loc), // ← ここ
+                _premiumTrendButton(context, loc, isPremium),
                 _homeButton(
                   context,
                   icon: Icons.workspace_premium,
@@ -157,13 +150,16 @@ class MyHomePage extends StatelessWidget {
                     );
                   },
                 ),
-                const SizedBox(height: 50),
-                Text(
-                  "© SoruvaLab",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.white.withOpacity(0.7),
-                    letterSpacing: 0.3,
+                const Spacer(),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 14),
+                  child: Text(
+                    "© SoruvaLab",
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.white.withOpacity(0.7),
+                      letterSpacing: 0.3,
+                    ),
                   ),
                 ),
               ],
@@ -175,11 +171,9 @@ class MyHomePage extends StatelessWidget {
   }
 
   // TrendPage（感情トレンド）はPremium限定
-  Widget _premiumTrendButton(BuildContext context, AppLocalizations loc) {
-    final isPremium = subscriptionManager.isSubscribed;
-
+  Widget _premiumTrendButton(BuildContext context, AppLocalizations loc, bool isPremium) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 11, horizontal: 8),
+      padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 8),
       child: ElevatedButton.icon(
         icon: const Icon(Icons.show_chart, size: 26),
         label: Text(loc.trendForecastTitle),
@@ -188,14 +182,11 @@ class MyHomePage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => TrendPage(
-                      subscriptionManager: subscriptionManager,
-                    ),
+                    builder: (_) => TrendPage(subscriptionManager: subscriptionManager),
                   ),
                 );
               }
             : () {
-                // ロック時はPremium誘導
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -206,9 +197,9 @@ class MyHomePage extends StatelessWidget {
                 );
               },
         style: ElevatedButton.styleFrom(
-          minimumSize: const Size(240, 58),
+          minimumSize: const Size(260, 54),
           backgroundColor: isPremium
-              ? Colors.white.withOpacity(0.94)
+              ? Colors.white
               : Colors.white.withOpacity(0.5),
           foregroundColor: AppColors.primary,
           textStyle: const TextStyle(
@@ -217,10 +208,10 @@ class MyHomePage extends StatelessWidget {
             letterSpacing: 0.4,
           ),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(20),
           ),
-          elevation: 3,
-          shadowColor: Colors.purpleAccent.withOpacity(0.08),
+          elevation: 4,
+          shadowColor: Colors.purpleAccent.withOpacity(0.09),
         ),
       ),
     );
@@ -231,14 +222,14 @@ class MyHomePage extends StatelessWidget {
       required String label,
       required VoidCallback onTap}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 11, horizontal: 8),
+      padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 8),
       child: ElevatedButton.icon(
         icon: Icon(icon, size: 26),
         label: Text(label),
         onPressed: onTap,
         style: ElevatedButton.styleFrom(
-          minimumSize: const Size(240, 58),
-          backgroundColor: Colors.white.withOpacity(0.94),
+          minimumSize: const Size(260, 54),
+          backgroundColor: Colors.white,
           foregroundColor: AppColors.primary,
           textStyle: const TextStyle(
             fontSize: 18,
@@ -246,10 +237,10 @@ class MyHomePage extends StatelessWidget {
             letterSpacing: 0.4,
           ),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(20),
           ),
-          elevation: 3,
-          shadowColor: Colors.purpleAccent.withOpacity(0.08),
+          elevation: 4,
+          shadowColor: Colors.purpleAccent.withOpacity(0.09),
         ),
       ),
     );
