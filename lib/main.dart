@@ -46,25 +46,32 @@ class _FinqlyAppState extends State<FinqlyApp> {
       theme: ThemeData(
         primarySwatch: Colors.indigo,
         fontFamily: 'Nunito',
+        scaffoldBackgroundColor: Colors.white,
+        colorScheme: ColorScheme.fromSwatch(
+          primarySwatch: Colors.indigo,
+        ).copyWith(
+          secondary: AppColors.accent,
+        ),
       ),
       darkTheme: ThemeData.dark().copyWith(
         primaryColor: AppColors.primary,
+        scaffoldBackgroundColor: const Color(0xFF19162D),
+        colorScheme: ThemeData.dark().colorScheme.copyWith(
+          primary: AppColors.primary,
+          secondary: AppColors.accent,
+        ),
       ),
       themeMode: _themeMode,
       locale: _locale,
       supportedLocales: const [
+        Locale('de'),
         Locale('en'),
         Locale('es'),
         Locale('fr'),
         Locale('pt'),
-        Locale('de'),
       ],
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
+      // Flutter 3以降なら↓これでOK
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
       // 重要：SplashScreenにPremium管理/言語/テーマを渡す
       home: SplashScreen(
         subscriptionManager: _subscriptionManager,

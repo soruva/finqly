@@ -24,7 +24,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get diagnosisQuestion => 'Como você se sente sobre o mercado neste momento?';
 
   @override
-  String get diagnosisButton => 'Run Diagnosis';
+  String get diagnosisButton => 'Executar Diagnóstico';
 
   @override
   String get optionOptimistic => 'Otimista';

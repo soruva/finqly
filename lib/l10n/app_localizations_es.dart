@@ -63,7 +63,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get badgeCautious => 'Estás abordando el mercado con precaución.';
 
   @override
-  String get investmentTipsTitle => 'Investment Tips';
+  String get investmentTipsTitle => 'Consejos de inversión';
 
   @override
   String get investmentTips1 => 'Diversifica tus inversiones para reducir riesgos.';
