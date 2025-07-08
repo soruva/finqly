@@ -413,13 +413,13 @@ abstract class AppLocalizations {
   /// **'Other'**
   String get other;
 
-  /// No description provided for @trendForecastTitle.
+  /// Title for the emotional trend chart
   ///
   /// In en, this message translates to:
   /// **'Emotion Trend Chart'**
   String get trendForecastTitle;
 
-  /// No description provided for @premiumFeatureExplain.
+  /// Short explanation of Premium benefits
   ///
   /// In en, this message translates to:
   /// **'Premium unlocks all trend, chart, and pro tips features.'**

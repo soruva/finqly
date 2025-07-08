@@ -50,7 +50,7 @@ class _FinqlyAppState extends State<FinqlyApp> {
         colorScheme: ColorScheme.fromSwatch(
           primarySwatch: Colors.indigo,
         ).copyWith(
-          secondary: AppColors.accent,
+          secondary: Colors.purpleAccent,
         ),
       ),
       darkTheme: ThemeData.dark().copyWith(
@@ -58,7 +58,7 @@ class _FinqlyAppState extends State<FinqlyApp> {
         scaffoldBackgroundColor: const Color(0xFF19162D),
         colorScheme: ThemeData.dark().colorScheme.copyWith(
           primary: AppColors.primary,
-          secondary: AppColors.accent,
+          secondary: Colors.purpleAccent,
         ),
       ),
       themeMode: _themeMode,

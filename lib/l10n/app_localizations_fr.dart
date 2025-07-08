@@ -24,7 +24,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get diagnosisQuestion => 'Comment vous sentez-vous par rapport au marché en ce moment ?';
 
   @override
-  String get diagnosisButton => 'Lancer le diagnostic';
+  String get diagnosisButton => 'Run Diagnosis';
 
   @override
   String get optionOptimistic => 'Optimiste';
