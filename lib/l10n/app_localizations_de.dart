@@ -78,7 +78,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get investmentTips4 => 'Bleiben Sie informiert, aber vermeiden Sie Panikverkäufe.';
 
   @override
-  String get investmentTips5 => 'Investieren ist eine langfristige Reise - kein Sprint.';
+  String get investmentTips5 => 'Investieren ist eine langfristige Reise – kein Sprint.';
 
   @override
   String get forecastTitle => 'Ihre Investitionsprognose';
