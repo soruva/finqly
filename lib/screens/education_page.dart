@@ -13,7 +13,6 @@ class EducationPage extends StatefulWidget {
 }
 
 class _EducationPageState extends State<EducationPage> {
-  late bool isPremium;
   List<bool> isFlipped = [];
 
   final List<String> _basicTips = [
@@ -33,96 +32,106 @@ class _EducationPageState extends State<EducationPage> {
   @override
   void initState() {
     super.initState();
-    isPremium = widget.subscriptionManager.isSubscribed;
-    isFlipped = List.filled(isPremium ? _proTips.length : _basicTips.length, false);
+    isFlipped = List.filled(_proTips.length, false); // 常に最大数に合わせておく
   }
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-    final tipsKeys = isPremium ? _proTips : _basicTips;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(loc.investmentTipsTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
-        centerTitle: true,
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
-        elevation: 0,
-      ),
-      body: Container(
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFFF4F6FA), Color(0xFFE8DFFC), Color(0xFFB7E3F8)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+    return ValueListenableBuilder<bool>(
+      valueListenable: widget.subscriptionManager.isSubscribedNotifier,
+      builder: (context, isPremium, _) {
+        final tipsKeys = isPremium ? _proTips : _basicTips;
+
+        // isFlippedリストの長さ調整
+        if (isFlipped.length != tipsKeys.length) {
+          isFlipped = List.filled(tipsKeys.length, false);
+        }
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(loc.investmentTipsTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
+            centerTitle: true,
+            backgroundColor: AppColors.primary,
+            foregroundColor: Colors.white,
+            elevation: 0,
           ),
-        ),
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                itemCount: tipsKeys.length,
-                itemBuilder: (context, index) {
-                  final key = tipsKeys[index];
-                  final tip = _getTipByKey(loc, key);
-
-                  return AnimatedContainer(
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.easeOut,
-                    margin: const EdgeInsets.symmetric(vertical: 12),
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          isFlipped[index] = !isFlipped[index];
-                        });
-                      },
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 350),
-                        transitionBuilder: (child, animation) =>
-                            ScaleTransition(scale: animation, child: child),
-                        child: isFlipped[index]
-                            ? _buildTipCardBack(tip, index)
-                            : _buildTipCardFront(tip, index),
-                      ),
-                    ),
-                  );
-                },
+          body: Container(
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFFF4F6FA), Color(0xFFE8DFFC), Color(0xFFB7E3F8)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
             ),
-            if (!isPremium) ...[
-              const SizedBox(height: 10),
-              ElevatedButton.icon(
-                icon: const Icon(Icons.lock_open),
-                label: Text(loc.unlockInsights),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                  backgroundColor: AppColors.accentPurple,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18),
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                Expanded(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    itemCount: tipsKeys.length,
+                    itemBuilder: (context, index) {
+                      final key = tipsKeys[index];
+                      final tip = _getTipByKey(loc, key);
+
+                      return AnimatedContainer(
+                        duration: const Duration(milliseconds: 500),
+                        curve: Curves.easeOut,
+                        margin: const EdgeInsets.symmetric(vertical: 12),
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              isFlipped[index] = !isFlipped[index];
+                            });
+                          },
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 350),
+                            transitionBuilder: (child, animation) =>
+                                ScaleTransition(scale: animation, child: child),
+                            child: isFlipped[index]
+                                ? _buildTipCardBack(loc, index)
+                                : _buildTipCardFront(tip, index),
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                  elevation: 2,
                 ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => PremiumUnlockPage(
-                        subscriptionManager: widget.subscriptionManager,
+                if (!isPremium) ...[
+                  const SizedBox(height: 10),
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.lock_open),
+                    label: Text(loc.unlockInsights),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                      backgroundColor: AppColors.accentPurple,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
                       ),
+                      elevation: 2,
                     ),
-                  );
-                },
-              ),
-              const SizedBox(height: 25),
-            ],
-          ],
-        ),
-      ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => PremiumUnlockPage(
+                            subscriptionManager: widget.subscriptionManager,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 25),
+                ],
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -170,23 +179,23 @@ class _EducationPageState extends State<EducationPage> {
             ),
           ),
           const SizedBox(height: 10),
-          const Text(
-            'タップで裏返す',
-            style: TextStyle(fontSize: 13, color: Colors.white70),
-          )
+          Text(
+            AppLocalizations.of(context)?.tapToFlip ?? 'Tap to flip',
+            style: const TextStyle(fontSize: 13, color: Colors.white70),
+          ),
         ],
       ),
     );
   }
 
-  // 裏面：解説や一言（例）
-  Widget _buildTipCardBack(String tip, int idx) {
+  // 裏面：解説（多言語arbに記載したものを取得する形を推奨）
+  Widget _buildTipCardBack(AppLocalizations loc, int idx) {
     final explanations = [
-      "リスク分散は成功投資家の鉄則！",
-      "短期感情に流されないで、長期を見据えよう。",
-      "リスク許容度を知ることで、失敗も減らせる！",
-      "情報収集は大切。でもパニック売りはNG！",
-      "継続投資こそが未来を作る。",
+      loc.investmentTipsExplanation1,
+      loc.investmentTipsExplanation2,
+      loc.investmentTipsExplanation3,
+      loc.investmentTipsExplanation4,
+      loc.investmentTipsExplanation5,
     ];
     return Container(
       key: ValueKey('back$idx'),

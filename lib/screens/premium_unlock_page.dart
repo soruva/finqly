@@ -20,28 +20,44 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
   Future<void> _unlock() async {
     setState(() => isLoading = true);
 
-    await widget.subscriptionManager.buyPremium(); // ← 返り値は使わない
-    await widget.subscriptionManager.refreshSubscriptionStatus();
+    try {
+      await widget.subscriptionManager.buyPremium(); // 購入実行
 
-    if (!mounted) return;
+      // ★ 購入直後に即UIへ反映
+      widget.subscriptionManager.updateSubscription(true);
 
-    setState(() => isLoading = false);
+      await widget.subscriptionManager.refreshSubscriptionStatus();
 
-    // ★ここ修正！null safety
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(AppLocalizations.of(context)!.premiumUnlockSuccess),
-      ),
-    );
+      if (!mounted) return;
 
-    Future.delayed(const Duration(milliseconds: 300), () {
-      if (mounted) Navigator.pop(context);
-    });
+      setState(() => isLoading = false);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.premiumUnlockSuccess),
+        ),
+      );
+
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (mounted) Navigator.pop(context);
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => isLoading = false);
+
+      // ★ 失敗時は明示的にfalse
+      widget.subscriptionManager.updateSubscription(false);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.premiumUnlockError),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // ★null safetyのため「!」付与
     final loc = AppLocalizations.of(context)!;
 
     return Scaffold(

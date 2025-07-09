@@ -101,187 +101,187 @@ abstract class AppLocalizations {
     Locale('pt')
   ];
 
-  /// No description provided for @appTitle.
+  /// Main app title
   ///
   /// In en, this message translates to:
   /// **'Finqly'**
   String get appTitle;
 
-  /// No description provided for @emotionPrompt.
+  /// Main prompt on home screen
   ///
   /// In en, this message translates to:
   /// **'How are you feeling about your finances today?'**
   String get emotionPrompt;
 
-  /// No description provided for @startButton.
+  /// Button to start diagnosis
   ///
   /// In en, this message translates to:
   /// **'Start Now'**
   String get startButton;
 
-  /// No description provided for @diagnosisTitle.
+  /// Title for diagnosis page
   ///
   /// In en, this message translates to:
   /// **'Diagnosis'**
   String get diagnosisTitle;
 
-  /// No description provided for @diagnosisQuestion.
+  /// Question about market sentiment
   ///
   /// In en, this message translates to:
   /// **'How do you feel about the market right now?'**
   String get diagnosisQuestion;
 
-  /// No description provided for @diagnosisButton.
+  /// Button to run the diagnosis
   ///
   /// In en, this message translates to:
   /// **'Run Diagnosis'**
   String get diagnosisButton;
 
-  /// No description provided for @optionOptimistic.
+  /// Emotion option: optimistic
   ///
   /// In en, this message translates to:
   /// **'Optimistic'**
   String get optionOptimistic;
 
-  /// No description provided for @optionNeutral.
+  /// Emotion option: neutral
   ///
   /// In en, this message translates to:
   /// **'Neutral'**
   String get optionNeutral;
 
-  /// No description provided for @optionWorried.
+  /// Emotion option: worried
   ///
   /// In en, this message translates to:
   /// **'Worried'**
   String get optionWorried;
 
-  /// No description provided for @optionConfused.
+  /// Emotion option: confused
   ///
   /// In en, this message translates to:
   /// **'Confused'**
   String get optionConfused;
 
-  /// No description provided for @optionExcited.
+  /// Emotion option: excited
   ///
   /// In en, this message translates to:
   /// **'Excited'**
   String get optionExcited;
 
-  /// No description provided for @optionCautious.
+  /// Emotion option: cautious
   ///
   /// In en, this message translates to:
   /// **'Cautious'**
   String get optionCautious;
 
-  /// No description provided for @badgeOptimistic.
+  /// Badge message: optimistic
   ///
   /// In en, this message translates to:
   /// **'You\'re optimistic about the market!'**
   String get badgeOptimistic;
 
-  /// No description provided for @badgeNeutral.
+  /// Badge message: neutral
   ///
   /// In en, this message translates to:
   /// **'You’re feeling neutral today.'**
   String get badgeNeutral;
 
-  /// No description provided for @badgeWorried.
+  /// Badge message: worried
   ///
   /// In en, this message translates to:
   /// **'You’re worried about your investments.'**
   String get badgeWorried;
 
-  /// No description provided for @badgeConfused.
+  /// Badge message: confused
   ///
   /// In en, this message translates to:
   /// **'You feel unsure or confused.'**
   String get badgeConfused;
 
-  /// No description provided for @badgeExcited.
+  /// Badge message: excited
   ///
   /// In en, this message translates to:
   /// **'You’re feeling energized and ready!'**
   String get badgeExcited;
 
-  /// No description provided for @badgeCautious.
+  /// Badge message: cautious
   ///
   /// In en, this message translates to:
   /// **'You’re approaching the market with care.'**
   String get badgeCautious;
 
-  /// No description provided for @investmentTipsTitle.
+  /// Title of the investment tips page
   ///
   /// In en, this message translates to:
   /// **'Investment Tips'**
   String get investmentTipsTitle;
 
-  /// No description provided for @investmentTips1.
+  /// Tip 1: diversification
   ///
   /// In en, this message translates to:
   /// **'Diversify your investments to reduce risk.'**
   String get investmentTips1;
 
-  /// No description provided for @investmentTips2.
+  /// Tip 2: avoid short-term emotion
   ///
   /// In en, this message translates to:
   /// **'Don’t let short-term emotions drive long-term decisions.'**
   String get investmentTips2;
 
-  /// No description provided for @investmentTips3.
+  /// Tip 3: risk tolerance
   ///
   /// In en, this message translates to:
   /// **'Understand your risk tolerance before investing.'**
   String get investmentTips3;
 
-  /// No description provided for @investmentTips4.
+  /// Tip 4: avoid panic selling
   ///
   /// In en, this message translates to:
   /// **'Stay informed but avoid panic-selling.'**
   String get investmentTips4;
 
-  /// No description provided for @investmentTips5.
+  /// Tip 5: long-term focus
   ///
   /// In en, this message translates to:
   /// **'Investing is a long-term journey — not a sprint.'**
   String get investmentTips5;
 
-  /// No description provided for @tapToFlip.
+  /// Hint for flipping the card
   ///
   /// In en, this message translates to:
   /// **'Tap to flip'**
   String get tapToFlip;
 
-  /// No description provided for @investmentTipsExplanation1.
+  /// Explanation for tip 1
   ///
   /// In en, this message translates to:
   /// **'Diversification is the golden rule!'**
   String get investmentTipsExplanation1;
 
-  /// No description provided for @investmentTipsExplanation2.
+  /// Explanation for tip 2
   ///
   /// In en, this message translates to:
   /// **'Stay focused on the long term, not short-term feelings.'**
   String get investmentTipsExplanation2;
 
-  /// No description provided for @investmentTipsExplanation3.
+  /// Explanation for tip 3
   ///
   /// In en, this message translates to:
   /// **'Knowing your risk tolerance reduces mistakes.'**
   String get investmentTipsExplanation3;
 
-  /// No description provided for @investmentTipsExplanation4.
+  /// Explanation for tip 4
   ///
   /// In en, this message translates to:
   /// **'Stay informed. Avoid panic selling!'**
   String get investmentTipsExplanation4;
 
-  /// No description provided for @investmentTipsExplanation5.
+  /// Explanation for tip 5
   ///
   /// In en, this message translates to:
   /// **'Consistency builds your financial future.'**
   String get investmentTipsExplanation5;
 
-  /// No description provided for @forecastTitle.
+  /// Title for forecast page
   ///
   /// In en, this message translates to:
   /// **'Your Investment Forecast'**
@@ -293,157 +293,157 @@ abstract class AppLocalizations {
   /// **'Based on your mindset and history, you\'re expected to grow by {percent} this month.'**
   String forecastMessage(Object percent);
 
-  /// No description provided for @premiumPrompt.
+  /// Prompt for premium upgrade
   ///
   /// In en, this message translates to:
   /// **'You\'re close to unlocking even better insights.'**
   String get premiumPrompt;
 
-  /// No description provided for @premiumCTA.
+  /// Button for premium forecast
   ///
   /// In en, this message translates to:
   /// **'Get Premium Forecast'**
   String get premiumCTA;
 
-  /// No description provided for @language.
+  /// Label for language setting
   ///
   /// In en, this message translates to:
   /// **'Language'**
   String get language;
 
-  /// No description provided for @languageEnglish.
+  /// English
   ///
   /// In en, this message translates to:
   /// **'English'**
   String get languageEnglish;
 
-  /// No description provided for @languageSpanish.
+  /// Spanish
   ///
   /// In en, this message translates to:
   /// **'Español'**
   String get languageSpanish;
 
-  /// No description provided for @languageFrench.
+  /// French
   ///
   /// In en, this message translates to:
   /// **'Français'**
   String get languageFrench;
 
-  /// No description provided for @languagePortuguese.
+  /// Portuguese
   ///
   /// In en, this message translates to:
   /// **'Português'**
   String get languagePortuguese;
 
-  /// No description provided for @languageGerman.
+  /// German
   ///
   /// In en, this message translates to:
   /// **'Deutsch'**
   String get languageGerman;
 
-  /// No description provided for @settingsTitle.
+  /// Title for settings page
   ///
   /// In en, this message translates to:
   /// **'Settings'**
   String get settingsTitle;
 
-  /// No description provided for @darkMode.
+  /// Option for dark mode
   ///
   /// In en, this message translates to:
   /// **'Dark Mode'**
   String get darkMode;
 
-  /// No description provided for @lightMode.
+  /// Option for light mode
   ///
   /// In en, this message translates to:
   /// **'Light Mode'**
   String get lightMode;
 
-  /// No description provided for @premiumUnlockTitle.
+  /// Title for premium unlock screen
   ///
   /// In en, this message translates to:
   /// **'Unlock Premium Insights'**
   String get premiumUnlockTitle;
 
-  /// No description provided for @premiumUnlockMessage.
+  /// Marketing message for premium features
   ///
   /// In en, this message translates to:
   /// **'Get access to advanced forecasts, emotional trends, and expert tips.'**
   String get premiumUnlockMessage;
 
-  /// No description provided for @premiumUnlockButton.
+  /// Button to unlock premium
   ///
   /// In en, this message translates to:
   /// **'Unlock Now'**
   String get premiumUnlockButton;
 
-  /// No description provided for @premiumDisclaimer.
+  /// Disclaimer for premium subscription
   ///
   /// In en, this message translates to:
   /// **'You can cancel anytime. No hidden fees.'**
   String get premiumDisclaimer;
 
-  /// No description provided for @upgradeToPremium.
+  /// Button text for premium upgrade
   ///
   /// In en, this message translates to:
   /// **'Upgrade to Finqly Plus'**
   String get upgradeToPremium;
 
-  /// No description provided for @unlockInsights.
+  /// Button to unlock deeper premium insights
   ///
   /// In en, this message translates to:
   /// **'💡 Unlock deeper insights'**
   String get unlockInsights;
 
-  /// No description provided for @premiumFeature1.
+  /// Premium feature 1
   ///
   /// In en, this message translates to:
   /// **'Advanced forecasts with emotion data.'**
   String get premiumFeature1;
 
-  /// No description provided for @premiumFeature2.
+  /// Premium feature 2
   ///
   /// In en, this message translates to:
   /// **'Track emotional trends over time.'**
   String get premiumFeature2;
 
-  /// No description provided for @premiumFeature3.
+  /// Premium feature 3
   ///
   /// In en, this message translates to:
   /// **'Get expert investing tips.'**
   String get premiumFeature3;
 
-  /// No description provided for @premiumUnlockSuccess.
+  /// Success message for unlocking premium
   ///
   /// In en, this message translates to:
   /// **'Premium unlocked successfully!'**
   String get premiumUnlockSuccess;
 
-  /// No description provided for @premiumUnlockError.
+  /// Error message for premium unlock
   ///
   /// In en, this message translates to:
   /// **'Something went wrong. Please try again.'**
   String get premiumUnlockError;
 
-  /// No description provided for @emotionHistoryTitle.
+  /// Title for emotion history page
   ///
   /// In en, this message translates to:
   /// **'Emotion History'**
   String get emotionHistoryTitle;
 
-  /// No description provided for @emotionHistoryEmpty.
+  /// Message shown when there is no emotion history
   ///
   /// In en, this message translates to:
   /// **'No history found.'**
   String get emotionHistoryEmpty;
 
-  /// No description provided for @educationTitle.
+  /// Title for financial education section
   ///
   /// In en, this message translates to:
   /// **'Financial Education'**
   String get educationTitle;
 
-  /// No description provided for @other.
+  /// Other category
   ///
   /// In en, this message translates to:
   /// **'Other'**
@@ -461,13 +461,13 @@ abstract class AppLocalizations {
   /// **'Premium unlocks all trend, chart, and pro tips features.'**
   String get premiumFeatureExplain;
 
-  /// No description provided for @noTrendData.
+  /// Message shown when no trend data is available
   ///
   /// In en, this message translates to:
   /// **'No trend data available.'**
   String get noTrendData;
 
-  /// No description provided for @trendForecastDescription.
+  /// Description text below the trend chart
   ///
   /// In en, this message translates to:
   /// **'Your recent emotional trend is visualized below.'**

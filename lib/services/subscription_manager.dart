@@ -1,21 +1,28 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:flutter/foundation.dart';
 
 class SubscriptionManager {
   static const _subscriptionKey = 'isSubscribed';
-  static const _productId = 'finqly_plus_subscription'; // ← Play Consoleで設定したID
-  bool isSubscribed = false;
+  static const _productId = 'finqly_plus_subscription';
+
+  /// ← ここがValueNotifier
+  final ValueNotifier<bool> isSubscribedNotifier = ValueNotifier(false);
+
+  // getter（古いisSubscribedもラップ）
+  bool get isSubscribed => isSubscribedNotifier.value;
 
   Future<void> init() async {
     final prefs = await SharedPreferences.getInstance();
-    isSubscribed = prefs.getBool(_subscriptionKey) ?? false;
-    // 起動時にGoogleの購読状況もチェック（本番用API呼び出しは省略例）
-    // await refreshSubscriptionStatus(); // ←課金サーバーも参照するなら有効化
+    final value = prefs.getBool(_subscriptionKey) ?? false;
+    isSubscribedNotifier.value = value;
   }
 
   Future<bool> checkSubscription() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_subscriptionKey) ?? false;
+    final value = prefs.getBool(_subscriptionKey) ?? false;
+    isSubscribedNotifier.value = value; // ← ここも反映
+    return value;
   }
 
   Future<void> buyPremium() async {
@@ -25,11 +32,8 @@ class SubscriptionManager {
     final purchaseParam = PurchaseParam(productDetails: await _getProductDetails());
     final result = await InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam);
 
-    // ここで実購入フロー後の判定
-    // 簡易ロジック: 購入履歴などを購読
-    // 本番では「purchaseUpdatedStream」などで検証が必要
-
-    // 仮に成功とする場合（本番はトークン検証など実装）
+    // 本番は purchaseUpdatedStream で検証推奨
+    // 仮：成功したら即反映
     await _setPremium(true);
   }
 
@@ -42,12 +46,12 @@ class SubscriptionManager {
   Future<void> _setPremium(bool value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_subscriptionKey, value);
-    isSubscribed = value;
+    isSubscribedNotifier.value = value; // ← ここが超重要！
   }
 
   Future<void> refreshSubscriptionStatus() async {
-    // 本番では「Google課金サーバー」or「ローカル（SharedPreferences）」両方で判定推奨
     final prefs = await SharedPreferences.getInstance();
-    isSubscribed = prefs.getBool(_subscriptionKey) ?? false;
+    final value = prefs.getBool(_subscriptionKey) ?? false;
+    isSubscribedNotifier.value = value;
   }
 }

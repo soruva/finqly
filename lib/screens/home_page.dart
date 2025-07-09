@@ -104,6 +104,7 @@ class MyHomePage extends StatelessWidget {
                       );
                     },
                   ),
+                  // ⭐ プレミアム判定はValueListenableBuilderで即時反映
                   _premiumTrendButton(context, loc),
                   _homeButton(
                     context,
@@ -172,31 +173,35 @@ class MyHomePage extends StatelessWidget {
 
   // プレミアム限定のトレンドグラフボタン
   Widget _premiumTrendButton(BuildContext context, AppLocalizations loc) {
-    final isPremium = subscriptionManager.isSubscribed;
-    return _homeButton(
-      context,
-      icon: Icons.show_chart,
-      label: loc.trendForecastTitle,
-      onTap: isPremium
-          ? () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => TrendPage(subscriptionManager: subscriptionManager),
-                ),
-              );
-            }
-          : () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => PremiumUnlockPage(
-                    subscriptionManager: subscriptionManager,
-                  ),
-                ),
-              );
-            },
-      isPremium: isPremium,
+    return ValueListenableBuilder<bool>(
+      valueListenable: subscriptionManager.isSubscribedNotifier,
+      builder: (context, isPremium, child) {
+        return _homeButton(
+          context,
+          icon: Icons.show_chart,
+          label: loc.trendForecastTitle,
+          onTap: isPremium
+              ? () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => TrendPage(subscriptionManager: subscriptionManager),
+                    ),
+                  );
+                }
+              : () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => PremiumUnlockPage(
+                        subscriptionManager: subscriptionManager,
+                      ),
+                    ),
+                  );
+                },
+          isPremium: isPremium,
+        );
+      },
     );
   }
 
