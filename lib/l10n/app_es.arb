@@ -82,14 +82,12 @@
   "investmentTips4": "Mantente informado, pero evita vender por pánico.",
   "investmentTips5": "Invertir es un viaje a largo plazo, no una carrera corta.",
 
-  // ---▼ 追加: Educationページの多言語対応キー ▼---
   "tapToFlip": "Toca para voltear",
   "investmentTipsExplanation1": "¡La diversificación es la regla de oro de los inversores exitosos!",
   "investmentTipsExplanation2": "No te dejes llevar por las emociones a corto plazo, piensa a largo plazo.",
   "investmentTipsExplanation3": "Conocer tu tolerancia al riesgo te ayudará a evitar errores.",
   "investmentTipsExplanation4": "Estar informado es importante. ¡Pero evita vender en pánico!",
   "investmentTipsExplanation5": "Invertir a largo plazo es lo que construye el futuro.",
-  // ---------------------------------------------
 
   "reportForecast": "Pronóstico semanal: {trend}",
   "@reportForecast": {

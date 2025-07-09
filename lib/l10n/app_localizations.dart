@@ -245,6 +245,42 @@ abstract class AppLocalizations {
   /// **'Investing is a long-term journey — not a sprint.'**
   String get investmentTips5;
 
+  /// No description provided for @tapToFlip.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to flip'**
+  String get tapToFlip;
+
+  /// No description provided for @investmentTipsExplanation1.
+  ///
+  /// In en, this message translates to:
+  /// **'Diversification is the golden rule!'**
+  String get investmentTipsExplanation1;
+
+  /// No description provided for @investmentTipsExplanation2.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay focused on the long term, not short-term feelings.'**
+  String get investmentTipsExplanation2;
+
+  /// No description provided for @investmentTipsExplanation3.
+  ///
+  /// In en, this message translates to:
+  /// **'Knowing your risk tolerance reduces mistakes.'**
+  String get investmentTipsExplanation3;
+
+  /// No description provided for @investmentTipsExplanation4.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay informed. Avoid panic selling!'**
+  String get investmentTipsExplanation4;
+
+  /// No description provided for @investmentTipsExplanation5.
+  ///
+  /// In en, this message translates to:
+  /// **'Consistency builds your financial future.'**
+  String get investmentTipsExplanation5;
+
   /// No description provided for @forecastTitle.
   ///
   /// In en, this message translates to:

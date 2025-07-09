@@ -81,6 +81,24 @@ class AppLocalizationsEs extends AppLocalizations {
   String get investmentTips5 => 'Invertir es un viaje a largo plazo, no una carrera corta.';
 
   @override
+  String get tapToFlip => 'Toca para voltear';
+
+  @override
+  String get investmentTipsExplanation1 => '¡La diversificación es la regla de oro de los inversores exitosos!';
+
+  @override
+  String get investmentTipsExplanation2 => 'No te dejes llevar por las emociones a corto plazo, piensa a largo plazo.';
+
+  @override
+  String get investmentTipsExplanation3 => 'Conocer tu tolerancia al riesgo te ayudará a evitar errores.';
+
+  @override
+  String get investmentTipsExplanation4 => 'Estar informado es importante. ¡Pero evita vender en pánico!';
+
+  @override
+  String get investmentTipsExplanation5 => 'Invertir a largo plazo es lo que construye el futuro.';
+
+  @override
   String get forecastTitle => 'Tu pronóstico de inversión';
 
   @override

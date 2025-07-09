@@ -81,6 +81,24 @@ class AppLocalizationsDe extends AppLocalizations {
   String get investmentTips5 => 'Investieren ist eine langfristige Reise – kein Sprint.';
 
   @override
+  String get tapToFlip => 'Zum Umdrehen tippen';
+
+  @override
+  String get investmentTipsExplanation1 => 'Diversifikation ist das oberste Gebot erfolgreicher Investoren!';
+
+  @override
+  String get investmentTipsExplanation2 => 'Lassen Sie sich nicht von kurzfristigen Gefühlen leiten – denken Sie langfristig.';
+
+  @override
+  String get investmentTipsExplanation3 => 'Wer seine Risikobereitschaft kennt, macht weniger Fehler.';
+
+  @override
+  String get investmentTipsExplanation4 => 'Information ist wichtig, aber Panikverkäufe vermeiden!';
+
+  @override
+  String get investmentTipsExplanation5 => 'Durchhalten zahlt sich für Ihre Zukunft aus.';
+
+  @override
   String get forecastTitle => 'Ihre Investitionsprognose';
 
   @override

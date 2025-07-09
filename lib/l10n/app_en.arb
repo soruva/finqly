@@ -29,15 +29,13 @@
   "investmentTips3": "Understand your risk tolerance before investing.",
   "investmentTips4": "Stay informed but avoid panic-selling.",
   "investmentTips5": "Investing is a long-term journey — not a sprint.",
-
-  // ====== ▼ NEW: EXPLANATION/TAP TO FLIP ▼ ======
+  
   "tapToFlip": "Tap to flip",
   "investmentTipsExplanation1": "Diversification is the golden rule!",
   "investmentTipsExplanation2": "Stay focused on the long term, not short-term feelings.",
   "investmentTipsExplanation3": "Knowing your risk tolerance reduces mistakes.",
   "investmentTipsExplanation4": "Stay informed. Avoid panic selling!",
   "investmentTipsExplanation5": "Consistency builds your financial future.",
-  // =============================================
 
   "forecastTitle": "Your Investment Forecast",
   "forecastMessage": "Based on your mindset and history, you're expected to grow by {percent} this month.",

@@ -81,6 +81,24 @@ class AppLocalizationsFr extends AppLocalizations {
   String get investmentTips5 => 'Investir est un voyage à long terme — pas un sprint.';
 
   @override
+  String get tapToFlip => 'Tap to flip';
+
+  @override
+  String get investmentTipsExplanation1 => 'Diversification is the golden rule!';
+
+  @override
+  String get investmentTipsExplanation2 => 'Stay focused on the long term, not short-term feelings.';
+
+  @override
+  String get investmentTipsExplanation3 => 'Knowing your risk tolerance reduces mistakes.';
+
+  @override
+  String get investmentTipsExplanation4 => 'Stay informed. Avoid panic selling!';
+
+  @override
+  String get investmentTipsExplanation5 => 'Consistency builds your financial future.';
+
+  @override
   String get forecastTitle => 'Prévisions d\'investissement';
 
   @override
