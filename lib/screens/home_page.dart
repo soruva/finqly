@@ -28,124 +28,141 @@ class MyHomePage extends StatelessWidget {
     final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
-      body: Center(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // アプリ名だけ大きく中央表示
-                Text(
-                  loc.appTitle,
-                  style: TextStyle(
-                    fontFamily: 'Nunito',
-                    fontSize: 32,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 2.0,
-                    color: AppColors.primary,
+      // グラデーション背景
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF8267BE), Color(0xFF47C6E6)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 44, horizontal: 18),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // アプリ名中央（ロゴなし／フォントを目立たせる）
+                  Text(
+                    loc.appTitle,
+                    style: const TextStyle(
+                      fontFamily: 'Nunito',
+                      fontSize: 34,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 2.0,
+                      color: Colors.white,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black26,
+                          blurRadius: 7,
+                          offset: Offset(1, 2),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  "Emotion & Investing",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.accentPurple.withOpacity(0.95),
-                    fontSize: 16,
-                    letterSpacing: 0.5,
+                  const SizedBox(height: 10),
+                  Text(
+                    "Emotion & Investing",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white.withOpacity(0.87),
+                      fontSize: 16,
+                      letterSpacing: 0.7,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 40),
-                _homeButton(
-                  context,
-                  icon: Icons.flash_on,
-                  label: loc.startButton,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => DiagnosisPage(
-                          subscriptionManager: subscriptionManager,
+                  const SizedBox(height: 40),
+                  // ホームメニュー (美しい角丸・全て中央揃え・横幅均一)
+                  _homeButton(
+                    context,
+                    icon: Icons.flash_on,
+                    label: loc.startButton,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => DiagnosisPage(
+                            subscriptionManager: subscriptionManager,
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-                _homeButton(
-                  context,
-                  icon: Icons.trending_up,
-                  label: loc.forecastTitle,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => ForecastPage(
-                          subscriptionManager: subscriptionManager,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                _premiumTrendButton(context, loc),
-                _homeButton(
-                  context,
-                  icon: Icons.workspace_premium,
-                  label: loc.premiumUnlockTitle,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => PremiumUnlockPage(
-                          subscriptionManager: subscriptionManager,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                _homeButton(
-                  context,
-                  icon: Icons.menu_book,
-                  label: loc.educationTitle,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => EducationPage(
-                          subscriptionManager: subscriptionManager,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                _homeButton(
-                  context,
-                  icon: Icons.settings,
-                  label: loc.settingsTitle,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => SettingsPage(
-                          subscriptionManager: subscriptionManager,
-                          currentLocale: currentLocale,
-                          onLocaleChanged: onLocaleChanged,
-                          onThemeChanged: onThemeChanged,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 40),
-                Text(
-                  "© SoruvaLab",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey.withOpacity(0.55),
+                      );
+                    },
                   ),
-                ),
-              ],
+                  _homeButton(
+                    context,
+                    icon: Icons.trending_up,
+                    label: loc.forecastTitle,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ForecastPage(
+                            subscriptionManager: subscriptionManager,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  _premiumTrendButton(context, loc),
+                  _homeButton(
+                    context,
+                    icon: Icons.workspace_premium,
+                    label: loc.premiumUnlockTitle,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => PremiumUnlockPage(
+                            subscriptionManager: subscriptionManager,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  _homeButton(
+                    context,
+                    icon: Icons.menu_book,
+                    label: loc.educationTitle,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => EducationPage(
+                            subscriptionManager: subscriptionManager,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  _homeButton(
+                    context,
+                    icon: Icons.settings,
+                    label: loc.settingsTitle,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => SettingsPage(
+                            subscriptionManager: subscriptionManager,
+                            currentLocale: currentLocale,
+                            onLocaleChanged: onLocaleChanged,
+                            onThemeChanged: onThemeChanged,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 36),
+                  Text(
+                    "© SoruvaLab",
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.white.withOpacity(0.55),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -183,38 +200,47 @@ class MyHomePage extends StatelessWidget {
     );
   }
 
-  // 共通ホームボタン（角丸・高さ揃え・カラー美化）
-  Widget _homeButton(BuildContext context,
-      {required IconData icon,
-      required String label,
-      required VoidCallback onTap,
-      bool isPremium = false}) {
+  // 美しい共通ホームボタン
+  Widget _homeButton(
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+    bool isPremium = false,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 4),
       child: SizedBox(
-        width: 290,
-        height: 60,
+        width: 295,
+        height: 62,
         child: ElevatedButton.icon(
-          icon: Icon(icon, size: 26),
-          label: Text(label),
+          icon: Icon(icon, size: 28, color: isPremium ? Colors.deepPurple : AppColors.primary),
+          label: Center(
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              maxLines: 2, // 2行でも中央寄せ
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.2,
+                color: isPremium ? Colors.deepPurple : AppColors.primary,
+              ),
+            ),
+          ),
           onPressed: onTap,
           style: ElevatedButton.styleFrom(
             backgroundColor: isPremium
-                ? AppColors.accentPurple.withOpacity(0.13)
-                : Colors.white,
-            foregroundColor: isPremium
-                ? AppColors.accentPurple
-                : AppColors.primary,
-            textStyle: const TextStyle(
-              fontSize: 19,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0.4,
-            ),
+                ? Colors.white.withOpacity(0.85)
+                : Colors.white.withOpacity(0.93),
+            foregroundColor: isPremium ? Colors.deepPurple : AppColors.primary,
+            shadowColor: Colors.black.withOpacity(0.09),
+            elevation: 5,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(21),
             ),
-            elevation: isPremium ? 4 : 2,
-            shadowColor: Colors.purpleAccent.withOpacity(0.07),
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
           ),
         ),
       ),
