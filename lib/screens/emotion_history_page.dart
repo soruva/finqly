@@ -1,159 +1,133 @@
 import 'package:flutter/material.dart';
+import 'package:finqly/theme/colors.dart';
 import 'package:finqly/l10n/app_localizations.dart';
 import 'package:finqly/screens/premium_unlock_page.dart';
 import 'package:finqly/services/subscription_manager.dart';
-import 'dart:math';
 
 class EducationPage extends StatefulWidget {
   final SubscriptionManager subscriptionManager;
-
   const EducationPage({super.key, required this.subscriptionManager});
 
   @override
   State<EducationPage> createState() => _EducationPageState();
 }
 
-class _EducationPageState extends State<EducationPage> with TickerProviderStateMixin {
-  late TabController _tabController;
-  int selectedTab = 0;
-  bool isPremium = false;
+class _EducationPageState extends State<EducationPage> {
+  List<bool> isFlipped = [];
+
+  final List<String> _basicTips = [
+    'investmentTips1',
+    'investmentTips2',
+    'investmentTips3',
+  ];
+
+  final List<String> _proTips = [
+    'investmentTips1',
+    'investmentTips2',
+    'investmentTips3',
+    'investmentTips4',
+    'investmentTips5',
+  ];
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this, initialIndex: selectedTab);
-    _tabController.addListener(() {
-      if (_tabController.index != selectedTab) {
-        setState(() => selectedTab = _tabController.index);
-      }
-    });
-    isPremium = widget.subscriptionManager.isSubscribed;
-  }
-
-  List<Map<String, String>> _getBeginnerTips(AppLocalizations loc) {
-    return [
-      {'icon': '📈', 'text': loc.investmentTips1},
-      {'icon': '💡', 'text': loc.investmentTips2},
-      {'icon': '📊', 'text': loc.investmentTips3},
-    ]..shuffle(Random());
-  }
-
-  List<Map<String, String>> _getProTips(AppLocalizations loc) {
-    return [
-      {'icon': '🚀', 'text': loc.investmentTips4},
-      {'icon': '💰', 'text': loc.investmentTips5},
-    ]..shuffle(Random());
+    isFlipped = List.filled(_proTips.length, false); // 最大数に合わせておく
   }
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-    final beginnerTips = _getBeginnerTips(loc);
-    final proTips = _getProTips(loc);
 
-    final currentTips = selectedTab == 0 ? beginnerTips : proTips;
+    return ValueListenableBuilder<bool>(
+      valueListenable: widget.subscriptionManager.isSubscribedNotifier,
+      builder: (context, isPremium, _) {
+        final tipsKeys = isPremium ? _proTips : _basicTips;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(loc.investmentTipsTitle),
-        centerTitle: true,
-        bottom: TabBar(
-          indicatorColor: Colors.white,
-          controller: _tabController,
-          tabs: const [
-            Tab(text: 'Beginner'),
-            Tab(text: 'Pro'),
-          ],
-        ),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: selectedTab == 0
-                ? _buildTipsList(currentTips)
-                : isPremium
-                    ? _buildTipsList(currentTips)
-                    : _buildLockedProTab(loc),
+        // isFlippedリストの長さ調整
+        if (isFlipped.length != tipsKeys.length) {
+          isFlipped = List.filled(tipsKeys.length, false);
+        }
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(loc.investmentTipsTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
+            centerTitle: true,
+            backgroundColor: AppColors.primary,
+            foregroundColor: Colors.white,
+            elevation: 0,
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-            child: Text(
-              '⚠️ This content is for general financial education only.\nNo investment advice is provided.',
-              style: TextStyle(
-                fontSize: 13,
-                color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
-                fontWeight: FontWeight.w500,
+          body: Container(
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFFF4F6FA), Color(0xFFE8DFFC), Color(0xFFB7E3F8)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
-              textAlign: TextAlign.center,
             ),
-          ),
-          if (!isPremium)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.lock_open),
-                label: const Text('Unlock More Tips'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                Expanded(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    itemCount: tipsKeys.length,
+                    itemBuilder: (context, index) {
+                      final key = tipsKeys[index];
+                      final tip = _getTipByKey(loc, key);
+
+                      return AnimatedContainer(
+                        duration: const Duration(milliseconds: 500),
+                        curve: Curves.easeOut,
+                        margin: const EdgeInsets.symmetric(vertical: 12),
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              isFlipped[index] = !isFlipped[index];
+                            });
+                          },
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 350),
+                            transitionBuilder: (child, animation) =>
+                                ScaleTransition(scale: animation, child: child),
+                            child: isFlipped[index]
+                                ? _buildTipCardBack(loc, index)
+                                : _buildTipCardFront(tip, index),
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => PremiumUnlockPage(
-                        subscriptionManager: widget.subscriptionManager,
+                if (!isPremium) ...[
+                  const SizedBox(height: 10),
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.lock_open),
+                    label: Text(loc.unlockInsights),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                      backgroundColor: AppColors.accentPurple,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
                       ),
+                      elevation: 2,
                     ),
-                  );
-                },
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTipsList(List<Map<String, String>> tips) {
-    return ListView.separated(
-      padding: const EdgeInsets.all(24),
-      itemCount: tips.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 16),
-      itemBuilder: (context, index) {
-        final tip = tips[index];
-        return TweenAnimationBuilder<double>(
-          tween: Tween(begin: 0, end: 1),
-          duration: Duration(milliseconds: 400 + index * 150),
-          builder: (context, value, child) {
-            return Opacity(
-              opacity: value,
-              child: Transform.translate(
-                offset: Offset(0, (1 - value) * 20),
-                child: child,
-              ),
-            );
-          },
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
-              borderRadius: BorderRadius.circular(18),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 6,
-                  offset: const Offset(0, 2),
-                ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => PremiumUnlockPage(
+                            subscriptionManager: widget.subscriptionManager,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 25),
+                ],
               ],
-            ),
-            child: Text(
-              '${tip['icon']}  ${tip['text']}',
-              style: const TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w600,
-              ),
             ),
           ),
         );
@@ -161,35 +135,88 @@ class _EducationPageState extends State<EducationPage> with TickerProviderStateM
     );
   }
 
-  Widget _buildLockedProTab(AppLocalizations loc) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.lock_outline, size: 54, color: Colors.grey),
-          const SizedBox(height: 18),
-          Text(
-            loc.premiumPrompt,
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 16),
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton.icon(
-            icon: const Icon(Icons.lock_open),
-            label: Text(loc.unlockInsights),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => PremiumUnlockPage(
-                    subscriptionManager: widget.subscriptionManager,
-                  ),
-                ),
-              );
-            },
-          ),
-        ],
+  // 表面：Tips
+  Widget _buildTipCardFront(String tip, int idx) {
+    return Card(
+      key: ValueKey('front$idx'),
+      color: AppColors.primary.withOpacity(0.85),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 32),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              tip,
+              style: const TextStyle(
+                fontSize: 18,
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+                height: 1.4,
+                shadows: [
+                  Shadow(color: Colors.black26, blurRadius: 2),
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              AppLocalizations.of(context)?.tapToFlip ?? 'Tap to flip',
+              style: const TextStyle(fontSize: 13, color: Colors.white70),
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  // 裏面：解説（多言語arbに記載したものを取得する形を推奨）
+  Widget _buildTipCardBack(AppLocalizations loc, int idx) {
+    final explanations = [
+      loc.investmentTipsExplanation1,
+      loc.investmentTipsExplanation2,
+      loc.investmentTipsExplanation3,
+      loc.investmentTipsExplanation4,
+      loc.investmentTipsExplanation5,
+    ];
+    return Card(
+      key: ValueKey('back$idx'),
+      color: Colors.white.withOpacity(0.97),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+        child: Center(
+          child: Text(
+            explanations[idx % explanations.length],
+            style: TextStyle(
+              fontSize: 17,
+              color: AppColors.primary,
+              fontWeight: FontWeight.w600,
+              height: 1.6,
+              letterSpacing: 0.1,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _getTipByKey(AppLocalizations loc, String key) {
+    switch (key) {
+      case 'investmentTips1':
+        return loc.investmentTips1;
+      case 'investmentTips2':
+        return loc.investmentTips2;
+      case 'investmentTips3':
+        return loc.investmentTips3;
+      case 'investmentTips4':
+        return loc.investmentTips4;
+      case 'investmentTips5':
+        return loc.investmentTips5;
+      default:
+        return '';
+    }
   }
 }
