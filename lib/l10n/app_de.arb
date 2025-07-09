@@ -33,6 +33,15 @@
   "investmentTips4": "Bleiben Sie informiert, aber vermeiden Sie Panikverkäufe.",
   "investmentTips5": "Investieren ist eine langfristige Reise – kein Sprint.",
 
+  // ======= ▼ カード表裏で使うキーを追加 ▼ =======
+  "tapToFlip": "Zum Umdrehen tippen",
+  "investmentTipsExplanation1": "Diversifikation ist das oberste Gebot erfolgreicher Investoren!",
+  "investmentTipsExplanation2": "Lassen Sie sich nicht von kurzfristigen Gefühlen leiten – denken Sie langfristig.",
+  "investmentTipsExplanation3": "Wer seine Risikobereitschaft kennt, macht weniger Fehler.",
+  "investmentTipsExplanation4": "Information ist wichtig, aber Panikverkäufe vermeiden!",
+  "investmentTipsExplanation5": "Durchhalten zahlt sich für Ihre Zukunft aus.",
+  // ==========================================
+
   "forecastTitle": "Ihre Investitionsprognose",
   "forecastMessage": "Basierend auf Ihrer Einstellung und bisherigen Trends wird ein Wachstum von {percent}% in diesem Monat erwartet.",
   "@forecastMessage": {
