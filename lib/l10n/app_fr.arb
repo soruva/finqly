@@ -2,149 +2,182 @@
   "@@locale": "fr",
 
   "appTitle": "Finqly",
+  "@appTitle": { "description": "Titre principal de l'application" },
 
   "emotionPrompt": "Comment vous sentez-vous aujourd'hui à propos de vos finances ?",
+  "@emotionPrompt": { "description": "Question principale sur l'écran d'accueil" },
+
   "startButton": "Commencer maintenant",
+  "@startButton": { "description": "Bouton pour démarrer le diagnostic" },
 
   "diagnosisTitle": "Diagnostic",
+  "@diagnosisTitle": { "description": "Titre de la page de diagnostic" },
+
   "diagnosisQuestion": "Comment vous sentez-vous par rapport au marché en ce moment ?",
+  "@diagnosisQuestion": { "description": "Question sur le sentiment du marché" },
 
   "optionOptimistic": "Optimiste",
+  "@optionOptimistic": { "description": "Option émotionnelle : optimiste" },
+
   "optionNeutral": "Neutre",
+  "@optionNeutral": { "description": "Option émotionnelle : neutre" },
+
   "optionWorried": "Inquiet",
+  "@optionWorried": { "description": "Option émotionnelle : inquiet" },
+
   "optionConfused": "Confus",
+  "@optionConfused": { "description": "Option émotionnelle : confus" },
+
   "optionExcited": "Excité",
+  "@optionExcited": { "description": "Option émotionnelle : excité" },
+
   "optionCautious": "Prudent",
+  "@optionCautious": { "description": "Option émotionnelle : prudent" },
 
   "badgeOptimistic": "Vous êtes optimiste concernant le marché !",
+  "@badgeOptimistic": { "description": "Message badge : optimiste" },
+
   "badgeNeutral": "Vous vous sentez neutre aujourd'hui.",
+  "@badgeNeutral": { "description": "Message badge : neutre" },
+
   "badgeWorried": "Vous êtes inquiet pour vos investissements.",
+  "@badgeWorried": { "description": "Message badge : inquiet" },
+
   "badgeConfused": "Vous vous sentez incertain ou confus.",
+  "@badgeConfused": { "description": "Message badge : confus" },
+
   "badgeExcited": "Vous êtes plein d'énergie et prêt !",
+  "@badgeExcited": { "description": "Message badge : excité" },
+
   "badgeCautious": "Vous abordez le marché avec prudence.",
+  "@badgeCautious": { "description": "Message badge : prudent" },
 
   "badgeLabel": "Votre état actuel : {emotion}",
   "@badgeLabel": {
     "description": "Étiquette indiquant le type d'émotion diagnostiquée",
-    "placeholders": {
-      "emotion": {}
-    }
+    "placeholders": { "emotion": {} }
   },
 
   "investmentTipsTitle": "Conseils d'investissement",
-  "@investmentTipsTitle": {
-    "description": "Titre de la page des conseils d'investissement"
-  },
+  "@investmentTipsTitle": { "description": "Titre de la page des conseils d'investissement" },
+
   "investmentTips1": "Diversifiez vos investissements pour réduire les risques.",
+  "@investmentTips1": { "description": "Conseil 1 : diversification" },
+
   "investmentTips2": "Ne laissez pas les émotions à court terme influencer vos décisions à long terme.",
+  "@investmentTips2": { "description": "Conseil 2 : émotions court terme" },
+
   "investmentTips3": "Comprenez votre tolérance au risque avant d'investir.",
+  "@investmentTips3": { "description": "Conseil 3 : tolérance au risque" },
+
   "investmentTips4": "Restez informé, mais évitez de vendre dans la panique.",
+  "@investmentTips4": { "description": "Conseil 4 : éviter les ventes panique" },
+
   "investmentTips5": "Investir est un voyage à long terme — pas un sprint.",
+  "@investmentTips5": { "description": "Conseil 5 : investissement long terme" },
 
   "forecastTitle": "Prévisions d'investissement",
-  "@forecastTitle": {
-    "description": "Titre de la page de prévision"
-  },
+  "@forecastTitle": { "description": "Titre de la page de prévision" },
 
   "forecastMessage": "Selon votre état d'esprit et votre historique, vous devriez croître de {percent}% ce mois-ci.",
   "@forecastMessage": {
     "description": "Message indiquant la prévision de croissance basée sur l'émotion et l'historique",
-    "placeholders": {
-      "percent": {}
-    }
+    "placeholders": { "percent": {} }
   },
 
   "reportForecast": "Prévision hebdomadaire : {trend}",
   "@reportForecast": {
     "description": "Texte indiquant la tendance prévue pour la semaine",
-    "placeholders": {
-      "trend": {}
-    }
+    "placeholders": { "trend": {} }
   },
 
   "premiumPrompt": "Vous êtes sur le point de débloquer des informations encore meilleures.",
+  "@premiumPrompt": { "description": "Message d'incitation à passer Premium" },
+
   "premiumCTA": "Obtenir les prévisions Premium",
+  "@premiumCTA": { "description": "Bouton pour obtenir les prévisions premium" },
 
   "language": "Langue",
+  "@language": { "description": "Libellé du paramètre de langue" },
+
   "languageEnglish": "Anglais",
+  "@languageEnglish": { "description": "Anglais" },
+
   "languageSpanish": "Espagnol",
+  "@languageSpanish": { "description": "Espagnol" },
+
   "languageFrench": "Français",
+  "@languageFrench": { "description": "Français" },
+
   "languagePortuguese": "Portugais",
+  "@languagePortuguese": { "description": "Portugais" },
+
   "languageGerman": "Allemand",
+  "@languageGerman": { "description": "Allemand" },
+
   "settingsTitle": "Paramètres",
+  "@settingsTitle": { "description": "Titre des paramètres" },
+
   "darkMode": "Mode sombre",
+  "@darkMode": { "description": "Option pour le mode sombre" },
+
   "lightMode": "Mode clair",
+  "@lightMode": { "description": "Option pour le mode clair" },
 
   "premiumUnlockTitle": "Débloquez des informations Premium",
-  "@premiumUnlockTitle": {
-    "description": "Titre de l'écran pour activer les fonctionnalités premium"
-  },
+  "@premiumUnlockTitle": { "description": "Titre de l'écran pour activer les fonctionnalités premium" },
 
   "premiumUnlockMessage": "Accédez à des prévisions avancées, des tendances émotionnelles et des conseils d'experts.",
-  "@premiumUnlockMessage": {
-    "description": "Texte marketing pour mettre en valeur les avantages premium"
-  },
+  "@premiumUnlockMessage": { "description": "Texte marketing pour mettre en valeur les avantages premium" },
 
   "premiumUnlockButton": "Débloquer maintenant",
-  "@premiumUnlockButton": {
-    "description": "Bouton pour activer l'abonnement premium"
-  },
+  "@premiumUnlockButton": { "description": "Bouton pour activer l'abonnement premium" },
 
   "premiumDisclaimer": "Vous pouvez annuler à tout moment. Aucun frais caché.",
-  "@premiumDisclaimer": {
-    "description": "Message rassurant pour l'utilisateur"
-  },
+  "@premiumDisclaimer": { "description": "Message rassurant pour l'utilisateur" },
 
   "upgradeToPremium": "Passez à Finqly Plus",
-  "@upgradeToPremium": {
-    "description": "Texte du bouton pour accéder à la page premium"
-  },
+  "@upgradeToPremium": { "description": "Texte du bouton pour accéder à la page premium" },
 
   "unlockInsights": "💡 Débloquez des connaissances plus approfondies",
-  "@unlockInsights": {
-    "description": "Texte du bouton incitant à débloquer les fonctionnalités premium depuis l’écran de résultats"
-  },
+  "@unlockInsights": { "description": "Texte du bouton incitant à débloquer les fonctionnalités premium depuis l’écran de résultats" },
 
   "premiumFeature1": "Prévisions avancées basées sur les émotions.",
+  "@premiumFeature1": { "description": "Fonctionnalité premium 1" },
+
   "premiumFeature2": "Suivez l’évolution de vos émotions dans le temps.",
+  "@premiumFeature2": { "description": "Fonctionnalité premium 2" },
+
   "premiumFeature3": "Recevez des conseils d'experts en investissement.",
+  "@premiumFeature3": { "description": "Fonctionnalité premium 3" },
 
   "premiumUnlockSuccess": "Premium débloqué avec succès !",
+  "@premiumUnlockSuccess": { "description": "Message de succès pour le déblocage premium" },
+
   "premiumUnlockError": "Une erreur s'est produite. Veuillez réessayer.",
+  "@premiumUnlockError": { "description": "Message d'erreur pour le déblocage premium" },
 
   "emotionHistoryTitle": "Historique des émotions",
-  "@emotionHistoryTitle": {
-    "description": "Titre de la page d'historique émotionnel"
-  },
+  "@emotionHistoryTitle": { "description": "Titre de la page d'historique émotionnel" },
 
   "emotionHistoryEmpty": "Aucun historique trouvé.",
-  "@emotionHistoryEmpty": {
-    "description": "Message affiché lorsqu'aucune donnée n'est disponible"
-  },
+  "@emotionHistoryEmpty": { "description": "Message affiché lorsqu'aucune donnée n'est disponible" },
 
   "educationTitle": "Éducation financière",
-  "@educationTitle": {
-    "description": "Titre de la section éducative ou de conseils"
-  },
+  "@educationTitle": { "description": "Titre de la section éducative ou de conseils" },
 
   "other": "Autres",
+  "@other": { "description": "Catégorie 'Autres'" },
 
   "trendForecastTitle": "Graphique de tendance émotionnelle",
-  "@trendForecastTitle": {
-    "description": "Titre du graphique des tendances émotionnelles"
-  },
+  "@trendForecastTitle": { "description": "Titre du graphique des tendances émotionnelles" },
 
   "premiumFeatureExplain": "Débloquez cette fonctionnalité Premium pour accéder à du contenu exclusif.",
-  "@premiumFeatureExplain": {
-    "description": "Brève explication des avantages Premium"
-  },
+  "@premiumFeatureExplain": { "description": "Brève explication des avantages Premium" },
 
   "noTrendData": "Aucune donnée de tendance disponible.",
-  "@noTrendData": {
-    "description": "Message affiché lorsqu'il n'y a pas de données de tendance"
-  },
+  "@noTrendData": { "description": "Message affiché lorsqu'il n'y a pas de données de tendance" },
+
   "trendForecastDescription": "Votre tendance émotionnelle récente est visualisée ci-dessous.",
-  "@trendForecastDescription": {
-    "description": "Texte explicatif sous le graphique de tendance"
-  }      
+  "@trendForecastDescription": { "description": "Texte explicatif sous le graphique de tendance" }
 }
