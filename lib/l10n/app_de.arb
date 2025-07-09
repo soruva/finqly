@@ -2,86 +2,188 @@
   "@@locale": "de",
 
   "appTitle": "Finqly",
+  "@appTitle": { "description": "Haupttitel der App" },
+
   "emotionPrompt": "Wie fühlen Sie sich heute in Bezug auf Ihre Finanzen?",
+  "@emotionPrompt": { "description": "Hauptfrage auf dem Startbildschirm" },
+
   "startButton": "Jetzt starten",
+  "@startButton": { "description": "Button zum Starten des Diagnoseprozesses" },
 
   "diagnosisTitle": "Diagnose",
+  "@diagnosisTitle": { "description": "Titel der Diagnose-Seite" },
+
   "diagnosisQuestion": "Wie fühlen Sie sich momentan in Bezug auf den Markt?",
-  "diagnosisButton": "Diagnose starten",
+  "@diagnosisQuestion": { "description": "Frage zum aktuellen Marktgefühl" },
 
   "optionOptimistic": "Optimistisch",
+  "@optionOptimistic": { "description": "Emotionsoption: optimistisch" },
+
   "optionNeutral": "Neutral",
+  "@optionNeutral": { "description": "Emotionsoption: neutral" },
+
   "optionWorried": "Besorgt",
+  "@optionWorried": { "description": "Emotionsoption: besorgt" },
+
   "optionConfused": "Verwirrt",
+  "@optionConfused": { "description": "Emotionsoption: verwirrt" },
+
   "optionExcited": "Aufgeregt",
+  "@optionExcited": { "description": "Emotionsoption: aufgeregt" },
+
   "optionCautious": "Vorsichtig",
+  "@optionCautious": { "description": "Emotionsoption: vorsichtig" },
 
   "badgeOptimistic": "Sie sind optimistisch in Bezug auf den Markt!",
+  "@badgeOptimistic": { "description": "Badge-Nachricht: optimistisch" },
+
   "badgeNeutral": "Sie fühlen sich heute neutral.",
+  "@badgeNeutral": { "description": "Badge-Nachricht: neutral" },
+
   "badgeWorried": "Sie machen sich Sorgen um Ihre Investitionen.",
+  "@badgeWorried": { "description": "Badge-Nachricht: besorgt" },
+
   "badgeConfused": "Sie fühlen sich unsicher oder verwirrt.",
+  "@badgeConfused": { "description": "Badge-Nachricht: verwirrt" },
+
   "badgeExcited": "Sie sind voller Energie und bereit!",
+  "@badgeExcited": { "description": "Badge-Nachricht: aufgeregt" },
+
   "badgeCautious": "Sie gehen den Markt mit Vorsicht an.",
+  "@badgeCautious": { "description": "Badge-Nachricht: vorsichtig" },
 
   "investmentTipsTitle": "Anlagetipps",
-  "@investmentTipsTitle": {
-    "description": "Titel der Investitionstipps-Seite"
-  },  
+  "@investmentTipsTitle": { "description": "Titel der Investitionstipps-Seite" },
+
   "investmentTips1": "Diversifizieren Sie Ihre Investitionen, um Risiken zu minimieren.",
+  "@investmentTips1": { "description": "Tipp 1: Diversifikation" },
+
   "investmentTips2": "Lassen Sie sich bei langfristigen Entscheidungen nicht von kurzfristigen Emotionen leiten.",
+  "@investmentTips2": { "description": "Tipp 2: langfristig denken" },
+
   "investmentTips3": "Verstehen Sie Ihre Risikobereitschaft, bevor Sie investieren.",
+  "@investmentTips3": { "description": "Tipp 3: Risikobereitschaft" },
+
   "investmentTips4": "Bleiben Sie informiert, aber vermeiden Sie Panikverkäufe.",
+  "@investmentTips4": { "description": "Tipp 4: Panikverkäufe vermeiden" },
+
   "investmentTips5": "Investieren ist eine langfristige Reise – kein Sprint.",
+  "@investmentTips5": { "description": "Tipp 5: Langzeitperspektive" },
 
   "tapToFlip": "Zum Umdrehen tippen",
+  "@tapToFlip": { "description": "Hinweis zum Flip-Karten" },
+
   "investmentTipsExplanation1": "Diversifikation ist das oberste Gebot erfolgreicher Investoren!",
+  "@investmentTipsExplanation1": { "description": "Erklärung zu Tipp 1" },
+
   "investmentTipsExplanation2": "Lassen Sie sich nicht von kurzfristigen Gefühlen leiten – denken Sie langfristig.",
+  "@investmentTipsExplanation2": { "description": "Erklärung zu Tipp 2" },
+
   "investmentTipsExplanation3": "Wer seine Risikobereitschaft kennt, macht weniger Fehler.",
+  "@investmentTipsExplanation3": { "description": "Erklärung zu Tipp 3" },
+
   "investmentTipsExplanation4": "Information ist wichtig, aber Panikverkäufe vermeiden!",
+  "@investmentTipsExplanation4": { "description": "Erklärung zu Tipp 4" },
+
   "investmentTipsExplanation5": "Durchhalten zahlt sich für Ihre Zukunft aus.",
+  "@investmentTipsExplanation5": { "description": "Erklärung zu Tipp 5" },
 
   "forecastTitle": "Ihre Investitionsprognose",
+  "@forecastTitle": { "description": "Titel der Prognose-Seite" },
+
   "forecastMessage": "Basierend auf Ihrer Einstellung und bisherigen Trends wird ein Wachstum von {percent}% in diesem Monat erwartet.",
   "@forecastMessage": {
     "description": "Prognoseanzeige basierend auf Emotionen und Verlauf",
-    "placeholders": {
-      "percent": {}
-    }
+    "placeholders": { "percent": {} }
   },
 
   "premiumPrompt": "Sie sind kurz davor, noch tiefere Einblicke freizuschalten.",
+  "@premiumPrompt": { "description": "Premium-Upgrade-Prompt" },
+
   "premiumCTA": "Premium-Prognose freischalten",
+  "@premiumCTA": { "description": "Button für Premium-Prognose" },
 
   "language": "Sprache",
+  "@language": { "description": "Spracheinstellung-Label" },
+
   "languageEnglish": "Englisch",
+  "@languageEnglish": { "description": "Englisch" },
+
   "languageSpanish": "Spanisch",
+  "@languageSpanish": { "description": "Spanisch" },
+
   "languageFrench": "Französisch",
+  "@languageFrench": { "description": "Französisch" },
+
   "languagePortuguese": "Portugiesisch",
+  "@languagePortuguese": { "description": "Portugiesisch" },
+
   "languageGerman": "Deutsch",
+  "@languageGerman": { "description": "Deutsch" },
 
   "settingsTitle": "Einstellungen",
+  "@settingsTitle": { "description": "Titel der Einstellungen-Seite" },
+
   "darkMode": "Dunkler Modus",
+  "@darkMode": { "description": "Option für dunklen Modus" },
+
   "lightMode": "Heller Modus",
+  "@lightMode": { "description": "Option für hellen Modus" },
 
   "premiumUnlockTitle": "Premium-Inhalte freischalten",
+  "@premiumUnlockTitle": { "description": "Titel des Premium-Features" },
+
   "premiumUnlockMessage": "Erhalten Sie Zugang zu erweiterten Prognosen, emotionalen Trends und Experten-Tipps.",
+  "@premiumUnlockMessage": { "description": "Marketingtext für Premium" },
+
   "premiumUnlockButton": "Jetzt freischalten",
+  "@premiumUnlockButton": { "description": "Button zum Freischalten von Premium" },
+
   "premiumDisclaimer": "Jederzeit kündbar. Keine versteckten Kosten.",
+  "@premiumDisclaimer": { "description": "Vertrauensbotschaft für Nutzer" },
 
   "upgradeToPremium": "Upgrade auf Finqly Plus",
+  "@upgradeToPremium": { "description": "Buttontext für Premium-Seite" },
+
   "unlockInsights": "💡 Tiefere Einblicke freischalten",
+  "@unlockInsights": { "description": "Button für tiefere Einblicke (Premium)" },
+
   "premiumFeature1": "Erweiterte Prognosen mit Emotionsdaten.",
+  "@premiumFeature1": { "description": "Premium-Feature 1" },
+
   "premiumFeature2": "Emotionale Trends im Zeitverlauf verfolgen.",
+  "@premiumFeature2": { "description": "Premium-Feature 2" },
+
   "premiumFeature3": "Experten-Tipps zur Geldanlage erhalten.",
+  "@premiumFeature3": { "description": "Premium-Feature 3" },
+
   "premiumUnlockSuccess": "Premium erfolgreich freigeschaltet!",
+  "@premiumUnlockSuccess": { "description": "Erfolgsnachricht nach Premium-Freischaltung" },
+
   "premiumUnlockError": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+  "@premiumUnlockError": { "description": "Fehlermeldung bei Premium-Freischaltung" },
 
   "emotionHistoryTitle": "Emotionsverlauf",
+  "@emotionHistoryTitle": { "description": "Titel der Emotionsverlauf-Seite" },
+
   "emotionHistoryEmpty": "Keine Einträge gefunden.",
+  "@emotionHistoryEmpty": { "description": "Hinweis bei fehlender Historie" },
+
   "educationTitle": "Finanzbildung",
+  "@educationTitle": { "description": "Titel des Bildungsbereichs" },
+
   "other": "Andere",
+  "@other": { "description": "Kategorie 'Andere'" },
+
   "trendForecastTitle": "Emotionstrend-Diagramm",
+  "@trendForecastTitle": { "description": "Titel des Trenddiagramms" },
+
   "premiumFeatureExplain": "Schalte diese Funktion mit Premium frei, um exklusive Einblicke zu erhalten.",
+  "@premiumFeatureExplain": { "description": "Kurze Erklärung der Premiumvorteile" },
+
   "noTrendData": "Keine Trenddaten verfügbar.",
-  "trendForecastDescription": "Ihr aktueller emotionaler Trend wird unten angezeigt."
+  "@noTrendData": { "description": "Meldung bei fehlenden Trenddaten" },
+
+  "trendForecastDescription": "Ihr aktueller emotionaler Trend wird unten angezeigt.",
+  "@trendForecastDescription": { "description": "Erklärung unterhalb des Trenddiagramms" }
 }

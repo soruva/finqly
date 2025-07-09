@@ -2,92 +2,191 @@
   "@@locale": "en",
 
   "appTitle": "Finqly",
+  "@appTitle": { "description": "Main app title" },
+
   "emotionPrompt": "How are you feeling about your finances today?",
+  "@emotionPrompt": { "description": "Main prompt on home screen" },
+
   "startButton": "Start Now",
+  "@startButton": { "description": "Button to start diagnosis" },
 
   "diagnosisTitle": "Diagnosis",
+  "@diagnosisTitle": { "description": "Title for diagnosis page" },
+
   "diagnosisQuestion": "How do you feel about the market right now?",
+  "@diagnosisQuestion": { "description": "Question about market sentiment" },
+
   "diagnosisButton": "Run Diagnosis",
+  "@diagnosisButton": { "description": "Button to run the diagnosis" },
 
   "optionOptimistic": "Optimistic",
+  "@optionOptimistic": { "description": "Emotion option: optimistic" },
+
   "optionNeutral": "Neutral",
+  "@optionNeutral": { "description": "Emotion option: neutral" },
+
   "optionWorried": "Worried",
+  "@optionWorried": { "description": "Emotion option: worried" },
+
   "optionConfused": "Confused",
+  "@optionConfused": { "description": "Emotion option: confused" },
+
   "optionExcited": "Excited",
+  "@optionExcited": { "description": "Emotion option: excited" },
+
   "optionCautious": "Cautious",
+  "@optionCautious": { "description": "Emotion option: cautious" },
 
   "badgeOptimistic": "You're optimistic about the market!",
+  "@badgeOptimistic": { "description": "Badge message: optimistic" },
+
   "badgeNeutral": "You’re feeling neutral today.",
+  "@badgeNeutral": { "description": "Badge message: neutral" },
+
   "badgeWorried": "You’re worried about your investments.",
+  "@badgeWorried": { "description": "Badge message: worried" },
+
   "badgeConfused": "You feel unsure or confused.",
+  "@badgeConfused": { "description": "Badge message: confused" },
+
   "badgeExcited": "You’re feeling energized and ready!",
+  "@badgeExcited": { "description": "Badge message: excited" },
+
   "badgeCautious": "You’re approaching the market with care.",
+  "@badgeCautious": { "description": "Badge message: cautious" },
 
   "investmentTipsTitle": "Investment Tips",
+  "@investmentTipsTitle": { "description": "Title of the investment tips page" },
+
   "investmentTips1": "Diversify your investments to reduce risk.",
+  "@investmentTips1": { "description": "Tip 1: diversification" },
+
   "investmentTips2": "Don’t let short-term emotions drive long-term decisions.",
+  "@investmentTips2": { "description": "Tip 2: avoid short-term emotion" },
+
   "investmentTips3": "Understand your risk tolerance before investing.",
+  "@investmentTips3": { "description": "Tip 3: risk tolerance" },
+
   "investmentTips4": "Stay informed but avoid panic-selling.",
+  "@investmentTips4": { "description": "Tip 4: avoid panic selling" },
+
   "investmentTips5": "Investing is a long-term journey — not a sprint.",
-  
+  "@investmentTips5": { "description": "Tip 5: long-term focus" },
+
   "tapToFlip": "Tap to flip",
+  "@tapToFlip": { "description": "Hint for flipping the card" },
+
   "investmentTipsExplanation1": "Diversification is the golden rule!",
+  "@investmentTipsExplanation1": { "description": "Explanation for tip 1" },
+
   "investmentTipsExplanation2": "Stay focused on the long term, not short-term feelings.",
+  "@investmentTipsExplanation2": { "description": "Explanation for tip 2" },
+
   "investmentTipsExplanation3": "Knowing your risk tolerance reduces mistakes.",
+  "@investmentTipsExplanation3": { "description": "Explanation for tip 3" },
+
   "investmentTipsExplanation4": "Stay informed. Avoid panic selling!",
+  "@investmentTipsExplanation4": { "description": "Explanation for tip 4" },
+
   "investmentTipsExplanation5": "Consistency builds your financial future.",
+  "@investmentTipsExplanation5": { "description": "Explanation for tip 5" },
 
   "forecastTitle": "Your Investment Forecast",
+  "@forecastTitle": { "description": "Title for forecast page" },
+
   "forecastMessage": "Based on your mindset and history, you're expected to grow by {percent} this month.",
   "@forecastMessage": {
     "description": "Message showing the forecasted investment growth based on emotion and history",
-    "placeholders": {
-      "percent": {}
-    }
+    "placeholders": { "percent": {} }
   },
 
   "premiumPrompt": "You're close to unlocking even better insights.",
+  "@premiumPrompt": { "description": "Prompt for premium upgrade" },
+
   "premiumCTA": "Get Premium Forecast",
+  "@premiumCTA": { "description": "Button for premium forecast" },
 
   "language": "Language",
+  "@language": { "description": "Label for language setting" },
+
   "languageEnglish": "English",
+  "@languageEnglish": { "description": "English" },
+
   "languageSpanish": "Español",
+  "@languageSpanish": { "description": "Spanish" },
+
   "languageFrench": "Français",
+  "@languageFrench": { "description": "French" },
+
   "languagePortuguese": "Português",
+  "@languagePortuguese": { "description": "Portuguese" },
+
   "languageGerman": "Deutsch",
+  "@languageGerman": { "description": "German" },
 
   "settingsTitle": "Settings",
+  "@settingsTitle": { "description": "Title for settings page" },
+
   "darkMode": "Dark Mode",
+  "@darkMode": { "description": "Option for dark mode" },
+
   "lightMode": "Light Mode",
+  "@lightMode": { "description": "Option for light mode" },
 
   "premiumUnlockTitle": "Unlock Premium Insights",
+  "@premiumUnlockTitle": { "description": "Title for premium unlock screen" },
+
   "premiumUnlockMessage": "Get access to advanced forecasts, emotional trends, and expert tips.",
+  "@premiumUnlockMessage": { "description": "Marketing message for premium features" },
+
   "premiumUnlockButton": "Unlock Now",
+  "@premiumUnlockButton": { "description": "Button to unlock premium" },
+
   "premiumDisclaimer": "You can cancel anytime. No hidden fees.",
+  "@premiumDisclaimer": { "description": "Disclaimer for premium subscription" },
 
   "upgradeToPremium": "Upgrade to Finqly Plus",
+  "@upgradeToPremium": { "description": "Button text for premium upgrade" },
+
   "unlockInsights": "💡 Unlock deeper insights",
+  "@unlockInsights": { "description": "Button to unlock deeper premium insights" },
+
   "premiumFeature1": "Advanced forecasts with emotion data.",
+  "@premiumFeature1": { "description": "Premium feature 1" },
+
   "premiumFeature2": "Track emotional trends over time.",
+  "@premiumFeature2": { "description": "Premium feature 2" },
+
   "premiumFeature3": "Get expert investing tips.",
+  "@premiumFeature3": { "description": "Premium feature 3" },
+
   "premiumUnlockSuccess": "Premium unlocked successfully!",
+  "@premiumUnlockSuccess": { "description": "Success message for unlocking premium" },
+
   "premiumUnlockError": "Something went wrong. Please try again.",
+  "@premiumUnlockError": { "description": "Error message for premium unlock" },
 
   "emotionHistoryTitle": "Emotion History",
+  "@emotionHistoryTitle": { "description": "Title for emotion history page" },
+
   "emotionHistoryEmpty": "No history found.",
+  "@emotionHistoryEmpty": { "description": "Message shown when there is no emotion history" },
+
   "educationTitle": "Financial Education",
+  "@educationTitle": { "description": "Title for financial education section" },
+
   "other": "Other",
+  "@other": { "description": "Other category" },
 
   "trendForecastTitle": "Emotion Trend Chart",
-  "@trendForecastTitle": {
-    "description": "Title for the emotional trend chart"
-  },
+  "@trendForecastTitle": { "description": "Title for the emotional trend chart" },
 
   "premiumFeatureExplain": "Premium unlocks all trend, chart, and pro tips features.",
-  "@premiumFeatureExplain": {
-    "description": "Short explanation of Premium benefits"
-  },
+  "@premiumFeatureExplain": { "description": "Short explanation of Premium benefits" },
 
   "noTrendData": "No trend data available.",
-  "trendForecastDescription": "Your recent emotional trend is visualized below."
+  "@noTrendData": { "description": "Message shown when no trend data is available" },
+
+  "trendForecastDescription": "Your recent emotional trend is visualized below.",
+  "@trendForecastDescription": { "description": "Description text below the trend chart" }
 }
