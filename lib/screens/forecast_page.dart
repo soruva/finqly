@@ -43,7 +43,7 @@ class ForecastPage extends StatelessWidget {
                   color: isPremium ? null : Colors.black.withOpacity(0.5),
                 ),
                 child: isPremium
-                    ? _buildPremiumView(loc, forecastPercent, context)
+                    ? _buildPremiumView(loc, forecastPercent.toDouble(), context)
                     : _buildLockedView(loc, context),
               ),
             ],
