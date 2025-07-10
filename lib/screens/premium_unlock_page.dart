@@ -45,9 +45,6 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
       if (!mounted) return;
       setState(() => isLoading = false);
 
-      // ★ 失敗時は明示的にfalse
-      widget.subscriptionManager.updateSubscription(false);
-
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(AppLocalizations.of(context)!.premiumUnlockError),
