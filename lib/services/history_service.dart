@@ -4,18 +4,27 @@ import 'package:shared_preferences/shared_preferences.dart';
 class HistoryService {
   static const String _key = 'emotionHistory';
 
-  Future<List<String>> getHistory() async {
+  /// 直近の履歴をMapリストで返す [{emotion, timestamp}, ...]
+  Future<List<Map<String, dynamic>>> getHistory() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getStringList(_key) ?? [];
+    final raw = prefs.getStringList(_key) ?? [];
+    // decode each entry (from JSON string to Map)
+    return raw.map((e) => jsonDecode(e) as Map<String, dynamic>).toList();
   }
 
-  Future<void> addEntry(String entry) async {
+  /// 感情を記録（自動でタイムスタンプも保存）
+  Future<void> addEntry(String emotion) async {
     final prefs = await SharedPreferences.getInstance();
     final history = prefs.getStringList(_key) ?? [];
-    history.add(entry);
+    final entry = {
+      "emotion": emotion,
+      "timestamp": DateTime.now().toIso8601String(),
+    };
+    history.add(jsonEncode(entry));
     await prefs.setStringList(_key, history);
   }
 
+  /// 履歴をクリア
   Future<void> clearHistory() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_key);

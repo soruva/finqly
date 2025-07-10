@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:finqly/theme/colors.dart';
 import 'package:finqly/l10n/app_localizations.dart';
 import 'package:finqly/screens/badge_screen.dart';
 import 'package:finqly/screens/premium_unlock_page.dart';
 import 'package:finqly/services/subscription_manager.dart';
+import 'package:finqly/services/history_service.dart'; // ←ここ追加
 
 class DiagnosisPage extends StatefulWidget {
   final SubscriptionManager subscriptionManager;
@@ -27,11 +27,10 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
     'Cautious': '🤔',
   };
 
+  /// タイムスタンプ付きで履歴保存（HistoryService利用！）
   Future<void> _saveEmotionToHistory(String emotion) async {
-    final prefs = await SharedPreferences.getInstance();
-    final history = prefs.getStringList('emotionHistory') ?? [];
-    history.add(emotion);
-    await prefs.setStringList('emotionHistory', history);
+    // emotionKeyは英語名（"Optimistic"など）で保存
+    await HistoryService().addEntry(emotion);
   }
 
   @override
