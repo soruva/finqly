@@ -21,10 +21,7 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
     setState(() => isLoading = true);
 
     try {
-      await widget.subscriptionManager.buyPremium(); // 購入実行
-
-      // ★ 購入直後に即UIへ反映
-      widget.subscriptionManager.updateSubscription(true);
+      await widget.subscriptionManager.buyPremium();
 
       await widget.subscriptionManager.refreshSubscriptionStatus();
 
