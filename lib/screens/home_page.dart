@@ -67,7 +67,7 @@ class MyHomePage extends StatelessWidget {
                     "Emotion & Investing",
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
-                      color: Colors.white.withOpacity(0.87),
+                      color: Colors.white.withOpacity(0.93),
                       fontSize: 16,
                       letterSpacing: 0.7,
                     ),
@@ -120,6 +120,7 @@ class MyHomePage extends StatelessWidget {
                         ),
                       );
                     },
+                    isPremium: true,
                   ),
                   _homeButton(
                     context,
@@ -219,7 +220,11 @@ class MyHomePage extends StatelessWidget {
         width: 295,
         height: 62,
         child: ElevatedButton.icon(
-          icon: Icon(icon, size: 28, color: isPremium ? Colors.deepPurple : AppColors.primary),
+          icon: Icon(
+            icon, 
+            size: 28, 
+            color: isPremium ? Colors.deepPurple : AppColors.primary,
+          ),
           label: Center(
             child: Text(
               label,
