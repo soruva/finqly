@@ -28,7 +28,6 @@ class MyHomePage extends StatelessWidget {
     final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
-      // グラデーション背景
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -44,7 +43,6 @@ class MyHomePage extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // アプリ名中央（ロゴなし／フォントを目立たせる）
                   Text(
                     loc.appTitle,
                     style: const TextStyle(
@@ -73,7 +71,6 @@ class MyHomePage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 40),
-                  // ホームメニュー (美しい角丸・全て中央揃え・横幅均一)
                   _homeButton(
                     context,
                     icon: Icons.flash_on,
@@ -104,7 +101,6 @@ class MyHomePage extends StatelessWidget {
                       );
                     },
                   ),
-                  // ⭐ プレミアム判定はValueListenableBuilderで即時反映
                   _premiumTrendButton(context, loc),
                   _homeButton(
                     context,
@@ -172,7 +168,6 @@ class MyHomePage extends StatelessWidget {
     );
   }
 
-  // プレミアム限定のトレンドグラフボタン
   Widget _premiumTrendButton(BuildContext context, AppLocalizations loc) {
     return ValueListenableBuilder<bool>(
       valueListenable: subscriptionManager.isSubscribedNotifier,
@@ -206,7 +201,6 @@ class MyHomePage extends StatelessWidget {
     );
   }
 
-  // 美しい共通ホームボタン
   Widget _homeButton(
     BuildContext context, {
     required IconData icon,
@@ -229,7 +223,7 @@ class MyHomePage extends StatelessWidget {
             child: Text(
               label,
               textAlign: TextAlign.center,
-              maxLines: 2, // 2行でも中央寄せ
+              maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 18,

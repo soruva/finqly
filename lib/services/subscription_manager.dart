@@ -6,10 +6,8 @@ class SubscriptionManager {
   static const _subscriptionKey = 'isSubscribed';
   static const _productId = 'finqly_plus_subscription';
 
-  /// ← ここがValueNotifier
   final ValueNotifier<bool> isSubscribedNotifier = ValueNotifier(false);
 
-  // getter（古いisSubscribedもラップ）
   bool get isSubscribed => isSubscribedNotifier.value;
 
   Future<void> init() async {
@@ -21,7 +19,7 @@ class SubscriptionManager {
   Future<bool> checkSubscription() async {
     final prefs = await SharedPreferences.getInstance();
     final value = prefs.getBool(_subscriptionKey) ?? false;
-    isSubscribedNotifier.value = value; // ← ここも反映
+    isSubscribedNotifier.value = value;
     return value;
   }
 
@@ -32,8 +30,6 @@ class SubscriptionManager {
     final purchaseParam = PurchaseParam(productDetails: await _getProductDetails());
     final result = await InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam);
 
-    // 本番は purchaseUpdatedStream で検証推奨
-    // 仮：成功したら即反映
     await _setPremium(true);
   }
 
@@ -46,7 +42,7 @@ class SubscriptionManager {
   Future<void> _setPremium(bool value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_subscriptionKey, value);
-    isSubscribedNotifier.value = value; // ← ここが超重要！
+    isSubscribedNotifier.value = value;
   }
 
   Future<void> refreshSubscriptionStatus() async {

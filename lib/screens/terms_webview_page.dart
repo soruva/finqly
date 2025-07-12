@@ -15,7 +15,6 @@ class _TermsWebViewPageState extends State<TermsWebViewPage> {
   @override
   void initState() {
     super.initState();
-    // Android WebView 初期化（必須）
     if (Platform.isAndroid) {
       WebView.platform = SurfaceAndroidWebView();
     }

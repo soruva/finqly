@@ -21,19 +21,17 @@ class _EmotionHistoryPageState extends State<EmotionHistoryPage> {
 
   Future<void> _loadHistory() async {
     final list = await HistoryService().getHistory();
-    // タイムスタンプ対応の形: [{"emotion": ..., "timestamp": ...}]
     setState(() {
       _entries = list.map<Map<String, dynamic>>((e) {
         try {
           return Map<String, dynamic>.from(jsonDecode(e));
         } catch (_) {
-          // レガシー形式対応（文字列のみ記録されていた場合）
           return {
             "emotion": e,
             "timestamp": null,
           };
         }
-      }).toList().reversed.toList(); // 新しい順に並べる
+      }).toList().reversed.toList();
     });
   }
 

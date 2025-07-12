@@ -119,7 +119,6 @@ class _TrendPageState extends State<TrendPage> {
                               ),
                             ),
                           );
-                          // プレミアム画面から戻ったときに履歴も再取得
                           await _loadHistory();
                         },
                       ),

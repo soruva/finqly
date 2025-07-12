@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:finqly/screens/home_page.dart'; // ←ここ重要
+import 'package:finqly/screens/home_page.dart';
 import 'package:finqly/screens/particle_background.dart';
 import 'package:finqly/services/subscription_manager.dart';
 

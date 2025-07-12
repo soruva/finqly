@@ -16,9 +16,8 @@ class ForecastPage extends StatelessWidget {
     return ValueListenableBuilder<bool>(
       valueListenable: subscriptionManager.isSubscribedNotifier,
       builder: (context, isPremium, _) {
-        // Premiumなら%を動的生成（毎回違う数値になるのを防ぐならStatefulにするが、ここでは一例）
         final forecastPercent =
-            isPremium ? 3 + Random().nextDouble() * 5 : 0; // 3%～8%で適当に
+            isPremium ? 3 + Random().nextDouble() * 5 : 0;
 
         return Scaffold(
           appBar: AppBar(
@@ -134,7 +133,6 @@ class ForecastPage extends StatelessWidget {
                 ),
               ),
             );
-            // 戻ってきた時も自動で反映される(ValueListenableBuilder)
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.white,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:finqly/l10n/app_localizations.dart'; // ← セミコロン忘れずに
+import 'package:finqly/l10n/app_localizations.dart';
 import 'package:finqly/theme/colors.dart';
 import 'package:finqly/services/subscription_manager.dart';
 import 'package:finqly/screens/legal_webview_page.dart';

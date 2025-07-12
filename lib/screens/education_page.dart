@@ -32,7 +32,7 @@ class _EducationPageState extends State<EducationPage> {
   @override
   void initState() {
     super.initState();
-    isFlipped = List.filled(_proTips.length, false); // 常に最大数に合わせておく
+    isFlipped = List.filled(_proTips.length, false);
   }
 
   @override
@@ -44,7 +44,6 @@ class _EducationPageState extends State<EducationPage> {
       builder: (context, isPremium, _) {
         final tipsKeys = isPremium ? _proTips : _basicTips;
 
-        // isFlippedリストの長さ調整
         if (isFlipped.length != tipsKeys.length) {
           isFlipped = List.filled(tipsKeys.length, false);
         }
@@ -135,7 +134,6 @@ class _EducationPageState extends State<EducationPage> {
     );
   }
 
-  // 表面：Tips
   Widget _buildTipCardFront(String tip, int idx) {
     final cardColors = [
       [AppColors.primary, AppColors.accentPurple],
@@ -188,7 +186,6 @@ class _EducationPageState extends State<EducationPage> {
     );
   }
 
-  // 裏面：解説（多言語arbに記載したものを取得する形を推奨）
   Widget _buildTipCardBack(AppLocalizations loc, int idx) {
     final explanations = [
       loc.investmentTipsExplanation1,
