@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:finqly/services/subscription_manager.dart';
 import 'package:finqly/l10n/app_localizations.dart';
+import 'package:finqly/screens/premium_plans_page.dart';
 
 class PremiumUnlockPage extends StatefulWidget {
   final SubscriptionManager subscriptionManager;
@@ -16,24 +17,6 @@ class PremiumUnlockPage extends StatefulWidget {
 
 class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
   bool isLoading = false;
-
-  Future<void> _unlock() async {
-    setState(() => isLoading = true);
-
-    await widget.subscriptionManager.setSubscribed(true);
-
-    if (!mounted) return;
-    setState(() => isLoading = false);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(AppLocalizations.of(context)!.premiumUnlockSuccess),
-      ),
-    );
-
-    await Future.delayed(const Duration(milliseconds: 800));
-    if (mounted) Navigator.pop(context);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +46,6 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
               ],
             ),
             const SizedBox(height: 32),
-            // ------ ここからデザイン強化 ------
             Container(
               width: double.infinity,
               decoration: BoxDecoration(
@@ -83,7 +65,18 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
               ),
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.lock_open, color: Colors.white),
-                onPressed: isLoading ? null : _unlock,
+                onPressed: isLoading
+                    ? null
+                    : () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => PremiumPlansPage(
+                              subscriptionManager: widget.subscriptionManager,
+                            ),
+                          ),
+                        );
+                      },
                 label: isLoading
                     ? const SizedBox(
                         width: 20,
