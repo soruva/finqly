@@ -15,12 +15,19 @@ class TrendChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Clamp all y-values to 0-6 just in case
+    final clampedSpots = dataPoints
+        .map((e) => FlSpot(e.x, e.y.clamp(0, 6)))
+        .toList();
+
     return AspectRatio(
       aspectRatio: 1.7,
       child: Padding(
-        padding: const EdgeInsets.all(18), // 少し多めに
+        padding: const EdgeInsets.all(16),
         child: LineChart(
           LineChartData(
+            minY: 0,
+            maxY: 6,
             titlesData: FlTitlesData(
               bottomTitles: AxisTitles(
                 sideTitles: SideTitles(
@@ -45,8 +52,6 @@ class TrendChart extends StatelessWidget {
               topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
               rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
             ),
-            minY: 0, // ここを「0」に！（以前は1）
-            maxY: 6,
             gridData: FlGridData(show: true),
             borderData: FlBorderData(
               show: true,
@@ -57,7 +62,7 @@ class TrendChart extends StatelessWidget {
             ),
             lineBarsData: [
               LineChartBarData(
-                spots: dataPoints,
+                spots: clampedSpots,
                 isCurved: true,
                 barWidth: 3,
                 color: lineColor,
