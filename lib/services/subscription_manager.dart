@@ -50,4 +50,8 @@ class SubscriptionManager {
     final value = prefs.getBool(_subscriptionKey) ?? false;
     isSubscribedNotifier.value = value;
   }
+
+  Future<void> setSubscribed(bool value) async {
+    await _setPremium(value);
+  }
 }

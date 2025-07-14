@@ -17,37 +17,25 @@ class PremiumUnlockPage extends StatefulWidget {
 class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
   bool isLoading = false;
 
+  // テスト用ダミー：本物課金ロジックと入れ替え可
   Future<void> _unlock() async {
     setState(() => isLoading = true);
 
-    try {
-      await widget.subscriptionManager.buyPremium();
+    // 仮でPremiumフラグをONにする（本番は purchase 処理へ）
+    await widget.subscriptionManager.setSubscribed(true);
 
-      await widget.subscriptionManager.refreshSubscriptionStatus();
+    if (!mounted) return;
+    setState(() => isLoading = false);
 
-      if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(AppLocalizations.of(context)!.premiumUnlockSuccess),
+      ),
+    );
 
-      setState(() => isLoading = false);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)!.premiumUnlockSuccess),
-        ),
-      );
-
-      Future.delayed(const Duration(milliseconds: 300), () {
-        if (mounted) Navigator.pop(context);
-      });
-    } catch (e) {
-      if (!mounted) return;
-      setState(() => isLoading = false);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)!.premiumUnlockError),
-        ),
-      );
-    }
+    // 少し待って元の画面へ戻す
+    await Future.delayed(const Duration(milliseconds: 800));
+    if (mounted) Navigator.pop(context);
   }
 
   @override
