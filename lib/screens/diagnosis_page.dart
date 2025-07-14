@@ -54,7 +54,10 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
             foregroundColor: Colors.white,
             elevation: 0,
           ),
+          // グラデ背景をSafeArea bottom: false でフルに適用
           body: Container(
+            width: double.infinity,
+            height: double.infinity,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [Color(0xFF7B44C6), Color(0xFF72C6EF)],
@@ -63,6 +66,8 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
               ),
             ),
             child: SafeArea(
+              // bottom: falseで白帯対策
+              bottom: false,
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
                 child: Column(
@@ -123,16 +128,9 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                           loc.premiumPrompt,
                           style: const TextStyle(
                             fontSize: 15,
-                            color: Colors.white,
+                            color: Colors.white70,
                             fontWeight: FontWeight.w600,
-                            shadows: [
-                              Shadow(
-                                color: Colors.black38,
-                                blurRadius: 3,
-                                offset: Offset(0, 1.5),
-                              ),
-                            ],
-                          ),  
+                          ),
                           textAlign: TextAlign.center,
                         ),
                       ),
