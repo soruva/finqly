@@ -26,7 +26,6 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
     'Cautious': '🤔',
   };
 
-  /// タイムスタンプ付きで履歴保存
   Future<void> _saveEmotionToHistory(String emotion) async {
     await HistoryService().addEntry(emotion);
   }
@@ -131,7 +130,6 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                         ),
                       ),
                     ),
-                    // 最下部テキスト（プロンプトなど）入れる場合はここでSafeArea+余白で確実に表示
                   ],
                 ),
               ),
