@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:finqly/l10n/app_localizations.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:finqly/widgets/trend_chart.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:finqly/screens/premium_unlock_page.dart';
 import 'package:finqly/services/subscription_manager.dart';
+import 'package:finqly/services/history_service.dart';
 
 class TrendPage extends StatefulWidget {
   final SubscriptionManager subscriptionManager;
@@ -15,7 +15,7 @@ class TrendPage extends StatefulWidget {
 }
 
 class _TrendPageState extends State<TrendPage> {
-  List<String> history = [];
+  List<String> emotions = [];
 
   @override
   void initState() {
@@ -24,10 +24,10 @@ class _TrendPageState extends State<TrendPage> {
   }
 
   Future<void> _loadHistory() async {
-    final prefs = await SharedPreferences.getInstance();
-    final stored = prefs.getStringList('emotionHistory') ?? [];
+    final historyRaw = await HistoryService().getHistory();
+    final extracted = historyRaw.map((e) => e["emotion"]?.toString() ?? "Neutral").toList();
     setState(() {
-      history = stored.length <= 7 ? List.from(stored) : stored.sublist(stored.length - 7);
+      emotions = extracted.length <= 7 ? List.from(extracted) : extracted.sublist(extracted.length - 7);
     });
   }
 
@@ -56,27 +56,27 @@ class _TrendPageState extends State<TrendPage> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-    final spots = _generateSpots(history);
-    final labels = _labels(history);
+    final spots = _generateSpots(emotions);
+    final labels = _labels(emotions);
 
     return ValueListenableBuilder<bool>(
       valueListenable: widget.subscriptionManager.isSubscribedNotifier,
       builder: (context, isPremium, _) {
         return Scaffold(
           appBar: AppBar(
-            title: Text(loc.trendForecastTitle),
+            title: Text(loc.trendForecastTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
             centerTitle: true,
           ),
           body: isPremium
               ? Padding(
                   padding: const EdgeInsets.all(24),
-                  child: history.isEmpty
-                      ? Center(child: Text(loc.noTrendData))
+                  child: emotions.isEmpty
+                      ? Center(child: Text(loc.noTrendData, style: const TextStyle(fontSize: 16)))
                       : Column(
                           children: [
                             Text(
                               loc.trendForecastDescription,
-                              style: const TextStyle(fontSize: 16),
+                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                               textAlign: TextAlign.center,
                             ),
                             const SizedBox(height: 18),
@@ -87,7 +87,9 @@ class _TrendPageState extends State<TrendPage> {
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Colors.grey[700],
+                                fontStyle: FontStyle.italic,
                               ),
+                              textAlign: TextAlign.center,
                             ),
                           ],
                         ),
@@ -96,19 +98,20 @@ class _TrendPageState extends State<TrendPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.lock_outline, size: 70, color: Colors.grey),
-                      const SizedBox(height: 20),
+                      const Icon(Icons.lock_outline, size: 74, color: Colors.grey),
+                      const SizedBox(height: 28),
                       Text(
                         "${loc.premiumPrompt}\n\nUnlock trend charts, performance tracking, and personalized insights with Finqly Plus!",
                         textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+                        style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black87),
                       ),
-                      const SizedBox(height: 22),
+                      const SizedBox(height: 30),
                       ElevatedButton.icon(
                         icon: const Icon(Icons.lock_open),
                         label: Text(loc.unlockInsights),
                         style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
+                          padding: const EdgeInsets.symmetric(horizontal: 38, vertical: 16),
+                          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                         ),
                         onPressed: () async {
                           await Navigator.push(
