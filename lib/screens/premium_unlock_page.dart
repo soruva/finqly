@@ -17,11 +17,9 @@ class PremiumUnlockPage extends StatefulWidget {
 class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
   bool isLoading = false;
 
-  // テスト用ダミー：本物課金ロジックと入れ替え可
   Future<void> _unlock() async {
     setState(() => isLoading = true);
 
-    // 仮でPremiumフラグをONにする（本番は purchase 処理へ）
     await widget.subscriptionManager.setSubscribed(true);
 
     if (!mounted) return;
@@ -33,7 +31,6 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
       ),
     );
 
-    // 少し待って元の画面へ戻す
     await Future.delayed(const Duration(milliseconds: 800));
     if (mounted) Navigator.pop(context);
   }

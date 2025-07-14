@@ -13,7 +13,7 @@ class EducationPage extends StatefulWidget {
 }
 
 class _EducationPageState extends State<EducationPage> {
-  List<bool> isFlipped = [];
+  int flippedIndex = -1;
 
   final List<String> _basicTips = [
     'investmentTips1',
@@ -30,12 +30,6 @@ class _EducationPageState extends State<EducationPage> {
   ];
 
   @override
-  void initState() {
-    super.initState();
-    isFlipped = List.filled(_proTips.length, false);
-  }
-
-  @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
 
@@ -43,10 +37,6 @@ class _EducationPageState extends State<EducationPage> {
       valueListenable: widget.subscriptionManager.isSubscribedNotifier,
       builder: (context, isPremium, _) {
         final tipsKeys = isPremium ? _proTips : _basicTips;
-
-        if (isFlipped.length != tipsKeys.length) {
-          isFlipped = List.filled(tipsKeys.length, false);
-        }
 
         return Scaffold(
           appBar: AppBar(
@@ -83,14 +73,14 @@ class _EducationPageState extends State<EducationPage> {
                         child: GestureDetector(
                           onTap: () {
                             setState(() {
-                              isFlipped[index] = !isFlipped[index];
+                              flippedIndex = (flippedIndex == index) ? -1 : index;
                             });
                           },
                           child: AnimatedSwitcher(
                             duration: const Duration(milliseconds: 350),
                             transitionBuilder: (child, animation) =>
                                 ScaleTransition(scale: animation, child: child),
-                            child: isFlipped[index]
+                            child: flippedIndex == index
                                 ? _buildTipCardBack(loc, index)
                                 : _buildTipCardFront(tip, index),
                           ),
