@@ -4,11 +4,10 @@ import 'package:finqly/l10n/app_localizations.dart';
 import 'package:finqly/screens/badge_screen.dart';
 import 'package:finqly/screens/premium_unlock_page.dart';
 import 'package:finqly/services/subscription_manager.dart';
-import 'package:finqly/services/history_service.dart'; // ←ここ追加
+import 'package:finqly/services/history_service.dart';
 
 class DiagnosisPage extends StatefulWidget {
   final SubscriptionManager subscriptionManager;
-
   const DiagnosisPage({super.key, required this.subscriptionManager});
 
   @override
@@ -27,9 +26,8 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
     'Cautious': '🤔',
   };
 
-  /// タイムスタンプ付きで履歴保存（HistoryService利用！）
+  /// タイムスタンプ付きで履歴保存
   Future<void> _saveEmotionToHistory(String emotion) async {
-    // emotionKeyは英語名（"Optimistic"など）で保存
     await HistoryService().addEntry(emotion);
   }
 
@@ -46,7 +44,6 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
       'Cautious': loc.optionCautious,
     };
 
-    // プレミアム状態をリアルタイム監視
     return ValueListenableBuilder<bool>(
       valueListenable: widget.subscriptionManager.isSubscribedNotifier,
       builder: (context, isPremiumUser, _) {
@@ -66,39 +63,33 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                 end: Alignment.bottomRight,
               ),
             ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 16),
-                  Text(
-                    loc.diagnosisQuestion,
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            child: SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 10),
+                    Center(
+                      child: Text(
+                        loc.diagnosisQuestion,
+                        style: const TextStyle(
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
                           fontSize: 22,
+                          letterSpacing: 0.1,
                         ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 32),
-                  ...emotionOptions.entries.map(
-                    (entry) => Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 4),
-                      child: SizedBox(
-                        width: double.infinity,
-                        height: 60,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: AppColors.primary,
-                            elevation: 2,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(22),
-                            ),
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                          ),
-                          onPressed: () async {
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    ...emotionOptions.entries.map(
+                      (entry) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: _emotionButton(
+                          icon: _emojis[entry.key] ?? '',
+                          label: entry.value,
+                          onTap: () async {
                             setState(() => selectedEmotionKey = entry.key);
                             await _saveEmotionToHistory(entry.key);
                             if (isPremiumUser) {
@@ -122,41 +113,80 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                               );
                             }
                           },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                _emojis[entry.key] ?? '',
-                                style: const TextStyle(fontSize: 28),
-                              ),
-                              const SizedBox(width: 18),
-                              Text(
-                                entry.value,
-                                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 22),
-                  if (!isPremiumUser)
-                    Text(
-                      loc.premiumPrompt,
-                      style: const TextStyle(
-                        fontSize: 15,
-                        color: Colors.white70,
-                        fontWeight: FontWeight.w600,
+                    const SizedBox(height: 34),
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 18, left: 4, right: 4),
+                        child: Text(
+                          loc.premiumPrompt,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            color: Colors.white70,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                      textAlign: TextAlign.center,
                     ),
-                ],
+                    // 最下部テキスト（プロンプトなど）入れる場合はここでSafeArea+余白で確実に表示
+                  ],
+                ),
               ),
             ),
           ),
         );
       },
+    );
+  }
+
+  Widget _emotionButton({
+    required String icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        height: 56,
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.96),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 8,
+              offset: const Offset(1, 3),
+            ),
+          ],
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(width: 18),
+            Text(
+              icon,
+              style: const TextStyle(fontSize: 28),
+            ),
+            const SizedBox(width: 18),
+            Expanded(
+              child: Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF462066),
+                  letterSpacing: 0.1,
+                ),
+                textAlign: TextAlign.left,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
