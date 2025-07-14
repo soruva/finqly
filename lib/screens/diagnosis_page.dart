@@ -123,9 +123,16 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                           loc.premiumPrompt,
                           style: const TextStyle(
                             fontSize: 15,
-                            color: Colors.white70,
+                            color: Colors.white,
                             fontWeight: FontWeight.w600,
-                          ),
+                            shadows: [
+                              Shadow(
+                                color: Colors.black38,
+                                blurRadius: 3,
+                                offset: Offset(0, 1.5),
+                              ),
+                            ],
+                          ),  
                           textAlign: TextAlign.center,
                         ),
                       ),
