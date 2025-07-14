@@ -65,7 +65,7 @@ class MyHomePage extends StatelessWidget {
                     "Emotion & Investing",
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
-                      color: Colors.white.withOpacity(0.93),
+                      color: Color(0xFFB39DDB),
                       fontSize: 16,
                       letterSpacing: 0.7,
                     ),
