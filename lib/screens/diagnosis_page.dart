@@ -54,7 +54,6 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
             foregroundColor: Colors.white,
             elevation: 0,
           ),
-          // グラデ背景をSafeArea bottom: false でフルに適用
           body: Container(
             width: double.infinity,
             height: double.infinity,
@@ -66,7 +65,6 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
               ),
             ),
             child: SafeArea(
-              // bottom: falseで白帯対策
               bottom: false,
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
