@@ -3,6 +3,7 @@ import 'package:finqly/l10n/app_localizations.dart';
 import 'package:finqly/theme/colors.dart';
 import 'package:finqly/services/subscription_manager.dart';
 import 'package:finqly/screens/legal_webview_page.dart';
+import 'package:finqly/screens/emotion_history_page.dart';
 
 class SettingsPage extends StatefulWidget {
   final Locale currentLocale;
@@ -55,7 +56,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final loc = AppLocalizations.of(context)!; // ← Null safety！
+    final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
@@ -68,6 +69,19 @@ class _SettingsPageState extends State<SettingsPage> {
         padding: const EdgeInsets.all(24),
         child: ListView(
           children: [
+            ListTile(
+              leading: const Icon(Icons.history),
+              title: const Text('Emotion History'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => EmotionHistoryPage(subscriptionManager: widget.subscriptionManager),
+                  ),
+                );
+              },
+            ),
+            const Divider(height: 24),
             Text(loc.language, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 12),
             DropdownButton<Locale>(
