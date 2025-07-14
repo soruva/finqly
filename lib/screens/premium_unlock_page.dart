@@ -63,10 +63,26 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
               ],
             ),
             const SizedBox(height: 32),
-            SizedBox(
+            // ------ ここからデザイン強化 ------
+            Container(
               width: double.infinity,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF8267BE), Color(0xFF47C6E6)],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                ),
+                borderRadius: BorderRadius.circular(18),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.18),
+                    blurRadius: 12,
+                    offset: const Offset(1, 6),
+                  ),
+                ],
+              ),
               child: ElevatedButton.icon(
-                icon: const Icon(Icons.lock_open),
+                icon: const Icon(Icons.lock_open, color: Colors.white),
                 onPressed: isLoading ? null : _unlock,
                 label: isLoading
                     ? const SizedBox(
@@ -74,10 +90,23 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
                         height: 20,
                         child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                       )
-                    : Text(loc.premiumUnlockButton),
+                    : Text(
+                        loc.premiumUnlockButton,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17,
+                          letterSpacing: 0.5,
+                          color: Colors.white,
+                        ),
+                      ),
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  textStyle: const TextStyle(fontSize: 16),
+                  elevation: 0, // 影はContainerの方で
+                  backgroundColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                  ),
                 ),
               ),
             ),
