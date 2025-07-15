@@ -93,7 +93,7 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
                         ),
                       ),
                 style: ElevatedButton.styleFrom(
-                  elevation: 0, // 影はContainerの方で
+                  elevation: 0,
                   backgroundColor: Colors.transparent,
                   shadowColor: Colors.transparent,
                   padding: const EdgeInsets.symmetric(vertical: 18),
