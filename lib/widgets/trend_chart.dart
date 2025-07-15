@@ -15,14 +15,12 @@ class TrendChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // minY/maxYを少しだけ余裕を持たせる
     double minY = 0;
     double maxY = 6;
     if (dataPoints.isNotEmpty) {
       final ys = dataPoints.map((e) => e.y).toList();
       minY = ys.reduce((a, b) => a < b ? a : b);
       maxY = ys.reduce((a, b) => a > b ? a : b);
-      // 余裕を持たせる
       minY = (minY - 0.5).clamp(0, 6);
       maxY = (maxY + 0.5).clamp(0, 6);
     }
@@ -70,7 +68,7 @@ class TrendChart extends StatelessWidget {
             lineBarsData: [
               LineChartBarData(
                 spots: dataPoints,
-                isCurved: false, // 曲線だとはみ出すためfalseを推奨
+                isCurved: false,
                 barWidth: 3,
                 color: lineColor,
                 dotData: FlDotData(show: true),
