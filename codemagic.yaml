@@ -6,9 +6,11 @@ workflows:
       flutter: stable
       groups:
         - finqly_signing
-      android_signing:
-        - finqly_keystore
     scripts:
+      - name: Restore keystore from base64
+        script: |
+          echo $CM_KEYSTORE_BASE64 | base64 -d > /tmp/my-release-key.jks
+          envman add --key CM_KEYSTORE --value "/tmp/my-release-key.jks"
       - name: Get packages
         script: |
           flutter pub get
