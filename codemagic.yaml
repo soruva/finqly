@@ -7,21 +7,13 @@ workflows:
       groups:
         - finqly_signing
     scripts:
-      - name: Restore keystore from base64
+      - name: Restore keystore & Build
         script: |
           echo $CM_KEYSTORE_BASE64 | base64 -d > /tmp/my-release-key.jks
           export CM_KEYSTORE="/tmp/my-release-key.jks"
-      - name: Get packages
-        script: |
           flutter pub get
-      - name: Generate launcher icons
-        script: |
           flutter pub run flutter_launcher_icons:main
-      - name: Build release AAB
-        script: |
           flutter build appbundle --release
-      - name: Build release APK
-        script: |
           flutter build apk --release
     artifacts:
       - build/app/outputs/bundle/release/app-release.aab
