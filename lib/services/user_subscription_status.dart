@@ -9,15 +9,18 @@ class UserSubscriptionStatus {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_key, value);
     print('[Subscription] Premium set to: $value');
+    // WARNING: Local-only status. For production, must validate with Google Play server.
   }
 
   Future<bool> isPremium() async {
     final prefs = await SharedPreferences.getInstance();
+    // WARNING: Only returns local value! Must implement server verification for real security.
     return prefs.getBool(_key) ?? false;
   }
 
   Future<void> restoreAndSyncPremium() async {
     await InAppPurchase.instance.restorePurchases();
+    // TODO: Properly handle restored purchases using server-side receipt validation.
   }
 
   static void listenToPurchaseUpdates() {
@@ -25,6 +28,7 @@ class UserSubscriptionStatus {
       for (final purchase in purchases) {
         if (purchase.productID == _productId &&
             (purchase.status == PurchaseStatus.purchased || purchase.status == PurchaseStatus.restored)) {
+          // TODO: In production, validate purchaseToken on server before unlocking premium features.
           await UserSubscriptionStatus().setPremium(true);
         } else if (purchase.productID == _productId && purchase.status == PurchaseStatus.canceled) {
           await UserSubscriptionStatus().setPremium(false);
