@@ -3,6 +3,9 @@ import 'package:finqly/services/subscription_manager.dart';
 import 'package:finqly/l10n/app_localizations.dart';
 import 'package:finqly/screens/premium_plans_page.dart';
 
+// TODO: Google Play Billing API integration is planned for production.
+// WARNING: This build currently unlocks premium locally for review/testing only.
+
 class PremiumUnlockPage extends StatefulWidget {
   final SubscriptionManager subscriptionManager;
 
@@ -105,7 +108,7 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
             ),
             const SizedBox(height: 16),
             Text(
-              loc.premiumDisclaimer,
+              loc.premiumDisclaimer, // Example: "Subscriptions auto-renew unless canceled. You can cancel anytime from your Google Play account. All payments are securely processed by Google Play."
               style: const TextStyle(fontSize: 12, color: Colors.grey),
               textAlign: TextAlign.center,
             ),
