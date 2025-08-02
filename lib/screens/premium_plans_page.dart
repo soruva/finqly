@@ -7,6 +7,11 @@ class PremiumPlansPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: For production, connect each plan to Google Play Billing API.
+    // WARNING: Currently, selecting a plan only sets a local flag.
+    // Real purchase must be processed and validated through Google Play.
+    // Display terms: Subscriptions auto-renew unless canceled. You can cancel anytime from your Google Play account.
+
     final plans = [
       {
         'title': 'Monthly Plan',
@@ -51,46 +56,53 @@ class PremiumPlansPage extends StatelessWidget {
         title: const Text('Choose Your Premium Plan'),
         centerTitle: true,
       ),
-      body: ListView.separated(
-        padding: const EdgeInsets.all(24),
-        itemCount: plans.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 24),
-        itemBuilder: (context, idx) {
-          final plan = plans[idx];
-          return Card(
-            elevation: 5,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(plan['title'] as String, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800)),
-                  const SizedBox(height: 10),
-                  Text(plan['desc'] as String, style: const TextStyle(fontSize: 16)),
-                  const SizedBox(height: 18),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(plan['price'] as String, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                      ElevatedButton(
-                        onPressed: plan['onPressed'] as VoidCallback,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.deepPurple,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.separated(
+              padding: const EdgeInsets.all(24),
+              itemCount: plans.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 24),
+              itemBuilder: (context, idx) {
+                final plan = plans[idx];
+                return Card(
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(plan['title'] as String, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800)),
+                        const SizedBox(height: 10),
+                        Text(plan['desc'] as String, style: const TextStyle(fontSize: 16)),
+                        const SizedBox(height: 18),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(plan['price'] as String, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            ElevatedButton(
+                              onPressed: plan['onPressed'] as VoidCallback,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.deepPurple,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
+                              ),
+                              child: const Text('Select', style: TextStyle(fontSize: 16)),
+                            ),
+                          ],
                         ),
-                        child: const Text('Select', style: TextStyle(fontSize: 16)),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ],
-              ),
+                );
+              },
             ),
-          );
-        },
-      ),
-    );
-  }
-}
+          ),
+          // Terms and important notice for Google Play review:
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
+            child: Text(
+              "Subscriptions auto-renew unless canceled. You can cancel anytime from your Google Play account. All payments are processed securely via Google Play Billing.",
+              style
