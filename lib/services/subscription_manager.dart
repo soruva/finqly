@@ -10,16 +10,19 @@ class SubscriptionManager {
 
   bool get isSubscribed => isSubscribedNotifier.value;
 
+  // TODO: Replace local storage with proper Google Play subscription verification!
   Future<void> init() async {
     final prefs = await SharedPreferences.getInstance();
     final value = prefs.getBool(_subscriptionKey) ?? false;
     isSubscribedNotifier.value = value;
+    // WARNING: Real app should check subscription status with Google Play (server-side verification).
   }
 
   Future<bool> checkSubscription() async {
     final prefs = await SharedPreferences.getInstance();
     final value = prefs.getBool(_subscriptionKey) ?? false;
     isSubscribedNotifier.value = value;
+    // WARNING: Only using local cache. Must implement Play Store validation!
     return value;
   }
 
@@ -28,9 +31,11 @@ class SubscriptionManager {
     if (!available) throw Exception('In-app purchases not available');
 
     final purchaseParam = PurchaseParam(productDetails: await _getProductDetails());
+    // TODO: For subscriptions, use buySubscription instead of buyNonConsumable!
     final result = await InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam);
 
     await _setPremium(true);
+    // WARNING: In production, unlock premium ONLY after validating purchaseToken with Google server.
   }
 
   Future<ProductDetails> _getProductDetails() async {
