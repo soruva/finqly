@@ -71,6 +71,7 @@ class MyHomePage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 40),
+
                   _homeButton(
                     context,
                     icon: Icons.flash_on,
@@ -86,6 +87,7 @@ class MyHomePage extends StatelessWidget {
                       );
                     },
                   ),
+
                   _homeButton(
                     context,
                     icon: Icons.trending_up,
@@ -101,7 +103,9 @@ class MyHomePage extends StatelessWidget {
                       );
                     },
                   ),
+
                   _premiumTrendButton(context, loc),
+
                   _homeButton(
                     context,
                     icon: Icons.workspace_premium,
@@ -118,6 +122,7 @@ class MyHomePage extends StatelessWidget {
                     },
                     isPremium: true,
                   ),
+
                   _homeButton(
                     context,
                     icon: Icons.menu_book,
@@ -133,6 +138,7 @@ class MyHomePage extends StatelessWidget {
                       );
                     },
                   ),
+
                   _homeButton(
                     context,
                     icon: Icons.settings,
@@ -152,6 +158,38 @@ class MyHomePage extends StatelessWidget {
                     },
                   ),
                   const SizedBox(height: 36),
+
+                  ValueListenableBuilder<bool>(
+                    valueListenable: subscriptionManager.isSubscribedNotifier,
+                    builder: (context, isPremium, _) {
+                      return !isPremium
+                          ? Container(
+                              margin: const EdgeInsets.only(bottom: 8),
+                              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                              decoration: BoxDecoration(
+                                color: Colors.deepPurple.withOpacity(0.84),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.lock, color: Colors.amber, size: 22),
+                                  const SizedBox(width: 9),
+                                  Text(
+                                    loc.premiumPrompt,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : const SizedBox.shrink();
+                    },
+                  ),
+
                   Text(
                     "© SoruvaLab",
                     style: TextStyle(
@@ -172,30 +210,40 @@ class MyHomePage extends StatelessWidget {
     return ValueListenableBuilder<bool>(
       valueListenable: subscriptionManager.isSubscribedNotifier,
       builder: (context, isPremium, child) {
-        return _homeButton(
-          context,
-          icon: Icons.show_chart,
-          label: loc.trendForecastTitle,
-          onTap: isPremium
-              ? () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => TrendPage(subscriptionManager: subscriptionManager),
-                    ),
-                  );
-                }
-              : () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => PremiumUnlockPage(
-                        subscriptionManager: subscriptionManager,
-                      ),
-                    ),
-                  );
-                },
-          isPremium: isPremium,
+        return Stack(
+          alignment: Alignment.centerRight,
+          children: [
+            _homeButton(
+              context,
+              icon: Icons.show_chart,
+              label: loc.trendForecastTitle,
+              onTap: isPremium
+                  ? () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => TrendPage(subscriptionManager: subscriptionManager),
+                        ),
+                      );
+                    }
+                  : () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => PremiumUnlockPage(
+                            subscriptionManager: subscriptionManager,
+                          ),
+                        ),
+                      );
+                    },
+              isPremium: isPremium,
+            ),
+            if (!isPremium)
+              Padding(
+                padding: const EdgeInsets.only(right: 32.0),
+                child: Icon(Icons.lock, color: Colors.deepPurple, size: 22),
+              ),
+          ],
         );
       },
     );
