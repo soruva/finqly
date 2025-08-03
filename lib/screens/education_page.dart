@@ -91,6 +91,19 @@ class _EducationPageState extends State<EducationPage> {
                 ),
                 if (!isPremium) ...[
                   const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 14.0, right: 14.0, bottom: 6.0),
+                    child: Text(
+                      loc.premiumFeatureExplain,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        color: Colors.deepPurple,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.1,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                   ElevatedButton.icon(
                     icon: const Icon(Icons.lock_open),
                     label: Text(loc.unlockInsights),
