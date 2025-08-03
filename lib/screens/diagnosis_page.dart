@@ -119,20 +119,21 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                       ),
                     ),
                     const SizedBox(height: 34),
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 18, left: 4, right: 4),
-                        child: Text(
-                          loc.premiumPrompt,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            color: Colors.white70,
-                            fontWeight: FontWeight.w600,
+                    if (!isPremiumUser)
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 18, left: 4, right: 4),
+                          child: Text(
+                            loc.premiumPrompt,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          textAlign: TextAlign.center,
                         ),
                       ),
-                    ),
                   ],
                 ),
               ),
