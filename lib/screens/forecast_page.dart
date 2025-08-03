@@ -16,8 +16,7 @@ class ForecastPage extends StatelessWidget {
     return ValueListenableBuilder<bool>(
       valueListenable: subscriptionManager.isSubscribedNotifier,
       builder: (context, isPremium, _) {
-        final forecastPercent =
-            isPremium ? 3 + Random().nextDouble() * 5 : 0;
+        final forecastPercent = isPremium ? 3 + Random().nextDouble() * 5 : 0;
 
         return Scaffold(
           appBar: AppBar(
