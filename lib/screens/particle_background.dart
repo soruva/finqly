@@ -11,28 +11,33 @@ class ParticleBackground extends StatefulWidget {
 class _ParticleBackgroundState extends State<ParticleBackground>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  final List<Offset> _positions = List.generate(30, (_) => Offset.zero);
+  final int _numParticles = 30;
+  final List<_Particle> _particles = [];
   final Random _random = Random();
 
   @override
   void initState() {
     super.initState();
 
-    for (var i = 0; i < _positions.length; i++) {
-      _positions[i] = Offset(_random.nextDouble(), _random.nextDouble());
+    for (var i = 0; i < _numParticles; i++) {
+      _particles.add(_Particle(
+        _random.nextDouble(),
+        _random.nextDouble(),
+        _random.nextDouble() * 0.002 + 0.001, // vx
+        _random.nextDouble() * 0.002 + 0.001, // vy
+        _random.nextDouble() * 1.5 + 2.0, // radius
+        _random.nextDouble() * 0.13 + 0.15, // opacity
+      ));
     }
 
     _controller =
         AnimationController(vsync: this, duration: const Duration(seconds: 20))
           ..addListener(() {
-            setState(() {
-              for (var i = 0; i < _positions.length; i++) {
-                _positions[i] = Offset(
-                  (_positions[i].dx + 0.001) % 1,
-                  (_positions[i].dy + 0.002) % 1,
-                );
-              }
-            });
+            for (var p in _particles) {
+              p.x = (p.x + p.vx) % 1;
+              p.y = (p.y + p.vy) % 1;
+            }
+            setState(() {});
           })
           ..repeat();
   }
@@ -45,27 +50,31 @@ class _ParticleBackgroundState extends State<ParticleBackground>
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: _ParticlePainter(_positions),
-      size: Size.infinite,
+    return IgnorePointer(
+      child: CustomPaint(
+        painter: _ParticlePainter(_particles),
+        size: Size.infinite,
+      ),
     );
   }
 }
 
+class _Particle {
+  double x, y, vx, vy, radius, opacity;
+  _Particle(this.x, this.y, this.vx, this.vy, this.radius, this.opacity);
+}
+
 class _ParticlePainter extends CustomPainter {
-  final List<Offset> positions;
-  _ParticlePainter(this.positions);
+  final List<_Particle> particles;
+  _ParticlePainter(this.particles);
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withOpacity(0.2)
-      ..style = PaintingStyle.fill;
-
-    for (final pos in positions) {
-      final dx = pos.dx * size.width;
-      final dy = pos.dy * size.height;
-      canvas.drawCircle(Offset(dx, dy), 2.5, paint);
+    for (final p in particles) {
+      final paint = Paint()
+        ..color = Colors.white.withOpacity(p.opacity)
+        ..style = PaintingStyle.fill;
+      canvas.drawCircle(Offset(p.x * size.width, p.y * size.height), p.radius, paint);
     }
   }
 
