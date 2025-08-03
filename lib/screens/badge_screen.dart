@@ -36,7 +36,6 @@ class BadgeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
     final badgeImagePath = 'assets/images/badges/${emotionKey.toLowerCase()}.png';
-    final isSubscribed = subscriptionManager.isSubscribed;
 
     return Scaffold(
       appBar: AppBar(
@@ -97,53 +96,63 @@ class BadgeScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 35),
-              if (isSubscribed) ...[
-                ElevatedButton.icon(
-                  icon: const Icon(Icons.check_circle_outline, color: Colors.amber),
-                  onPressed: () => Navigator.pop(context),
-                  label: Text(loc.startButton),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 38, vertical: 15),
-                    backgroundColor: Colors.white.withOpacity(0.92),
-                    foregroundColor: const Color(0xFF7B44C6),
-                    textStyle: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-                  ),
-                )
-              ] else ...[
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    loc.premiumPrompt,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.white70,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 13),
-                ElevatedButton.icon(
-                  icon: const Icon(Icons.lock_open),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => PremiumUnlockPage(
-                          subscriptionManager: subscriptionManager,
-                        ),
+
+              ValueListenableBuilder<bool>(
+                valueListenable: subscriptionManager.isSubscribedNotifier,
+                builder: (context, isSubscribed, _) {
+                  if (isSubscribed) {
+                    return ElevatedButton.icon(
+                      icon: const Icon(Icons.check_circle_outline, color: Colors.amber),
+                      onPressed: () => Navigator.pop(context),
+                      label: Text(loc.startButton),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 38, vertical: 15),
+                        backgroundColor: Colors.white.withOpacity(0.92),
+                        foregroundColor: const Color(0xFF7B44C6),
+                        textStyle: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                       ),
                     );
-                  },
-                  label: Text(loc.unlockInsights),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 38, vertical: 15),
-                    backgroundColor: Colors.amber[700],
-                    foregroundColor: Colors.white,
-                    textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-                  ),
-                ),
-              ],
+                  } else {
+                    return Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(
+                            loc.premiumPrompt,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 13),
+                        ElevatedButton.icon(
+                          icon: const Icon(Icons.lock_open),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => PremiumUnlockPage(
+                                  subscriptionManager: subscriptionManager,
+                                ),
+                              ),
+                            );
+                          },
+                          label: Text(loc.unlockInsights),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 38, vertical: 15),
+                            backgroundColor: Colors.amber[700],
+                            foregroundColor: Colors.white,
+                            textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                },
+              ),
             ],
           ),
         ),
