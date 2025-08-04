@@ -185,5 +185,17 @@
   "@noTrendData": { "description": "Meldung bei fehlenden Trenddaten" },
 
   "trendForecastDescription": "Ihr aktueller emotionaler Trend wird unten angezeigt.",
-  "@trendForecastDescription": { "description": "Erklärung unterhalb des Trenddiagramms" }
+  "@trendForecastDescription": { "description": "Erklärung unterhalb des Trenddiagramms" },
+
+  "privacyPolicy": "Datenschutzerklärung",
+  "@privacyPolicy": { "description": "Label für Datenschutzerklärung im Menü" },
+
+  "termsOfService": "Nutzungsbedingungen",
+  "@termsOfService": { "description": "Label für Nutzungsbedingungen im Menü" },
+
+  "disclaimer": "Haftungsausschluss",
+  "@disclaimer": { "description": "Label für Haftungsausschluss im Menü" },
+
+  "faq": "FAQ",
+  "@faq": { "description": "Label für FAQ im Menü" }
 }
