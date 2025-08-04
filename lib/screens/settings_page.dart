@@ -71,7 +71,7 @@ class _SettingsPageState extends State<SettingsPage> {
           children: [
             ListTile(
               leading: const Icon(Icons.history),
-              title: const Text('Emotion History'),
+              title: Text(loc.emotionHistoryTitle),
               onTap: () {
                 Navigator.push(
                   context,
@@ -126,23 +126,23 @@ class _SettingsPageState extends State<SettingsPage> {
             const SizedBox(height: 12),
             ListTile(
               leading: const Icon(Icons.privacy_tip),
-              title: const Text('Privacy Policy'),
-              onTap: () => _openLegalPage('Privacy Policy', 'privacy.html'),
+              title: Text(loc.privacyTitle),
+              onTap: () => _openLegalPage(loc.privacyTitle, 'privacy.html'),
             ),
             ListTile(
               leading: const Icon(Icons.gavel),
-              title: const Text('Terms of Service'),
-              onTap: () => _openLegalPage('Terms of Service', 'terms.html'),
+              title: Text(loc.termsTitle),
+              onTap: () => _openLegalPage(loc.termsTitle, 'terms.html'),
             ),
             ListTile(
               leading: const Icon(Icons.info_outline),
-              title: const Text('Disclaimer'),
-              onTap: () => _openLegalPage('Disclaimer', 'disclaimer.html'),
+              title: Text(loc.disclaimerTitle),
+              onTap: () => _openLegalPage(loc.disclaimerTitle, 'disclaimer.html'),
             ),
             ListTile(
               leading: const Icon(Icons.help_outline),
-              title: const Text('FAQ'),
-              onTap: () => _openLegalPage('FAQ', 'faq.html'),
+              title: Text(loc.faqTitle),
+              onTap: () => _openLegalPage(loc.faqTitle, 'faq.html'),
             ),
           ],
         ),
