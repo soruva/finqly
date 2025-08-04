@@ -188,5 +188,17 @@
   "@noTrendData": { "description": "Message shown when no trend data is available" },
 
   "trendForecastDescription": "Your recent emotional trend is visualized below.",
-  "@trendForecastDescription": { "description": "Description text below the trend chart" }
+  "@trendForecastDescription": { "description": "Description text below the trend chart" },
+
+  "privacyPolicy": "Privacy Policy",
+  "@privacyPolicy": { "description": "Label for Privacy Policy item in settings" },
+
+  "termsOfService": "Terms of Service",
+  "@termsOfService": { "description": "Label for Terms of Service item in settings" },
+
+  "disclaimer": "Disclaimer",
+  "@disclaimer": { "description": "Label for Disclaimer item in settings" },
+
+  "faq": "FAQ",
+  "@faq": { "description": "Label for FAQ item in settings" }
 }
