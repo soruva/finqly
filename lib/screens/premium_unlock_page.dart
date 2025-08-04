@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:finqly/services/subscription_manager.dart';
 import 'package:finqly/l10n/app_localizations.dart';
-import 'package:finqly/screens/premium_plans_page.dart';
-
-// TODO: Google Play Billing API integration is planned for production.
-// WARNING: This build currently unlocks premium locally for review/testing only.
 
 class PremiumUnlockPage extends StatefulWidget {
   final SubscriptionManager subscriptionManager;
@@ -70,15 +66,26 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
                 icon: const Icon(Icons.lock_open, color: Colors.white),
                 onPressed: isLoading
                     ? null
-                    : () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => PremiumPlansPage(
-                              subscriptionManager: widget.subscriptionManager,
+                    : () async {
+                        showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            title: const Text('For Review Only'),
+                            content: const Text(
+                              'This build is for Google Play review/testing only.\n\n'
+                              'In the production release, all payments and subscriptions will be securely processed via Google Play Billing. '
+                              'Selecting a plan will launch the official purchase flow and users will be billed through Google Play.\n\n'
+                              'No local unlocking is allowed in the public release. Please use this version only for review/testing purposes.',
                             ),
+                            actions: [
+                              TextButton(
+                                child: const Text('OK'),
+                                onPressed: () => Navigator.of(ctx).pop(),
+                              ),
+                            ],
                           ),
                         );
+                        // In production, this should be replaced with real Google Play Billing integration.
                       },
                 label: isLoading
                     ? const SizedBox(
@@ -108,7 +115,7 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
             ),
             const SizedBox(height: 16),
             Text(
-              loc.premiumDisclaimer, // Example: "Subscriptions auto-renew unless canceled. You can cancel anytime from your Google Play account. All payments are securely processed by Google Play."
+              "All payments are processed securely via Google Play Billing. Subscriptions auto-renew unless canceled. You can cancel anytime from your Google Play account.",
               style: const TextStyle(fontSize: 12, color: Colors.grey),
               textAlign: TextAlign.center,
             ),
