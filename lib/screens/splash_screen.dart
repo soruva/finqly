@@ -25,10 +25,12 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
-  late AnimationController _logoController;
-  late AnimationController _textController;
-  late Animation<double> _rotationAnimation;
-  late Animation<Offset> _textAnimation;
+  late final AnimationController _logoController;
+  late final AnimationController _textController;
+  late final Animation<double> _rotationAnimation;
+  late final Animation<Offset> _textAnimation;
+  Timer? _navTimer;
+  bool _navigated = false;
 
   @override
   void initState() {
@@ -60,9 +62,15 @@ class _SplashScreenState extends State<SplashScreen>
       curve: Curves.easeOut,
     ));
 
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      precacheImage(const AssetImage('assets/images/finqly_logo.png'), context);
+    });
+
     _logoController.forward().then((_) => _textController.forward());
 
-    Timer(const Duration(seconds: 2), () {
+    _navTimer = Timer(const Duration(seconds: 2), () {
+      if (!mounted || _navigated) return;
+      _navigated = true;
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (_) => MyHomePage(
@@ -78,6 +86,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   void dispose() {
+    _navTimer?.cancel();
     _logoController.dispose();
     _textController.dispose();
     super.dispose();
@@ -87,7 +96,7 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? Colors.black : const Color(0xFF4B0082);
-    final textColor = Colors.white;
+    const textColor = Colors.white;
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -128,7 +137,7 @@ class _SplashScreenState extends State<SplashScreen>
                 const SizedBox(height: 16),
                 SlideTransition(
                   position: _textAnimation,
-                  child: Text(
+                  child: const Text(
                     'Finqly',
                     style: TextStyle(
                       fontSize: 28,
@@ -136,7 +145,7 @@ class _SplashScreenState extends State<SplashScreen>
                       color: textColor,
                       shadows: [
                         Shadow(
-                          color: Colors.cyanAccent.withOpacity(0.4),
+                          color: Color(0x6622FFFF),
                           blurRadius: 8,
                         )
                       ],
