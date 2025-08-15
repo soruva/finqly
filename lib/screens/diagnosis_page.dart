@@ -5,6 +5,7 @@ import 'package:finqly/screens/badge_screen.dart';
 import 'package:finqly/screens/premium_unlock_page.dart';
 import 'package:finqly/services/subscription_manager.dart';
 import 'package:finqly/services/history_service.dart';
+import 'package:finqly/services/iap_service.dart';
 
 class DiagnosisPage extends StatefulWidget {
   final SubscriptionManager subscriptionManager;
@@ -16,6 +17,9 @@ class DiagnosisPage extends StatefulWidget {
 
 class _DiagnosisPageState extends State<DiagnosisPage> {
   String? selectedEmotionKey;
+  bool _busy = false;
+  String? _error;
+  late final IapService _iap;
 
   final _emojis = {
     'Optimistic': '😊',
@@ -26,8 +30,100 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
     'Cautious': '🤔',
   };
 
+  @override
+  void initState() {
+    super.initState();
+    _iap = IapService();
+    _iap.init(
+      onVerified: (p) async {
+        await widget.subscriptionManager.setSubscribed(true);
+        if (mounted) setState(() => _busy = false);
+        if (mounted && selectedEmotionKey != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BadgeScreen(
+                emotionKey: selectedEmotionKey!,
+                subscriptionManager: widget.subscriptionManager,
+              ),
+            ),
+          );
+        }
+      },
+      onError: (e) {
+        if (!mounted) return;
+        setState(() {
+          _busy = false;
+          _error = e.toString();
+        });
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Purchase error: $_error')));
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _iap.dispose();
+    super.dispose();
+  }
+
   Future<void> _saveEmotionToHistory(String emotion) async {
     await HistoryService().addEntry(emotion);
+  }
+
+  Future<void> _showPaywall() async {
+    showModalBottomSheet(
+      context: context,
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Unlock options',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 12),
+              ListTile(
+                leading: const Icon(Icons.check_circle_outline),
+                title: const Text('One-time Diagnosis'),
+                subtitle: const Text('\$2.99 • No subscription required'),
+                onTap: _busy
+                    ? null
+                    : () async {
+                        Navigator.pop(context);
+                        setState(() => _busy = true);
+                        await _iap.buyOneTime(IapService.oneTimeDiagnosisId);
+                      },
+              ),
+              const Divider(),
+              ListTile(
+                leading: const Icon(Icons.workspace_premium),
+                title: const Text('Go Premium'),
+                subtitle:
+                    const Text('Monthly or Yearly subscription available'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => PremiumUnlockPage(
+                        subscriptionManager: widget.subscriptionManager,
+                      ),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -48,7 +144,8 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
       builder: (context, isPremiumUser, _) {
         return Scaffold(
           appBar: AppBar(
-            title: Text(loc.diagnosisTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
+            title: Text(loc.diagnosisTitle,
+                style: const TextStyle(fontWeight: FontWeight.bold)),
             centerTitle: true,
             backgroundColor: AppColors.primary,
             foregroundColor: Colors.white,
@@ -67,7 +164,8 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
             child: SafeArea(
               bottom: false,
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -100,19 +198,13 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                                 MaterialPageRoute(
                                   builder: (_) => BadgeScreen(
                                     emotionKey: entry.key,
-                                    subscriptionManager: widget.subscriptionManager,
+                                    subscriptionManager:
+                                        widget.subscriptionManager,
                                   ),
                                 ),
                               );
                             } else {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => PremiumUnlockPage(
-                                    subscriptionManager: widget.subscriptionManager,
-                                  ),
-                                ),
-                              );
+                              await _showPaywall();
                             }
                           },
                         ),
@@ -122,7 +214,8 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                     if (!isPremiumUser)
                       Center(
                         child: Padding(
-                          padding: const EdgeInsets.only(bottom: 18, left: 4, right: 4),
+                          padding: const EdgeInsets.only(
+                              bottom: 18, left: 4, right: 4),
                           child: Text(
                             loc.premiumPrompt,
                             style: const TextStyle(
@@ -132,6 +225,19 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                             ),
                             textAlign: TextAlign.center,
                           ),
+                        ),
+                      ),
+                    if (_busy)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 12),
+                        child: LinearProgressIndicator(minHeight: 2),
+                      ),
+                    if (_error != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Text(
+                          'Error: $_error',
+                          style: const TextStyle(color: Colors.red),
                         ),
                       ),
                   ],
