@@ -3,6 +3,7 @@ import 'package:finqly/theme/colors.dart';
 import 'package:finqly/l10n/app_localizations.dart';
 import 'package:finqly/screens/premium_unlock_page.dart';
 import 'package:finqly/services/subscription_manager.dart';
+import 'package:finqly/services/iap_service.dart';
 
 class EducationPage extends StatefulWidget {
   final SubscriptionManager subscriptionManager;
@@ -20,7 +21,6 @@ class _EducationPageState extends State<EducationPage> {
     'investmentTips2',
     'investmentTips3',
   ];
-
   final List<String> _proTips = [
     'investmentTips1',
     'investmentTips2',
@@ -28,6 +28,96 @@ class _EducationPageState extends State<EducationPage> {
     'investmentTips4',
     'investmentTips5',
   ];
+
+  late final IapService _iap;
+  bool _busy = false;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _iap = IapService();
+    _iap.init(
+      onVerified: (p) async {
+        await widget.subscriptionManager.setSubscribed(true);
+        if (!mounted) return;
+        setState(() => _busy = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Purchase completed')),
+        );
+      },
+      onError: (e) {
+        if (!mounted) return;
+        setState(() {
+          _busy = false;
+          _error = e.toString();
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Purchase error: $_error')),
+        );
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _iap.dispose();
+    super.dispose();
+  }
+
+  Future<void> _showPaywall() async {
+    showModalBottomSheet(
+      context: context,
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Unlock options',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 12),
+              ListTile(
+                leading: const Icon(Icons.all_inclusive),
+                title: const Text('Starter Bundle: Diagnosis & Insights'),
+                subtitle: const Text('\$19.99 • Lifetime access'),
+                onTap: _busy
+                    ? null
+                    : () async {
+                        Navigator.pop(context);
+                        setState(() => _busy = true);
+                        await _iap.buyOneTime(IapService.starterBundleId);
+                      },
+              ),
+              const Divider(),
+              ListTile(
+                leading: const Icon(Icons.workspace_premium),
+                title: const Text('Go Premium'),
+                subtitle:
+                    const Text('Monthly or Yearly subscription available'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => PremiumUnlockPage(
+                        subscriptionManager: widget.subscriptionManager,
+                      ),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +130,8 @@ class _EducationPageState extends State<EducationPage> {
 
         return Scaffold(
           appBar: AppBar(
-            title: Text(loc.investmentTipsTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
+            title: Text(loc.investmentTipsTitle,
+                style: const TextStyle(fontWeight: FontWeight.bold)),
             centerTitle: true,
             backgroundColor: AppColors.primary,
             foregroundColor: Colors.white,
@@ -60,7 +151,8 @@ class _EducationPageState extends State<EducationPage> {
                 const SizedBox(height: 20),
                 Expanded(
                   child: ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     itemCount: tipsKeys.length,
                     itemBuilder: (context, index) {
                       final key = tipsKeys[index];
@@ -75,6 +167,9 @@ class _EducationPageState extends State<EducationPage> {
                             setState(() {
                               flippedIndex = (flippedIndex == index) ? -1 : index;
                             });
+                            if (!isPremium && flippedIndex != -1) {
+                              _showPaywall();
+                            }
                           },
                           child: AnimatedSwitcher(
                             duration: const Duration(milliseconds: 350),
@@ -92,7 +187,8 @@ class _EducationPageState extends State<EducationPage> {
                 if (!isPremium) ...[
                   const SizedBox(height: 10),
                   Padding(
-                    padding: const EdgeInsets.only(left: 14.0, right: 14.0, bottom: 6.0),
+                    padding: const EdgeInsets.only(
+                        left: 14.0, right: 14.0, bottom: 6.0),
                     child: Text(
                       loc.premiumFeatureExplain,
                       style: const TextStyle(
@@ -108,7 +204,8 @@ class _EducationPageState extends State<EducationPage> {
                     icon: const Icon(Icons.lock_open),
                     label: Text(loc.unlockInsights),
                     style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30, vertical: 15),
                       backgroundColor: AppColors.accentPurple,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
@@ -116,19 +213,22 @@ class _EducationPageState extends State<EducationPage> {
                       ),
                       elevation: 2,
                     ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => PremiumUnlockPage(
-                            subscriptionManager: widget.subscriptionManager,
-                          ),
-                        ),
-                      );
-                    },
+                    onPressed: _showPaywall,
                   ),
                   const SizedBox(height: 25),
                 ],
+                if (_busy)
+                  const Padding(
+                    padding: EdgeInsets.only(bottom: 8),
+                    child: LinearProgressIndicator(minHeight: 2),
+                  ),
+                if (_error != null)
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(bottom: 12, left: 16, right: 16),
+                    child: Text('Error: $_error',
+                        style: const TextStyle(color: Colors.red)),
+                  ),
               ],
             ),
           ),
@@ -174,9 +274,7 @@ class _EducationPageState extends State<EducationPage> {
               color: Colors.white,
               fontWeight: FontWeight.w700,
               height: 1.4,
-              shadows: [
-                Shadow(color: Colors.black26, blurRadius: 2),
-              ],
+              shadows: [Shadow(color: Colors.black26, blurRadius: 2)],
             ),
           ),
           const SizedBox(height: 10),
