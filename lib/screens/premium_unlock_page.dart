@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:finqly/services/subscription_manager.dart';
+import 'package:finqly/services/iap_service.dart';
 import 'package:finqly/l10n/app_localizations.dart';
 
 class PremiumUnlockPage extends StatefulWidget {
@@ -16,6 +17,38 @@ class PremiumUnlockPage extends StatefulWidget {
 
 class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
   bool isLoading = false;
+  late final IapService _iap;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _iap = IapService();
+    _iap.init(
+      onVerified: (p) async {
+        await widget.subscriptionManager.setSubscribed(true);
+        if (mounted) {
+          setState(() => isLoading = false);
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text('Purchase complete')));
+        }
+      },
+      onError: (e) {
+        if (mounted) {
+          setState(() {
+            isLoading = false;
+            _error = e.toString();
+          });
+        }
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _iap.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +78,11 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
               ],
             ),
             const SizedBox(height: 32),
+            if (_error != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Text(_error!, style: const TextStyle(color: Colors.red)),
+              ),
             Container(
               width: double.infinity,
               decoration: BoxDecoration(
@@ -67,31 +105,15 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
                 onPressed: isLoading
                     ? null
                     : () async {
-                        showDialog(
-                          context: context,
-                          builder: (ctx) => AlertDialog(
-                            title: const Text('For Review Only'),
-                            content: const Text(
-                              'This build is for Google Play review/testing only.\n\n'
-                              'In the production release, all payments and subscriptions will be securely processed via Google Play Billing. '
-                              'Selecting a plan will launch the official purchase flow and users will be billed through Google Play.\n\n'
-                              'No local unlocking is allowed in the public release. Please use this version only for review/testing purposes.',
-                            ),
-                            actions: [
-                              TextButton(
-                                child: const Text('OK'),
-                                onPressed: () => Navigator.of(ctx).pop(),
-                              ),
-                            ],
-                          ),
-                        );
-                        // In production, this should be replaced with real Google Play Billing integration.
+                        setState(() => isLoading = true);
+                        await _iap.buySubscription(yearly: false);
                       },
                 label: isLoading
                     ? const SizedBox(
                         width: 20,
                         height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                        child: CircularProgressIndicator(
+                            strokeWidth: 2, color: Colors.white),
                       )
                     : Text(
                         loc.premiumUnlockButton,
