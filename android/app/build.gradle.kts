@@ -6,7 +6,8 @@ plugins {
 
 android {
     namespace = "com.soruvalab.finqly"
-    compileSdk = flutter.compileSdkVersion
+
+    compileSdk = 34
     ndkVersion = "27.0.12077973"
 
     compileOptions {
@@ -16,13 +17,18 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
+
     defaultConfig {
         applicationId = "com.soruvalab.finqly"
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode    // pubspec.yaml の「+数字」と自動連動
-        versionName = flutter.versionName    // pubspec.yaml の「1.0.4」などと自動連動
+
+        minSdk = maxOf(21, flutter.minSdkVersion)
+
+        targetSdk = 34
+
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
     }
+
     signingConfigs {
         create("release") {
             storeFile = file(System.getenv("CM_KEYSTORE"))
@@ -35,7 +41,7 @@ android {
         getByName("release") {
             signingConfig = signingConfigs.getByName("release")
         }
-        getByName("debug") {}
+        getByName("debug") { }
     }
 }
 
