@@ -4,17 +4,111 @@ import 'package:finqly/l10n/app_localizations.dart';
 import 'package:finqly/screens/premium_unlock_page.dart';
 import 'package:finqly/services/subscription_manager.dart';
 import 'package:finqly/screens/particle_background.dart';
+import 'package:finqly/services/iap_service.dart';
 import 'dart:math';
 
-class ForecastPage extends StatelessWidget {
+class ForecastPage extends StatefulWidget {
   final SubscriptionManager subscriptionManager;
   const ForecastPage({super.key, required this.subscriptionManager});
+
+  @override
+  State<ForecastPage> createState() => _ForecastPageState();
+}
+
+class _ForecastPageState extends State<ForecastPage> {
+  late final IapService _iap;
+  bool _busy = false;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _iap = IapService();
+    _iap.init(
+      onVerified: (p) async {
+        await widget.subscriptionManager.setSubscribed(true);
+        if (!mounted) return;
+        setState(() => _busy = false);
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Purchase completed')));
+      },
+      onError: (e) {
+        if (!mounted) return;
+        setState(() {
+          _busy = false;
+          _error = e.toString();
+        });
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Purchase error: $_error')));
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _iap.dispose();
+    super.dispose();
+  }
+
+  Future<void> _showPaywall() async {
+    showModalBottomSheet(
+      context: context,
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Unlock options',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 12),
+              ListTile(
+                leading: const Icon(Icons.all_inclusive),
+                title: const Text('Starter Bundle: Diagnosis & Insights'),
+                subtitle: const Text('\$19.99 • Lifetime access'),
+                onTap: _busy
+                    ? null
+                    : () async {
+                        Navigator.pop(context);
+                        setState(() => _busy = true);
+                        await _iap.buyOneTime(IapService.starterBundleId);
+                      },
+              ),
+              const Divider(),
+              ListTile(
+                leading: const Icon(Icons.workspace_premium),
+                title: const Text('Go Premium'),
+                subtitle:
+                    const Text('Monthly or Yearly subscription available'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => PremiumUnlockPage(
+                        subscriptionManager: widget.subscriptionManager,
+                      ),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
     return ValueListenableBuilder<bool>(
-      valueListenable: subscriptionManager.isSubscribedNotifier,
+      valueListenable: widget.subscriptionManager.isSubscribedNotifier,
       builder: (context, isPremium, _) {
         final forecastPercent = isPremium ? 3 + Random().nextDouble() * 5 : 0;
 
@@ -44,6 +138,14 @@ class ForecastPage extends StatelessWidget {
                     ? _buildPremiumView(loc, forecastPercent.toDouble(), context)
                     : _buildLockedView(loc, context),
               ),
+              if (_busy)
+                const Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 8),
+                    child: LinearProgressIndicator(minHeight: 2),
+                  ),
+                ),
             ],
           ),
         );
@@ -123,16 +225,7 @@ class ForecastPage extends StatelessWidget {
         ),
         const SizedBox(height: 32),
         ElevatedButton.icon(
-          onPressed: () async {
-            await Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => PremiumUnlockPage(
-                  subscriptionManager: subscriptionManager,
-                ),
-              ),
-            );
-          },
+          onPressed: _showPaywall,
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.white,
             foregroundColor: AppColors.primary,
@@ -141,6 +234,11 @@ class ForecastPage extends StatelessWidget {
           icon: const Icon(Icons.lock_open),
           label: Text(loc.premiumCTA),
         ),
+        if (_error != null) ...[
+          const SizedBox(height: 8),
+          Text('Error: $_error',
+              style: const TextStyle(color: Colors.redAccent)),
+        ],
       ],
     );
   }
