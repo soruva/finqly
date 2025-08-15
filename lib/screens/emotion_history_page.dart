@@ -4,6 +4,7 @@ import 'package:finqly/services/history_service.dart';
 import 'package:intl/intl.dart';
 import 'package:finqly/screens/premium_unlock_page.dart';
 import 'package:finqly/l10n/app_localizations.dart';
+import 'package:finqly/services/iap_service.dart';
 
 class EmotionHistoryPage extends StatefulWidget {
   final SubscriptionManager subscriptionManager;
@@ -16,7 +17,7 @@ class EmotionHistoryPage extends StatefulWidget {
 class _EmotionHistoryPageState extends State<EmotionHistoryPage> {
   List<Map<String, dynamic>> _history = [];
 
-  final Map<String, String> _emojis = {
+  final Map<String, String> _emojis = const {
     'Optimistic': '😊',
     'Neutral': '😐',
     'Worried': '😟',
@@ -25,15 +26,102 @@ class _EmotionHistoryPageState extends State<EmotionHistoryPage> {
     'Cautious': '🤔',
   };
 
+  late final IapService _iap;
+  bool _busy = false;
+  String? _error;
+
   @override
   void initState() {
     super.initState();
     _loadHistory();
+
+    _iap = IapService();
+    _iap.init(
+      onVerified: (p) async {
+        await widget.subscriptionManager.setSubscribed(true);
+        await _loadHistory();
+        if (!mounted) return;
+        setState(() => _busy = false);
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Purchase completed')));
+      },
+      onError: (e) {
+        if (!mounted) return;
+        setState(() {
+          _busy = false;
+          _error = e.toString();
+        });
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Purchase error: $_error')));
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _iap.dispose();
+    super.dispose();
   }
 
   Future<void> _loadHistory() async {
     final fullHistory = await HistoryService().getHistory();
+    if (!mounted) return;
     setState(() => _history = fullHistory);
+  }
+
+  Future<void> _showPaywall() async {
+    showModalBottomSheet(
+      context: context,
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Unlock options',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 12),
+              ListTile(
+                leading: const Icon(Icons.all_inclusive),
+                title: const Text('Starter Bundle: Diagnosis & Insights'),
+                subtitle: const Text('\$19.99 • Lifetime access'),
+                onTap: _busy
+                    ? null
+                    : () async {
+                        Navigator.pop(context);
+                        setState(() => _busy = true);
+                        await _iap.buyOneTime(IapService.starterBundleId);
+                      },
+              ),
+              const Divider(),
+              ListTile(
+                leading: const Icon(Icons.workspace_premium),
+                title: const Text('Go Premium'),
+                subtitle:
+                    const Text('Monthly or Yearly subscription available'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => PremiumUnlockPage(
+                        subscriptionManager: widget.subscriptionManager,
+                      ),
+                    ),
+                  );
+                  await _loadHistory();
+                },
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -67,7 +155,7 @@ class _EmotionHistoryPageState extends State<EmotionHistoryPage> {
                       padding: const EdgeInsets.only(top: 18.0, bottom: 10.0),
                       child: Text(
                         isPremium
-                            ? loc.emotionHistoryTitle // e.g. "Emotion History"
+                            ? loc.emotionHistoryTitle
                             : "${loc.emotionHistoryTitle} (last 7 records)",
                         style: TextStyle(
                           fontSize: 16,
@@ -139,17 +227,7 @@ class _EmotionHistoryPageState extends State<EmotionHistoryPage> {
                                 foregroundColor: Colors.white,
                                 minimumSize: const Size.fromHeight(48),
                               ),
-                              onPressed: () async {
-                                await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => PremiumUnlockPage(
-                                      subscriptionManager: widget.subscriptionManager,
-                                    ),
-                                  ),
-                                );
-                                await _loadHistory();
-                              },
+                              onPressed: _showPaywall,
                               label: Text(
                                 loc.unlockInsights,
                                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
@@ -157,6 +235,17 @@ class _EmotionHistoryPageState extends State<EmotionHistoryPage> {
                             ),
                           ],
                         ),
+                      ),
+                    if (_busy)
+                      const Padding(
+                        padding: EdgeInsets.only(bottom: 8),
+                        child: LinearProgressIndicator(minHeight: 2),
+                      ),
+                    if (_error != null)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 12, left: 16, right: 16),
+                        child: Text('Error: $_error',
+                            style: const TextStyle(color: Colors.red)),
                       ),
                     const SizedBox(height: 6),
                   ],
