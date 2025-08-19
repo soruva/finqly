@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:finqly/services/subscription_manager.dart';
 import 'package:finqly/services/iap_service.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
 
 class PremiumPlansPage extends StatefulWidget {
   final SubscriptionManager subscriptionManager;
@@ -14,6 +14,7 @@ class PremiumPlansPage extends StatefulWidget {
 class _PremiumPlansPageState extends State<PremiumPlansPage> {
   late final IapService _iap;
   bool _loading = true;
+  bool _isPurchasing = false;
   String? _error;
 
   @override
@@ -38,6 +39,7 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
         }
       },
       onError: (e) {
+        if (!mounted) return;
         setState(() => _error = e.toString());
       },
     );
@@ -50,6 +52,7 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
     super.dispose();
   }
 
+  // ---------- Helpers ----------
   ProductDetails? _pd(String id) {
     try {
       return _iap.products.firstWhere((e) => e.id == id);
@@ -63,18 +66,21 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
     if (pd == null) return yearly ? '\$99.99 / year' : '\$9.99 / month';
 
     final offers = pd.googlePlayProductDetails?.subscriptionOfferDetails ?? [];
+    if (offers.isEmpty) {
+      return yearly ? '\$99.99 / year' : '\$9.99 / month';
+    }
+
+    final target = yearly ? 'P1Y' : 'P1M';
     for (final offer in offers) {
       for (final phase in offer.pricingPhases.pricingPhaseList) {
-        if (phase.billingPeriod == (yearly ? 'P1Y' : 'P1M')) {
-          final micros = phase.priceAmountMicros;
-          final currency = phase.priceCurrencyCode;
-          if (micros != null && currency != null) {
-            final v = (micros / 1000000.0);
-            final isUsd = currency == 'USD';
-            final numStr = v.toStringAsFixed(v.truncateToDouble() == v ? 0 : 2);
-            final priceStr = isUsd ? '\$$numStr' : '$numStr $currency';
-            return yearly ? '$priceStr / year' : '$priceStr / month';
-          }
+        final micros = phase.priceAmountMicros;
+        final code = phase.priceCurrencyCode;
+        if (phase.billingPeriod == target && micros != null && code != null) {
+          final v = micros / 1000000.0;
+          final isUsd = code == 'USD';
+          final numStr = v.toStringAsFixed(v.truncateToDouble() == v ? 0 : 2);
+          final priceStr = isUsd ? '\$$numStr' : '$numStr $code';
+          return yearly ? '$priceStr / year' : '$priceStr / month';
         }
       }
     }
@@ -83,9 +89,29 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
 
   String _inappPrice(String id, String fallback) {
     final pd = _pd(id);
-    if (pd == null) return fallback; // 例: $2.99 / time
+    if (pd == null) return fallback; // 例: $2.99
     return pd.price;
   }
+
+  Future<void> _handleAction(Future<void> Function() action) async {
+    if (_isPurchasing) return;
+    setState(() {
+      _isPurchasing = true;
+      _error = null;
+    });
+    try {
+      await action();
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _error = e.toString());
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Purchase error: $e')),
+      );
+    } finally {
+      if (mounted) setState(() => _isPurchasing = false);
+    }
+  }
+  // -----------------------------
 
   @override
   Widget build(BuildContext context) {
@@ -94,33 +120,25 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
         'title': 'Monthly Plan',
         'price': _subPrice(yearly: false),
         'desc': 'Unlock all premium features with a monthly subscription.',
-        'onPressed': () async {
-          await _iap.buySubscription(yearly: false);
-        }
+        'onPressed': () => _handleAction(() => _iap.buySubscription(yearly: false)),
       },
       {
         'title': 'Annual Plan',
         'price': _subPrice(yearly: true),
         'desc': 'Save more! Yearly subscription, all premium features.',
-        'onPressed': () async {
-          await _iap.buySubscription(yearly: true);
-        }
+        'onPressed': () => _handleAction(() => _iap.buySubscription(yearly: true)),
       },
       {
         'title': 'One-time Diagnosis',
         'price': '${_inappPrice(IapService.oneTimeDiagnosisId, '\$2.99')} / time',
         'desc': 'Premium diagnosis one time only, no subscription needed.',
-        'onPressed': () async {
-          await _iap.buyOneTime(IapService.oneTimeDiagnosisId);
-        }
+        'onPressed': () => _handleAction(() => _iap.buyOneTime(IapService.oneTimeDiagnosisId)),
       },
       {
         'title': 'Starter Bundle',
         'price': '${_inappPrice(IapService.starterBundleId, '\$19.99')} (one time)',
         'desc': 'Pack: Diagnosis, Forecast & Education tips. Lifetime access.',
-        'onPressed': () async {
-          await _iap.buyOneTime(IapService.starterBundleId);
-        }
+        'onPressed': () => _handleAction(() => _iap.buyOneTime(IapService.starterBundleId)),
       },
     ];
 
@@ -131,8 +149,16 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
       ),
       body: Column(
         children: [
-          if (_loading)
-            const LinearProgressIndicator(minHeight: 2),
+          if (_loading) const LinearProgressIndicator(minHeight: 2),
+          if (!_iap.isAvailable && !_loading)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
+              child: Text(
+                'Play Store not available. Please sign in to Google Play and try again.',
+                style: const TextStyle(color: Colors.orange, fontSize: 12),
+                textAlign: TextAlign.center,
+              ),
+            ),
           if (_error != null)
             Padding(
               padding: const EdgeInsets.all(12),
@@ -153,18 +179,22 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(plan['title'] as String,
-                            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800)),
+                        Text(
+                          plan['title'] as String,
+                          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+                        ),
                         const SizedBox(height: 10),
                         Text(plan['desc'] as String, style: const TextStyle(fontSize: 16)),
                         const SizedBox(height: 18),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(plan['price'] as String,
-                                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            Text(
+                              plan['price'] as String,
+                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
                             ElevatedButton(
-                              onPressed: _iap.isAvailable
+                              onPressed: (_iap.isAvailable && !_isPurchasing)
                                   ? plan['onPressed'] as VoidCallback
                                   : null,
                               style: ElevatedButton.styleFrom(
@@ -173,7 +203,16 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
                                 padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
                               ),
-                              child: const Text('Select', style: TextStyle(fontSize: 16)),
+                              child: _isPurchasing
+                                  ? const SizedBox(
+                                      width: 18,
+                                      height: 18,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : const Text('Select', style: TextStyle(fontSize: 16)),
                             ),
                           ],
                         ),
