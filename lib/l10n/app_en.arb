@@ -200,5 +200,17 @@
   "@disclaimer": { "description": "Label for Disclaimer item in settings" },
 
   "faq": "FAQ",
-  "@faq": { "description": "Label for FAQ item in settings" }
+  "@faq": { "description": "Label for FAQ item in settings" },
+
+  "privacyTitle": "Privacy Policy",
+  "@privacyTitle": { "description": "Title for Privacy policy page" },
+
+  "termsTitle": "Terms of Service",
+  "@termsTitle": { "description": "Title for Terms of Service page" },
+
+  "disclaimerTitle": "Disclaimer",
+  "@disclaimerTitle": { "description": "Title for Disclaimer page" },
+
+  "faqTitle": "FAQ",
+  "@faqTitle": { "description": "Title for FAQ page" }
 }
