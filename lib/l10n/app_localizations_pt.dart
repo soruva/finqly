@@ -195,4 +195,16 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get trendForecastDescription => 'Sua tendência emocional recente está visualizada abaixo.';
+
+  @override
+  String get privacyPolicy => 'Privacy Policy';
+
+  @override
+  String get termsOfService => 'Terms of Service';
+
+  @override
+  String get disclaimer => 'Disclaimer';
+
+  @override
+  String get faq => 'FAQ';
 }

@@ -472,6 +472,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your recent emotional trend is visualized below.'**
   String get trendForecastDescription;
+
+  /// Label for Privacy Policy item in settings
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get privacyPolicy;
+
+  /// Label for Terms of Service item in settings
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Service'**
+  String get termsOfService;
+
+  /// Label for Disclaimer item in settings
+  ///
+  /// In en, this message translates to:
+  /// **'Disclaimer'**
+  String get disclaimer;
+
+  /// Label for FAQ item in settings
+  ///
+  /// In en, this message translates to:
+  /// **'FAQ'**
+  String get faq;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

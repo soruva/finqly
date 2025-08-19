@@ -195,4 +195,16 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get trendForecastDescription => 'Ihr aktueller emotionaler Trend wird unten angezeigt.';
+
+  @override
+  String get privacyPolicy => 'Datenschutzerklärung';
+
+  @override
+  String get termsOfService => 'Nutzungsbedingungen';
+
+  @override
+  String get disclaimer => 'Haftungsausschluss';
+
+  @override
+  String get faq => 'FAQ';
 }
