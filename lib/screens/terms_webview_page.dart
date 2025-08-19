@@ -55,13 +55,16 @@ class _TermsWebViewPageState extends State<TermsWebViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        if (didPop) return;
         if (await _controller.canGoBack()) {
           await _controller.goBack();
-          return false;
+        } else {
+          if (!context.mounted) return;
+          Navigator.of(context).maybePop();  
         }
-        return true;
       },
       child: Scaffold(
         appBar: AppBar(title: const Text('Terms of Service')),

@@ -207,4 +207,16 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get faq => 'FAQ';
+
+  @override
+  String get privacyTitle => 'Privacy Policy';
+
+  @override
+  String get termsTitle => 'Terms of Service';
+
+  @override
+  String get disclaimerTitle => 'Disclaimer';
+
+  @override
+  String get faqTitle => 'FAQ';
 }

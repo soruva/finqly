@@ -79,18 +79,19 @@ class _LegalWebViewPageState extends State<LegalWebViewPage> {
       ..loadFlutterAsset(widget.assetPath);
   }
 
-  Future<bool> _handleWillPop() async {
-    if (await _controller.canGoBack()) {
-      await _controller.goBack();
-      return false;
-    }
-    return true;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _handleWillPop,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        if (didPop) return;
+        if (await _controller.canGoBack()) {
+          await _controller.goBack();
+        } else {
+          if (!context.mounted) return;
+          Navigator.of(context).maybePop();
+        }
+      },
       child: Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
