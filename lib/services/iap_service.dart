@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 
 class IapService {
   static const String subscriptionId = 'finqly_premium';
@@ -19,68 +21,96 @@ class IapService {
     required Future<void> Function(PurchaseDetails p) onVerified,
     required void Function(Object e) onError,
   }) async {
-    _available = await _iap.isAvailable();
-    if (!_available) return;
+    try {
+      _available = await _iap.isAvailable();
+      if (!_available) return;
 
-    final resp = await _iap.queryProductDetails({
-      subscriptionId,
-      oneTimeDiagnosisId,
-      starterBundleId,
-    });
+      final resp = await _iap.queryProductDetails({
+        subscriptionId,
+        oneTimeDiagnosisId,
+        starterBundleId,
+      });
 
-    if (resp.error != null) onError(resp.error!);
-    _products = resp.productDetails;
+      if (resp.error != null) onError(resp.error!);
+      _products = resp.productDetails;
 
-    _purchaseSub = _iap.purchaseStream.listen((purchases) async {
-      for (final p in purchases) {
-        switch (p.status) {
-          case PurchaseStatus.purchased:
-          case PurchaseStatus.restored:
-            await onVerified(p);
-            if (p.pendingCompletePurchase) {
-              await _iap.completePurchase(p); // acknowledge / consume
+      _purchaseSub?.cancel();
+      _purchaseSub = _iap.purchaseStream.listen((purchases) async {
+        for (final p in purchases) {
+          try {
+            switch (p.status) {
+              case PurchaseStatus.purchased:
+              case PurchaseStatus.restored:
+                await onVerified(p);
+                if (p.pendingCompletePurchase) {
+                  await _iap.completePurchase(p); // acknowledge / consume
+                }
+                break;
+              case PurchaseStatus.error:
+                onError(p.error ?? 'Unknown IAP error');
+                break;
+              case PurchaseStatus.canceled:
+              case PurchaseStatus.pending:
+                // no-op
+                break;
             }
-            break;
-          case PurchaseStatus.error:
-            onError(p.error!);
-            break;
-          case PurchaseStatus.canceled:
-          case PurchaseStatus.pending:
-            break;
+          } catch (e) {
+            onError(e);
+          }
         }
-      }
-    }, onError: onError);
+      }, onError: onError);
+    } catch (e) {
+      onError(e);
+    }
   }
 
   void dispose() => _purchaseSub?.cancel();
 
   ProductDetails? _get(String id) {
-    try { return _products.firstWhere((e) => e.id == id); }
-    catch (_) { return null; }
+    try {
+      return _products.firstWhere((e) => e.id == id);
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<void> buySubscription({required bool yearly}) async {
     final pd = _get(subscriptionId);
-    if (pd == null) throw 'Subscription product not found';
+    if (pd == null) {
+      throw 'Subscription product not found';
+    }
 
-    final offers = pd.googlePlayProductDetails?.subscriptionOfferDetails ?? [];
-    final target = offers.firstWhere(
-      (o) => o.pricingPhases.pricingPhaseList.any(
-        (ph) => ph.billingPeriod == (yearly ? 'P1Y' : 'P1M'),
-      ),
-      orElse: () => throw 'Offer for ${yearly ? 'P1Y' : 'P1M'} not found',
-    );
+    PurchaseParam param = PurchaseParam(productDetails: pd);
 
-    final param = GooglePlayPurchaseParam(
-      productDetails: pd,
-      subscriptionOfferDetails: target,
-    );
+    if (Platform.isAndroid) {
+      if (pd is! GooglePlayProductDetails) {
+        throw 'Invalid product type for Android subscription';
+      }
+      final gp = pd as GooglePlayProductDetails;
+      final offers = gp.subscriptionOfferDetails ?? const <SubscriptionOfferDetails>[];
+
+      final desiredPeriod = yearly ? 'P1Y' : 'P1M';
+
+      final targetOffer = offers.firstWhere(
+        (o) => o.pricingPhases.pricingPhaseList.any(
+          (ph) => ph.billingPeriod == desiredPeriod,
+        ),
+        orElse: () => throw 'Offer for $desiredPeriod not found',
+      );
+
+      param = GooglePlayPurchaseParam(
+        productDetails: gp,
+        subscriptionOfferDetails: targetOffer,
+      );
+    }
+
     await _iap.buyNonConsumable(purchaseParam: param);
   }
 
   Future<void> buyOneTime(String productId) async {
     final pd = _get(productId);
     if (pd == null) throw 'Product not found: $productId';
+
     final param = PurchaseParam(productDetails: pd);
     await _iap.buyNonConsumable(purchaseParam: param);
   }

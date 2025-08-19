@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:finqly/services/subscription_manager.dart';
 import 'package:finqly/services/iap_service.dart';
 
@@ -32,11 +34,10 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
     await _iap.init(
       onVerified: (p) async {
         await widget.subscriptionManager.setSubscribed(true);
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Purchase completed')),
-          );
-        }
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Purchase completed')),
+        );
       },
       onError: (e) {
         if (!mounted) return;
@@ -65,32 +66,34 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
     final pd = _pd(IapService.subscriptionId);
     if (pd == null) return yearly ? '\$99.99 / year' : '\$9.99 / month';
 
-    final offers = pd.googlePlayProductDetails?.subscriptionOfferDetails ?? [];
-    if (offers.isEmpty) {
-      return yearly ? '\$99.99 / year' : '\$9.99 / month';
-    }
+    if (Platform.isAndroid && pd is GooglePlayProductDetails) {
+      final offers = pd.subscriptionOfferDetails ?? const <SubscriptionOfferDetails>[];
+      final desired = yearly ? 'P1Y' : 'P1M';
 
-    final target = yearly ? 'P1Y' : 'P1M';
-    for (final offer in offers) {
-      for (final phase in offer.pricingPhases.pricingPhaseList) {
-        final micros = phase.priceAmountMicros;
-        final code = phase.priceCurrencyCode;
-        if (phase.billingPeriod == target && micros != null && code != null) {
-          final v = micros / 1000000.0;
-          final isUsd = code == 'USD';
-          final numStr = v.toStringAsFixed(v.truncateToDouble() == v ? 0 : 2);
-          final priceStr = isUsd ? '\$$numStr' : '$numStr $code';
-          return yearly ? '$priceStr / year' : '$priceStr / month';
+      for (final offer in offers) {
+        for (final phase in offer.pricingPhases.pricingPhaseList) {
+          final period = phase.billingPeriod;
+          final micros = phase.priceAmountMicros;
+          final code = phase.priceCurrencyCode;
+          if (period == desired && micros != null && code != null) {
+            final v = micros / 1e6;
+            final isUsd = code == 'USD';
+            final numStr = v.toStringAsFixed(v.truncateToDouble() == v ? 0 : 2);
+            final priceStr = isUsd ? '\$$numStr' : '$numStr $code';
+            return yearly ? '$priceStr / year' : '$priceStr / month';
+          }
         }
       }
     }
-    return yearly ? '\$99.99 / year' : '\$9.99 / month';
+
+    final base = pd.price.isNotEmpty ? pd.price : (yearly ? '\$99.99' : '\$9.99');
+    return yearly ? '$base / year' : '$base / month';
   }
 
   String _inappPrice(String id, String fallback) {
     final pd = _pd(id);
-    if (pd == null) return fallback; // 例: $2.99
-    return pd.price;
+    if (pd == null) return fallback;
+    return pd.price.isNotEmpty ? pd.price : fallback;
   }
 
   Future<void> _handleAction(Future<void> Function() action) async {
@@ -151,11 +154,11 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
         children: [
           if (_loading) const LinearProgressIndicator(minHeight: 2),
           if (!_iap.isAvailable && !_loading)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(24, 8, 24, 0),
               child: Text(
                 'Play Store not available. Please sign in to Google Play and try again.',
-                style: const TextStyle(color: Colors.orange, fontSize: 12),
+                style: TextStyle(color: Colors.orange, fontSize: 12),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -207,10 +210,7 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
                                   ? const SizedBox(
                                       width: 18,
                                       height: 18,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: Colors.white,
-                                      ),
+                                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                                     )
                                   : const Text('Select', style: TextStyle(fontSize: 16)),
                             ),
@@ -223,10 +223,9 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
               },
             ),
           ),
-          // Terms and important notice for Google Play review:
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
-            child: const Text(
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
+            child: Text(
               'Subscriptions auto-renew unless canceled. You can cancel anytime from your Google Play account. '
               'All payments are processed securely via Google Play Billing.',
               style: TextStyle(fontSize: 12, color: Colors.black54),
