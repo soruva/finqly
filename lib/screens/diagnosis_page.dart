@@ -192,6 +192,7 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                           onTap: () async {
                             setState(() => selectedEmotionKey = entry.key);
                             await _saveEmotionToHistory(entry.key);
+                            if (!mounted) return;
                             if (isPremiumUser) {
                               Navigator.push(
                                 context,
