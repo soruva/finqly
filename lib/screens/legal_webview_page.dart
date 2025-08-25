@@ -1,7 +1,5 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LegalWebViewPage extends StatefulWidget {
@@ -26,10 +24,6 @@ class _LegalWebViewPageState extends State<LegalWebViewPage> {
   @override
   void initState() {
     super.initState();
-
-    if (Platform.isAndroid) {
-      WebView.platform = SurfaceAndroidWebView();
-    }
 
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -62,10 +56,7 @@ class _LegalWebViewPageState extends State<LegalWebViewPage> {
             }
 
             final uri = Uri.parse(url);
-            if (uri.scheme == 'http' ||
-                uri.scheme == 'https' ||
-                uri.scheme == 'mailto' ||
-                uri.scheme == 'tel') {
+            if (['http', 'https', 'mailto', 'tel'].contains(uri.scheme)) {
               if (await canLaunchUrl(uri)) {
                 await launchUrl(uri, mode: LaunchMode.externalApplication);
                 return NavigationDecision.prevent;
@@ -83,7 +74,7 @@ class _LegalWebViewPageState extends State<LegalWebViewPage> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) async {
+      onPopInvokedWithResult: (didPop, _) async {
         if (didPop) return;
         if (await _controller.canGoBack()) {
           await _controller.goBack();
