@@ -37,12 +37,12 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
     _iap.init(
       onVerified: (p) async {
         await widget.subscriptionManager.setSubscribed(true);
-        if (!context.mounted) return;
+        if (!mounted) return;
         setState(() => _busy = false);
 
         final key = selectedEmotionKey;
         if (key != null) {
-          if (!context.mounted) return;
+          if (!mounted) return;
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (_) => BadgeScreen(
@@ -147,8 +147,10 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
       builder: (context, isPremiumUser, _) {
         return Scaffold(
           appBar: AppBar(
-            title: Text(loc.diagnosisTitle,
-                style: const TextStyle(fontWeight: FontWeight.bold)),
+            title: Text(
+              loc.diagnosisTitle,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
             centerTitle: true,
             backgroundColor: AppColors.primary,
             foregroundColor: Colors.white,
@@ -195,7 +197,7 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                           onTap: () async {
                             setState(() => selectedEmotionKey = entry.key);
                             await _saveEmotionToHistory(entry.key);
-                            if (!context.mounted) return;
+                            if (!mounted) return;
                             if (isPremiumUser) {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
