@@ -69,7 +69,6 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
     if (Platform.isAndroid && pd is GooglePlayProductDetails) {
       final offers = pd.subscriptionOfferDetails ?? const <SubscriptionOfferDetails>[];
       final desired = yearly ? 'P1Y' : 'P1M';
-
       for (final offer in offers) {
         for (final phase in offer.pricingPhases.pricingPhaseList) {
           final period = phase.billingPeriod;
@@ -77,10 +76,8 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
           final code = phase.priceCurrencyCode;
           if (period == desired && micros != null && code != null) {
             final v = micros / 1e6;
-            final isUsd = code == 'USD';
             final numStr = v.toStringAsFixed(v.truncateToDouble() == v ? 0 : 2);
-            final priceStr = isUsd ? '\$$numStr' : '$numStr $code';
-            return yearly ? '$priceStr / year' : '$priceStr / month';
+            return yearly ? '$numStr $code / year' : '$numStr $code / month';
           }
         }
       }
