@@ -36,6 +36,7 @@ class SubscriptionManager {
     // WARNING: In production, unlock premium ONLY after validating purchaseToken with Google server.
   }
 
+// ignore: unused_element
   Future<ProductDetails> _getProductDetails() async {
     final response = await InAppPurchase.instance.queryProductDetails({_productId});
     if (response.notFoundIDs.isNotEmpty) throw Exception('Product not found');

@@ -43,7 +43,8 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
         final key = selectedEmotionKey;
         if (key != null) {
           if (!mounted) return;
-          Navigator.of(context).push(
+          // ignore: use_build_context_synchronously
+Navigator.of(context).push(
             MaterialPageRoute(
               builder: (_) => BadgeScreen(
                 emotionKey: key,
@@ -111,7 +112,8 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                     const Text('Monthly or Yearly subscription available'),
                 onTap: () {
                   Navigator.pop(context);
-                  Navigator.push(
+                  // ignore: use_build_context_synchronously
+Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (_) => PremiumUnlockPage(
@@ -199,7 +201,8 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                             await _saveEmotionToHistory(entry.key);
                             if (!mounted) return;
                             if (isPremiumUser) {
-                              Navigator.of(context).push(
+                              // ignore: use_build_context_synchronously
+Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (_) => BadgeScreen(
                                     emotionKey: entry.key,
