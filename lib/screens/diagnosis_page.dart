@@ -21,7 +21,7 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
   String? _error;
   late final IapService _iap;
 
-  final _emojis = {
+  final Map<String, String> _emojis = const {
     'Optimistic': '😊',
     'Neutral': '😐',
     'Worried': '😟',
@@ -37,13 +37,16 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
     _iap.init(
       onVerified: (p) async {
         await widget.subscriptionManager.setSubscribed(true);
-        if (mounted) setState(() => _busy = false);
-        if (mounted && selectedEmotionKey != null) {
-          Navigator.push(
-            context,
+        if (!context.mounted) return;
+        setState(() => _busy = false);
+
+        final key = selectedEmotionKey;
+        if (key != null) {
+          if (!context.mounted) return;
+          Navigator.of(context).push(
             MaterialPageRoute(
               builder: (_) => BadgeScreen(
-                emotionKey: selectedEmotionKey!,
+                emotionKey: key,
                 subscriptionManager: widget.subscriptionManager,
               ),
             ),
@@ -192,10 +195,9 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                           onTap: () async {
                             setState(() => selectedEmotionKey = entry.key);
                             await _saveEmotionToHistory(entry.key);
-                            if (!mounted) return;
+                            if (!context.mounted) return;
                             if (isPremiumUser) {
-                              Navigator.push(
-                                context,
+                              Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (_) => BadgeScreen(
                                     emotionKey: entry.key,
@@ -276,10 +278,7 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(width: 18),
-            Text(
-              icon,
-              style: const TextStyle(fontSize: 28),
-            ),
+            Text(icon, style: const TextStyle(fontSize: 28)),
             const SizedBox(width: 18),
             Expanded(
               child: Text(
