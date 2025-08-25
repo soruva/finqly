@@ -189,9 +189,7 @@ class _EmotionHistoryPageState extends State<EmotionHistoryPage> {
                                 style: const TextStyle(fontSize: 30),
                               ),
                               title: Text(
-                                loc is AppLocalizations
-                                    ? _localizeEmotion(loc, emotion)
-                                    : emotion,
+                                _localizeEmotion(loc, emotion),
                                 style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
