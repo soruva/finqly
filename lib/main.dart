@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:finqly/l10n/app_localizations.dart';
 import 'package:finqly/theme/colors.dart';
 import 'package:finqly/screens/splash_screen.dart';
@@ -24,17 +23,9 @@ class _FinqlyAppState extends State<FinqlyApp> {
   Locale _locale = const Locale('en');
   ThemeMode _themeMode = ThemeMode.light;
 
-  void _setLocale(Locale newLocale) {
-    setState(() {
-      _locale = newLocale;
-    });
-  }
-
-  void _setTheme(bool isDarkMode) {
-    setState(() {
-      _themeMode = isDarkMode ? ThemeMode.dark : ThemeMode.light;
-    });
-  }
+  void _setLocale(Locale newLocale) => setState(() => _locale = newLocale);
+  void _setTheme(bool isDarkMode) =>
+      setState(() => _themeMode = isDarkMode ? ThemeMode.dark : ThemeMode.light);
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +36,8 @@ class _FinqlyAppState extends State<FinqlyApp> {
         primarySwatch: Colors.indigo,
         fontFamily: 'Nunito',
         scaffoldBackgroundColor: Colors.white,
-        colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: Colors.indigo,
-        ).copyWith(
-          secondary: Colors.purpleAccent,
-        ),
+        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.indigo)
+            .copyWith(secondary: Colors.purpleAccent),
       ),
       darkTheme: ThemeData.dark().copyWith(
         primaryColor: AppColors.primary,
@@ -61,13 +49,7 @@ class _FinqlyAppState extends State<FinqlyApp> {
       ),
       themeMode: _themeMode,
       locale: _locale,
-      supportedLocales: const [
-        Locale('de'),
-        Locale('en'),
-        Locale('es'),
-        Locale('fr'),
-        Locale('pt'),
-      ],
+      supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       home: SplashScreen(
         subscriptionManager: _subscriptionManager,
