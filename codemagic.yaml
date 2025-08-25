@@ -5,16 +5,32 @@ workflows:
     environment:
       flutter: stable
       groups:
-        - finqly_signing
+        - finqly_signing   # holds keystore env vars
+    cache:
+      cache_paths:
+        - ~/.pub-cache
+        - ~/.gradle/caches
+        - ~/.gradle/wrapper
     scripts:
-      - name: Restore keystore & Build
+      - name: Restore keystore
         script: |
-          echo $CM_KEYSTORE_BASE64 | base64 -d > /tmp/my-release-key.jks
+          echo "$CM_KEYSTORE_BASE64" | base64 -d > /tmp/my-release-key.jks
           export CM_KEYSTORE="/tmp/my-release-key.jks"
-          flutter pub get
-          flutter pub run flutter_launcher_icons:main
-          flutter build appbundle --release
-          flutter build apk --release
+      - name: Get dependencies
+        script: flutter pub get
+      # Run only when you actually change app icons:
+      # - name: Generate launcher icons
+      #   script: flutter pub run flutter_launcher_icons:main
+      - name: Build AAB
+        script: |
+          mkdir -p build/symbols
+          flutter build appbundle --release \
+            --tree-shake-icons \
+            --split-debug-info=build/symbols
+      # Enable only if you also need an APK:
+      # - name: Build APK
+      #   script: flutter build apk --release --tree-shake-icons --split-debug-info=build/symbols
     artifacts:
       - build/app/outputs/bundle/release/app-release.aab
-      - build/app/outputs/flutter-apk/app-release.apk
+      # - build/app/outputs/flutter-apk/app-release.apk
+      - build/symbols/**
