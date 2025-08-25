@@ -1,7 +1,5 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class TermsWebViewPage extends StatefulWidget {
@@ -19,10 +17,6 @@ class _TermsWebViewPageState extends State<TermsWebViewPage> {
   void initState() {
     super.initState();
 
-    if (Platform.isAndroid) {
-      WebView.platform = SurfaceAndroidWebView();
-    }
-
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(Colors.white)
@@ -30,22 +24,17 @@ class _TermsWebViewPageState extends State<TermsWebViewPage> {
         NavigationDelegate(
           onProgress: (p) => setState(() => _progress = p),
           onNavigationRequest: (request) async {
-            final uri = Uri.parse(request.url);
-
-            if (request.url.startsWith('file:///')) {
+            final url = request.url;
+            if (url.startsWith('file:///')) {
               return NavigationDecision.navigate;
             }
-
-            if (uri.scheme == 'http' ||
-                uri.scheme == 'https' ||
-                uri.scheme == 'mailto' ||
-                uri.scheme == 'tel') {
+            final uri = Uri.parse(url);
+            if (['http', 'https', 'mailto', 'tel'].contains(uri.scheme)) {
               if (await canLaunchUrl(uri)) {
                 await launchUrl(uri, mode: LaunchMode.externalApplication);
                 return NavigationDecision.prevent;
               }
             }
-
             return NavigationDecision.prevent;
           },
         ),
@@ -57,13 +46,13 @@ class _TermsWebViewPageState extends State<TermsWebViewPage> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) async {
+      onPopInvokedWithResult: (didPop, _) async {
         if (didPop) return;
         if (await _controller.canGoBack()) {
           await _controller.goBack();
         } else {
           if (!context.mounted) return;
-          Navigator.of(context).maybePop();  
+          Navigator.of(context).maybePop();
         }
       },
       child: Scaffold(
