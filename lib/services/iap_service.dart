@@ -86,11 +86,9 @@ class IapService {
       if (pd is! GooglePlayProductDetails) {
         throw 'Invalid product type for Android subscription';
       }
-      final gp = pd as GooglePlayProductDetails;
-      final offers = gp.subscriptionOfferDetails ?? const <SubscriptionOfferDetails>[];
+      final offers = pd.subscriptionOfferDetails ?? const <SubscriptionOfferDetails>[];
 
       final desiredPeriod = yearly ? 'P1Y' : 'P1M';
-
       final targetOffer = offers.firstWhere(
         (o) => o.pricingPhases.pricingPhaseList.any(
           (ph) => ph.billingPeriod == desiredPeriod,
@@ -99,7 +97,7 @@ class IapService {
       );
 
       param = GooglePlayPurchaseParam(
-        productDetails: gp,
+        productDetails: pd,
         subscriptionOfferDetails: targetOffer,
       );
     }
