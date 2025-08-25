@@ -132,7 +132,7 @@ class _ForecastPageState extends State<ForecastPage> {
                           end: Alignment.bottomRight,
                         )
                       : null,
-                  color: isPremium ? null : Colors.black.withOpacity(0.5),
+                  color: isPremium ? null : Colors.black.withValues(alpha: 0.5),
                 ),
                 child: isPremium
                     ? _buildPremiumView(loc, forecastPercent.toDouble(), context)

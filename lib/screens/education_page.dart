@@ -257,7 +257,7 @@ class _EducationPageState extends State<EducationPage> {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: gradient[0].withOpacity(0.17),
+            color: gradient[0].withValues(alpha: 0.17),
             blurRadius: 14,
             offset: const Offset(0, 7),
           )
@@ -298,12 +298,12 @@ class _EducationPageState extends State<EducationPage> {
     return Container(
       key: ValueKey('back$idx'),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.95),
+        color: Colors.white.withValues(alpha: 0.95),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.accentPurple.withOpacity(0.2)),
+        border: Border.all(color: AppColors.accentPurple.withValues(alpha: 0.2)),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.11),
+            color: Colors.grey.withValues(alpha: 0.11),
             blurRadius: 13,
             offset: const Offset(0, 7),
           )

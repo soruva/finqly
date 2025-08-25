@@ -261,11 +261,11 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
       child: Container(
         height: 56,
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.96),
+          color: Colors.white.withValues(alpha: 0.96),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
+              color: Colors.black.withValues(alpha: 0.08),
               blurRadius: 8,
               offset: const Offset(1, 3),
             ),

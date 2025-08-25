@@ -167,7 +167,7 @@ class MyHomePage extends StatelessWidget {
                               margin: const EdgeInsets.only(bottom: 8),
                               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
                               decoration: BoxDecoration(
-                                color: Colors.deepPurple.withOpacity(0.84),
+                                color: Colors.deepPurple.withValues(alpha: 0.84),
                                 borderRadius: BorderRadius.circular(15),
                               ),
                               child: Row(
@@ -194,7 +194,7 @@ class MyHomePage extends StatelessWidget {
                     "© SoruvaLab",
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.white.withOpacity(0.55),
+                      color: Colors.white.withValues(alpha: 0.55),
                     ),
                   ),
                 ],
@@ -284,10 +284,10 @@ class MyHomePage extends StatelessWidget {
           onPressed: onTap,
           style: ElevatedButton.styleFrom(
             backgroundColor: isPremium
-                ? Colors.white.withOpacity(0.85)
-                : Colors.white.withOpacity(0.93),
+                ? Colors.white.withValues(alpha: 0.85)
+                : Colors.white.withValues(alpha: 0.93),
             foregroundColor: isPremium ? Colors.deepPurple : AppColors.primary,
-            shadowColor: Colors.black.withOpacity(0.09),
+            shadowColor: Colors.black.withValues(alpha: 0.09),
             elevation: 5,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(21),

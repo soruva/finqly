@@ -107,7 +107,7 @@ class BadgeScreen extends StatelessWidget {
                       label: Text(loc.startButton),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(horizontal: 38, vertical: 15),
-                        backgroundColor: Colors.white.withOpacity(0.92),
+                        backgroundColor: Colors.white.withValues(alpha: 0.92),
                         foregroundColor: const Color(0xFF7B44C6),
                         textStyle: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                       ),

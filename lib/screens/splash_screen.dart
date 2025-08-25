@@ -112,7 +112,7 @@ class _SplashScreenState extends State<SplashScreen>
                   child: Container(
                     decoration: BoxDecoration(boxShadow: [
                       BoxShadow(
-                        color: Colors.cyanAccent.withOpacity(0.6),
+                        color: Colors.cyanAccent.withValues(alpha: 0.6),
                         blurRadius: 25,
                         spreadRadius: 5,
                       ),

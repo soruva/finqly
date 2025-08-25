@@ -94,7 +94,7 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
                 borderRadius: BorderRadius.circular(18),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.18),
+                    color: Colors.black.withValues(alpha: 0.18),
                     blurRadius: 12,
                     offset: const Offset(1, 6),
                   ),
