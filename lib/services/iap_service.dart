@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 
 class IapService {
   static const String subscriptionId = 'finqly_premium';
@@ -43,7 +41,7 @@ class IapService {
               case PurchaseStatus.restored:
                 await onVerified(p);
                 if (p.pendingCompletePurchase) {
-                  await _iap.completePurchase(p); // acknowledge / consume
+                  await _iap.completePurchase(p);
                 }
                 break;
               case PurchaseStatus.error:
@@ -51,7 +49,6 @@ class IapService {
                 break;
               case PurchaseStatus.canceled:
               case PurchaseStatus.pending:
-                // no-op
                 break;
             }
           } catch (e) {
@@ -79,36 +76,13 @@ class IapService {
     if (pd == null) {
       throw 'Subscription product not found';
     }
-
-    PurchaseParam param = PurchaseParam(productDetails: pd);
-
-    if (Platform.isAndroid) {
-      if (pd is! GooglePlayProductDetails) {
-        throw 'Invalid product type for Android subscription';
-      }
-      final offers = pd.subscriptionOfferDetails ?? const <SubscriptionOfferDetails>[];
-
-      final desiredPeriod = yearly ? 'P1Y' : 'P1M';
-      final targetOffer = offers.firstWhere(
-        (o) => o.pricingPhases.pricingPhaseList.any(
-          (ph) => ph.billingPeriod == desiredPeriod,
-        ),
-        orElse: () => throw 'Offer for $desiredPeriod not found',
-      );
-
-      param = GooglePlayPurchaseParam(
-        productDetails: pd,
-        subscriptionOfferDetails: targetOffer,
-      );
-    }
-
+    final param = PurchaseParam(productDetails: pd);
     await _iap.buyNonConsumable(purchaseParam: param);
   }
 
   Future<void> buyOneTime(String productId) async {
     final pd = _get(productId);
     if (pd == null) throw 'Product not found: $productId';
-
     final param = PurchaseParam(productDetails: pd);
     await _iap.buyNonConsumable(purchaseParam: param);
   }
