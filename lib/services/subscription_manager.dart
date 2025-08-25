@@ -32,7 +32,6 @@ class SubscriptionManager {
 
     final purchaseParam = PurchaseParam(productDetails: await _getProductDetails());
     // TODO: For subscriptions, use buySubscription instead of buyNonConsumable!
-    final result = await InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam);
 
     await _setPremium(true);
     // WARNING: In production, unlock premium ONLY after validating purchaseToken with Google server.

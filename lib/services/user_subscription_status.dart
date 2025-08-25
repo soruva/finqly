@@ -8,7 +8,6 @@ class UserSubscriptionStatus {
   Future<void> setPremium(bool value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_key, value);
-    print('[Subscription] Premium set to: $value');
     // WARNING: Local-only status. For production, must validate with Google Play server.
   }
 

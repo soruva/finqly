@@ -151,7 +151,7 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
             child: ListView.separated(
               padding: const EdgeInsets.all(24),
               itemCount: items.length,
-              separatorBuilder: (_, _i) => const SizedBox(height: 24),
+              separatorBuilder: (context, index) => const SizedBox(height: 24),
               itemBuilder: (context, idx) {
                 final plan = items[idx];
                 return Card(

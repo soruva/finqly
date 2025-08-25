@@ -6,7 +6,6 @@ class PrivacyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
