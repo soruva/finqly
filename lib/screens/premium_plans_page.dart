@@ -1,7 +1,5 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:finqly/services/subscription_manager.dart';
 import 'package:finqly/services/iap_service.dart';
 
@@ -53,52 +51,27 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
     super.dispose();
   }
 
-  // ---------- Helpers ----------
   ProductDetails? _pd(String id) {
-    try {
-      return _iap.products.firstWhere((e) => e.id == id);
-    } catch (_) {
-      return null;
-    }
+    try { return _iap.products.firstWhere((e) => e.id == id); }
+    catch (_) { return null; }
   }
 
   String _subPrice({required bool yearly}) {
     final pd = _pd(IapService.subscriptionId);
-    if (pd == null) return yearly ? '\$99.99 / year' : '\$9.99 / month';
-
-    if (Platform.isAndroid && pd is GooglePlayProductDetails) {
-      final offers = pd.subscriptionOfferDetails ?? const <SubscriptionOfferDetails>[];
-      final desired = yearly ? 'P1Y' : 'P1M';
-      for (final offer in offers) {
-        for (final phase in offer.pricingPhases.pricingPhaseList) {
-          final period = phase.billingPeriod;
-          final micros = phase.priceAmountMicros;
-          final code = phase.priceCurrencyCode;
-          if (period == desired && micros != null && code != null) {
-            final v = micros / 1e6;
-            final numStr = v.toStringAsFixed(v.truncateToDouble() == v ? 0 : 2);
-            return yearly ? '$numStr $code / year' : '$numStr $code / month';
-          }
-        }
-      }
-    }
-
-    final base = pd.price.isNotEmpty ? pd.price : (yearly ? '\$99.99' : '\$9.99');
+    final base = (pd != null && pd.price.isNotEmpty)
+        ? pd.price
+        : (yearly ? '\$99.99' : '\$9.99');
     return yearly ? '$base / year' : '$base / month';
   }
 
   String _inappPrice(String id, String fallback) {
     final pd = _pd(id);
-    if (pd == null) return fallback;
-    return pd.price.isNotEmpty ? pd.price : fallback;
+    return (pd != null && pd.price.isNotEmpty) ? pd.price : fallback;
   }
 
   Future<void> _handleAction(Future<void> Function() action) async {
     if (_isPurchasing) return;
-    setState(() {
-      _isPurchasing = true;
-      _error = null;
-    });
+    setState(() { _isPurchasing = true; _error = null; });
     try {
       await action();
     } catch (e) {
@@ -111,7 +84,6 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
       if (mounted) setState(() => _isPurchasing = false);
     }
   }
-  // -----------------------------
 
   @override
   Widget build(BuildContext context) {
@@ -143,10 +115,7 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Choose Your Premium Plan'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Choose Your Premium Plan'), centerTitle: true),
       body: Column(
         children: [
           if (_loading) const LinearProgressIndicator(minHeight: 2),
@@ -162,7 +131,7 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
           if (_error != null)
             Padding(
               padding: const EdgeInsets.all(12),
-              child: Text('Error: $_error', style: const TextStyle(color: Colors.red)),
+              child: Text('Error: $_error', style: TextStyle(color: Colors.red)),
             ),
           Expanded(
             child: ListView.separated(
@@ -179,20 +148,16 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          plan['title'] as String,
-                          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
-                        ),
+                        Text(plan['title'] as String,
+                          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800)),
                         const SizedBox(height: 10),
                         Text(plan['desc'] as String, style: const TextStyle(fontSize: 16)),
                         const SizedBox(height: 18),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              plan['price'] as String,
-                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
+                            Text(plan['price'] as String,
+                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                             ElevatedButton(
                               onPressed: (_iap.isAvailable && !_isPurchasing)
                                   ? plan['onPressed'] as VoidCallback
@@ -205,8 +170,7 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
                               ),
                               child: _isPurchasing
                                   ? const SizedBox(
-                                      width: 18,
-                                      height: 18,
+                                      width: 18, height: 18,
                                       child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                                     )
                                   : const Text('Select', style: TextStyle(fontSize: 16)),
