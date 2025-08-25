@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:finqly/theme/colors.dart';
-import 'package:finqly/l10n/app_localizations.dart';
 
 class PremiumBadgeWidget extends StatelessWidget {
   const PremiumBadgeWidget({super.key});

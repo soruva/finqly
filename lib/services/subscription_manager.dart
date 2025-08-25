@@ -30,7 +30,6 @@ class SubscriptionManager {
     final available = await InAppPurchase.instance.isAvailable();
     if (!available) throw Exception('In-app purchases not available');
 
-    final purchaseParam = PurchaseParam(productDetails: await _getProductDetails());
     // TODO: For subscriptions, use buySubscription instead of buyNonConsumable!
 
     await _setPremium(true);
