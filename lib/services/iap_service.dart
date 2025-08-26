@@ -4,12 +4,12 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 
 class IapService {
-  static const String subscriptionId = 'finqly_premium';
+  static const String subscriptionId     = 'finqly_premium';
   static const String oneTimeDiagnosisId = 'inapp_one_time_diagnosis';
-  static const String starterBundleId   = 'starter_bundle';
+  static const String starterBundleId    = 'starter_bundle';
 
-  static const String monthlyBasePlanId = 'monthly-auto-basic';
-  static const String yearlyBasePlanId  = 'yearly-auto-basic';
+  static const String monthlyBasePlanId  = 'monthly-auto-basic';
+  static const String yearlyBasePlanId   = 'yearly-autobasic';
 
   final _iap = InAppPurchase.instance;
   StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
@@ -46,7 +46,7 @@ class IapService {
               case PurchaseStatus.restored:
                 await onVerified(p);
                 if (p.pendingCompletePurchase) {
-                  await _iap.completePurchase(p); // acknowledge / consume
+                  await _iap.completePurchase(p);
                 }
                 break;
               case PurchaseStatus.error:
@@ -54,7 +54,6 @@ class IapService {
                 break;
               case PurchaseStatus.canceled:
               case PurchaseStatus.pending:
-                // no-op
                 break;
             }
           } catch (e) {
@@ -117,10 +116,16 @@ class IapService {
 
     if (Platform.isAndroid && pd is GooglePlayProductDetails) {
       final basePlanId = yearly ? yearlyBasePlanId : monthlyBasePlanId;
-      final offer = pd.subscriptionOfferDetails?.firstWhere(
-        (o) => o.basePlanId == basePlanId,
-        orElse: () => null,
-      );
+
+      SubscriptionOfferDetails? offer;
+      final offers = pd.subscriptionOfferDetails;
+      if (offers != null) {
+        try {
+          offer = offers.firstWhere((o) => o.basePlanId == basePlanId);
+        } catch (_) {
+          offer = null;
+        }
+      }
 
       final phases = offer?.pricingPhases.pricingPhaseList;
       if (phases != null && phases.isNotEmpty) {
@@ -132,15 +137,17 @@ class IapService {
         final micros = phase.priceAmountMicros;
         final code = phase.priceCurrencyCode;
         if (micros != null && code != null) {
-          final amount = (micros / 1000000.0);
-          final numStr = amount.toStringAsFixed(amount.truncateToDouble() == amount ? 0 : 2);
+          final amount = micros / 1000000.0;
+          final numStr =
+              amount.toStringAsFixed(amount.truncateToDouble() == amount ? 0 : 2);
           final priceStr = (code == 'USD') ? '\$$numStr' : '$numStr $code';
           return yearly ? '$priceStr / year' : '$priceStr / month';
         }
       }
     }
 
-    final base = pd.price.isNotEmpty ? pd.price : (yearly ? '\$99.99' : '\$9.99');
+    final base =
+        pd.price.isNotEmpty ? pd.price : (yearly ? '\$99.99' : '\$9.99');
     return yearly ? '$base / year' : '$base / month';
   }
 }
