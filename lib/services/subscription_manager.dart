@@ -1,61 +1,46 @@
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+/// Very thin local cache for "is premium" state.
+/// - Purchases are handled elsewhere (IapService).
+/// - Call [setSubscribed(true)] only after Play verification.
+/// - UI can listen via [isSubscribedNotifier].
 class SubscriptionManager {
   static const _subscriptionKey = 'isSubscribed';
-  static const _productId = 'finqly_plus_subscription';
 
-  final ValueNotifier<bool> isSubscribedNotifier = ValueNotifier(false);
+  /// Reactive premium flag.
+  final ValueNotifier<bool> isSubscribedNotifier = ValueNotifier<bool>(false);
 
+  /// Synchronous getter for current value.
   bool get isSubscribed => isSubscribedNotifier.value;
 
-  // TODO: Replace local storage with proper Google Play subscription verification!
+  /// Load cached state on app start.
   Future<void> init() async {
     final prefs = await SharedPreferences.getInstance();
-    final value = prefs.getBool(_subscriptionKey) ?? false;
-    isSubscribedNotifier.value = value;
-    // WARNING: Real app should check subscription status with Google Play (server-side verification).
+    isSubscribedNotifier.value = prefs.getBool(_subscriptionKey) ?? false;
   }
 
-  Future<bool> checkSubscription() async {
-    final prefs = await SharedPreferences.getInstance();
-    final value = prefs.getBool(_subscriptionKey) ?? false;
-    isSubscribedNotifier.value = value;
-    // WARNING: Only using local cache. Must implement Play Store validation!
-    return value;
-  }
-
-  Future<void> buyPremium() async {
-    final available = await InAppPurchase.instance.isAvailable();
-    if (!available) throw Exception('In-app purchases not available');
-
-    // TODO: For subscriptions, use buySubscription instead of buyNonConsumable!
-
-    await _setPremium(true);
-    // WARNING: In production, unlock premium ONLY after validating purchaseToken with Google server.
-  }
-
-// ignore: unused_element
-  Future<ProductDetails> _getProductDetails() async {
-    final response = await InAppPurchase.instance.queryProductDetails({_productId});
-    if (response.notFoundIDs.isNotEmpty) throw Exception('Product not found');
-    return response.productDetails.first;
-  }
-
-  Future<void> _setPremium(bool value) async {
+  /// Persist & broadcast premium state.
+  Future<void> setSubscribed(bool value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_subscriptionKey, value);
     isSubscribedNotifier.value = value;
   }
 
-  Future<void> refreshSubscriptionStatus() async {
+  /// Reload from disk (no-op if unchanged).
+  Future<void> refresh() => init();
+
+  /// Back-compat alias (if older code calls this).
+  Future<void> refreshSubscriptionStatus() => refresh();
+
+  /// Clear local state (e.g. on sign-out).
+  Future<void> clear() async {
     final prefs = await SharedPreferences.getInstance();
-    final value = prefs.getBool(_subscriptionKey) ?? false;
-    isSubscribedNotifier.value = value;
+    await prefs.remove(_subscriptionKey);
+    isSubscribedNotifier.value = false;
   }
 
-  Future<void> setSubscribed(bool value) async {
-    await _setPremium(value);
+  void dispose() {
+    isSubscribedNotifier.dispose();
   }
 }
