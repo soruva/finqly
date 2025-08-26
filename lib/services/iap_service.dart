@@ -1,10 +1,15 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 
 class IapService {
   static const String subscriptionId = 'finqly_premium';
   static const String oneTimeDiagnosisId = 'inapp_one_time_diagnosis';
   static const String starterBundleId   = 'starter_bundle';
+
+  static const String monthlyBasePlanId = 'monthly-auto-basic';
+  static const String yearlyBasePlanId  = 'yearly-auto-basic';
 
   final _iap = InAppPurchase.instance;
   StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
@@ -41,7 +46,7 @@ class IapService {
               case PurchaseStatus.restored:
                 await onVerified(p);
                 if (p.pendingCompletePurchase) {
-                  await _iap.completePurchase(p);
+                  await _iap.completePurchase(p); // acknowledge / consume
                 }
                 break;
               case PurchaseStatus.error:
@@ -49,6 +54,7 @@ class IapService {
                 break;
               case PurchaseStatus.canceled:
               case PurchaseStatus.pending:
+                // no-op
                 break;
             }
           } catch (e) {
@@ -76,6 +82,23 @@ class IapService {
     if (pd == null) {
       throw 'Subscription product not found';
     }
+
+    if (Platform.isAndroid && pd is GooglePlayProductDetails) {
+      final targetBasePlanId = yearly ? yearlyBasePlanId : monthlyBasePlanId;
+
+      final offer = pd.subscriptionOfferDetails?.firstWhere(
+        (o) => o.basePlanId == targetBasePlanId,
+        orElse: () => throw 'Offer for "$targetBasePlanId" not found. Check Play Console base plan & availability.',
+      );
+
+      final param = GooglePlayPurchaseParam(
+        productDetails: pd,
+        subscriptionOfferDetails: offer,
+      );
+      await _iap.buyNonConsumable(purchaseParam: param);
+      return;
+    }
+
     final param = PurchaseParam(productDetails: pd);
     await _iap.buyNonConsumable(purchaseParam: param);
   }
@@ -83,7 +106,41 @@ class IapService {
   Future<void> buyOneTime(String productId) async {
     final pd = _get(productId);
     if (pd == null) throw 'Product not found: $productId';
+
     final param = PurchaseParam(productDetails: pd);
     await _iap.buyNonConsumable(purchaseParam: param);
+  }
+
+  String priceForSubscription({required bool yearly}) {
+    final pd = _get(subscriptionId);
+    if (pd == null) return yearly ? '\$99.99 / year' : '\$9.99 / month';
+
+    if (Platform.isAndroid && pd is GooglePlayProductDetails) {
+      final basePlanId = yearly ? yearlyBasePlanId : monthlyBasePlanId;
+      final offer = pd.subscriptionOfferDetails?.firstWhere(
+        (o) => o.basePlanId == basePlanId,
+        orElse: () => null,
+      );
+
+      final phases = offer?.pricingPhases.pricingPhaseList;
+      if (phases != null && phases.isNotEmpty) {
+        final wanted = yearly ? 'P1Y' : 'P1M';
+        final phase = phases.firstWhere(
+          (ph) => ph.billingPeriod == wanted,
+          orElse: () => phases.last,
+        );
+        final micros = phase.priceAmountMicros;
+        final code = phase.priceCurrencyCode;
+        if (micros != null && code != null) {
+          final amount = (micros / 1000000.0);
+          final numStr = amount.toStringAsFixed(amount.truncateToDouble() == amount ? 0 : 2);
+          final priceStr = (code == 'USD') ? '\$$numStr' : '$numStr $code';
+          return yearly ? '$priceStr / year' : '$priceStr / month';
+        }
+      }
+    }
+
+    final base = pd.price.isNotEmpty ? pd.price : (yearly ? '\$99.99' : '\$9.99');
+    return yearly ? '$base / year' : '$base / month';
   }
 }
