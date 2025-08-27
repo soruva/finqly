@@ -55,8 +55,14 @@ class _LegalWebViewPageState extends State<LegalWebViewPage> {
               return NavigationDecision.navigate;
             }
 
-            final uri = Uri.parse(url);
-            if (['http', 'https', 'mailto', 'tel'].contains(uri.scheme)) {
+            final uri = Uri.tryParse(url);
+            if (uri == null) {
+              return NavigationDecision.prevent;
+            }
+
+            const allowed = {'http', 'https', 'mailto', 'tel', 'market', 'geo', 'maps'};
+
+            if (allowed.contains(uri.scheme)) {
               if (await canLaunchUrl(uri)) {
                 await launchUrl(uri, mode: LaunchMode.externalApplication);
                 return NavigationDecision.prevent;
@@ -70,41 +76,63 @@ class _LegalWebViewPageState extends State<LegalWebViewPage> {
       ..loadFlutterAsset(widget.assetPath);
   }
 
+  Future<void> _reload() async {
+    setState(() {
+      _isLoading = true;
+      _hasError = false;
+    });
+    await _controller.reload();
+  }
+
+  Future<void> _handleBack() async {
+    if (await _controller.canGoBack()) {
+      await _controller.goBack();
+    } else {
+      if (!context.mounted) return;
+      Navigator.of(context).maybePop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    const failedText = 'Failed to load page.';
+    const reloadText = 'Reload';
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, _) async {
         if (didPop) return;
-        if (await _controller.canGoBack()) {
-          await _controller.goBack();
-        } else {
-          if (!context.mounted) return;
-          Navigator.of(context).maybePop();
-        }
+        await _handleBack();
       },
       child: Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
-            onPressed: () async {
-              if (await _controller.canGoBack()) {
-                await _controller.goBack();
-              } else {
-                if (!context.mounted) return;
-                Navigator.of(context).maybePop();
-              }
-            },
+            onPressed: _handleBack,
           ),
         ),
         body: Stack(
           children: [
             if (_hasError)
-              const Center(
-                child: Text(
-                  'Failed to load page.',
-                  style: TextStyle(color: Colors.red, fontSize: 18),
+              Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.error_outline, color: Colors.red, size: 36),
+                    const SizedBox(height: 12),
+                    const Text(
+                      failedText,
+                      style: TextStyle(color: Colors.red, fontSize: 16),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 12),
+                    ElevatedButton.icon(
+                      icon: const Icon(Icons.refresh),
+                      label: const Text(reloadText),
+                      onPressed: _reload,
+                    ),
+                  ],
                 ),
               )
             else
