@@ -1,3 +1,4 @@
+// lib/screens/trend_page.dart
 import 'package:flutter/material.dart';
 import 'package:finqly/l10n/app_localizations.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -25,9 +26,12 @@ class _TrendPageState extends State<TrendPage> {
 
   Future<void> _loadHistory() async {
     final historyRaw = await HistoryService().getHistory();
-    final extracted = historyRaw.map((e) => e["emotion"]?.toString() ?? "Neutral").toList();
+    final extracted =
+        historyRaw.map((e) => e["emotion"]?.toString() ?? "neutral").toList();
     setState(() {
-      emotions = extracted.length <= 7 ? List.from(extracted) : extracted.sublist(extracted.length - 7);
+      emotions = extracted.length <= 7
+          ? List.from(extracted)
+          : extracted.sublist(extracted.length - 7);
     });
   }
 
@@ -44,46 +48,59 @@ class _TrendPageState extends State<TrendPage> {
       emotions.length,
       (i) => FlSpot(
         i.toDouble(),
-        scores[emotions[i].trim().toLowerCase()]?.toDouble() ?? 3,
+        (scores[emotions[i].trim().toLowerCase()] ?? 3).toDouble(),
       ),
     );
   }
 
-  List<String> _labels(List<String> emotions) {
-    return List.generate(emotions.length, (i) => 'Day ${i + 1}');
+  List<String> _labels(BuildContext context, List<String> emotions) {
+    final loc = AppLocalizations.of(context)!;
+    return List.generate(emotions.length, (i) => loc.dayLabel(i + 1));
   }
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-    final spots = _generateSpots(emotions);
-    final labels = _labels(emotions);
 
     return ValueListenableBuilder<bool>(
       valueListenable: widget.subscriptionManager.isSubscribedNotifier,
       builder: (context, isPremium, _) {
         return Scaffold(
           appBar: AppBar(
-            title: Text(loc.trendForecastTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
+            title: Text(
+              loc.trendForecastTitle,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
             centerTitle: true,
           ),
           body: isPremium
               ? Padding(
                   padding: const EdgeInsets.all(24),
                   child: emotions.isEmpty
-                      ? Center(child: Text(loc.noTrendData, style: const TextStyle(fontSize: 16)))
+                      ? Center(
+                          child: Text(
+                            loc.noTrendData,
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        )
                       : Column(
                           children: [
                             Text(
                               loc.trendForecastDescription,
-                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w600),
                               textAlign: TextAlign.center,
                             ),
                             const SizedBox(height: 18),
-                            Expanded(child: TrendChart(dataPoints: spots, labels: labels)),
+                            Expanded(
+                              child: TrendChart(
+                                dataPoints: _generateSpots(emotions),
+                                labels: _labels(context, emotions),
+                              ),
+                            ),
                             const SizedBox(height: 18),
                             Text(
-                              "Score Legend: 6=Excited, 5=Optimistic, 3=Neutral, 2=Confused, 1=Worried, 0=Cautious",
+                              loc.trendScoreLegend,
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Colors.grey[700],
@@ -98,27 +115,35 @@ class _TrendPageState extends State<TrendPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.lock_outline, size: 74, color: Colors.grey),
+                      const Icon(Icons.lock_outline,
+                          size: 74, color: Colors.grey),
                       const SizedBox(height: 28),
                       Text(
-                        "${loc.premiumPrompt}\n\nUnlock trend charts, performance tracking, and personalized insights with Finqly Plus!",
+                        "${loc.premiumPrompt}\n\n${loc.premiumTrendUpsell}",
                         textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black87),
+                        style: const TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
                       ),
                       const SizedBox(height: 30),
                       ElevatedButton.icon(
                         icon: const Icon(Icons.lock_open),
                         label: Text(loc.unlockInsights),
                         style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 38, vertical: 16),
-                          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 38, vertical: 16),
+                          textStyle: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w700),
                         ),
                         onPressed: () async {
                           await Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (_) => PremiumUnlockPage(
-                                subscriptionManager: widget.subscriptionManager,
+                                subscriptionManager:
+                                    widget.subscriptionManager,
                               ),
                             ),
                           );

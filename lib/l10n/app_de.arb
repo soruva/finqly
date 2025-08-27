@@ -197,5 +197,8 @@
   "@disclaimer": { "description": "Label für Haftungsausschluss im Menü" },
 
   "faq": "FAQ",
-  "@faq": { "description": "Label für FAQ im Menü" }
+  "@faq": { "description": "Label für FAQ im Menü" },
+
+  "restorePurchasesTitle": "Käufe wiederherstellen",
+  "restorePurchasesDone": "Käufe wiederhergestellt"
 }

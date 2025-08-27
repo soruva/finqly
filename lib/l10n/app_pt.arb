@@ -179,5 +179,8 @@
   "@noTrendData": { "description": "Mensagem exibida quando não há dados de tendência" },
 
   "trendForecastDescription": "Sua tendência emocional recente está visualizada abaixo.",
-  "@trendForecastDescription": { "description": "Texto explicativo abaixo do gráfico de tendência" }
+  "@trendForecastDescription": { "description": "Texto explicativo abaixo do gráfico de tendência" },
+
+  "restorePurchasesTitle": "Restaurar compras",
+  "restorePurchasesDone": "Compras restauradas"
 }

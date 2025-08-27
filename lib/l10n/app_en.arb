@@ -212,5 +212,11 @@
   "@disclaimerTitle": { "description": "Title for Disclaimer page" },
 
   "faqTitle": "FAQ",
-  "@faqTitle": { "description": "Title for FAQ page" }
+  "@faqTitle": { "description": "Title for FAQ page" },
+
+  "restorePurchasesTitle": "Restore purchases",
+  "@restorePurchasesTitle": { "description": "Settings: list item to restore previously purchased items" },
+
+  "restorePurchasesDone": "Purchases restored",
+  "@restorePurchasesDone": { "description": "SnackBar message shown after restore completes" }
 }
