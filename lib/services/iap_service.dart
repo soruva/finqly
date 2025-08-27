@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:finqly/services/purchase_verification.dart';
 
 class IapService {
   static const String subscriptionId = 'finqly_premium';
@@ -38,14 +39,22 @@ class IapService {
             switch (p.status) {
               case PurchaseStatus.purchased:
               case PurchaseStatus.restored:
+                // TEMP client-side verification (replace with server-side later)
+                final ok = await PurchaseVerification.verify(p);
+                if (!ok) {
+                  onError('Purchase verification failed');
+                  break;
+                }
                 await onVerified(p);
                 if (p.pendingCompletePurchase) {
                   await _iap.completePurchase(p);
                 }
                 break;
+
               case PurchaseStatus.error:
                 onError(p.error ?? 'Unknown IAP error');
                 break;
+
               case PurchaseStatus.canceled:
               case PurchaseStatus.pending:
                 break;
@@ -56,6 +65,7 @@ class IapService {
         }
       }, onError: onError);
 
+      // Try to restore owned purchases so UI reflects current entitlement
       await _iap.restorePurchases();
     } catch (e) {
       onError(e);
@@ -75,6 +85,7 @@ class IapService {
   Future<void> buySubscription({required bool yearly}) async {
     final pd = _get(subscriptionId);
     if (pd == null) throw 'Subscription product not found';
+    // NOTE: Base-plan selection is handled by Play Console offers; app calls buyNonConsumable.
     final param = PurchaseParam(productDetails: pd);
     await _iap.buyNonConsumable(purchaseParam: param);
   }

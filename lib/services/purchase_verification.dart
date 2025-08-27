@@ -1,10 +1,20 @@
 import 'package:in_app_purchase/in_app_purchase.dart';
 
+/// TEMP: Client-side verification for internal testing & review.
+/// TODO: Replace with server-side verification using Play Developer API.
 class PurchaseVerification {
-  // TODO: For production, implement server-side verification using Google Play Developer API.
-  // See: https://developer.android.com/google/play/billing/integrate#process
-  static Future<bool> verifyPurchase(PurchaseDetails purchase) async {
-    // WARNING: This only checks local status. Server verification is required for secure in-app purchases.
-    return purchase.status == PurchaseStatus.purchased;
+  /// Accepts purchased/restored locally. Replace with real server check later.
+  static Future<bool> verify(PurchaseDetails p) async {
+    return p.status == PurchaseStatus.purchased ||
+           p.status == PurchaseStatus.restored;
+  }
+
+  /// Extract token you will send to your backend later.
+  /// - Android: purchaseToken (string)
+  /// - iOS: base64 receipt (string)
+  static String? token(PurchaseDetails p) {
+    final data = p.verificationData.serverVerificationData;
+    return data.isEmpty ? null : data;
   }
 }
+
