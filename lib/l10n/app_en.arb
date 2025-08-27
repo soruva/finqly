@@ -133,6 +133,12 @@
   "lightMode": "Light Mode",
   "@lightMode": { "description": "Option for light mode" },
 
+  "darkModeOn": "Dark mode is ON",
+  "@darkModeOn": { "description": "Label shown when dark mode switch is ON" },
+
+  "darkModeOff": "Dark mode is OFF",
+  "@darkModeOff": { "description": "Label shown when dark mode switch is OFF" },
+
   "premiumUnlockTitle": "Unlock Premium Insights",
   "@premiumUnlockTitle": { "description": "Title for premium unlock screen" },
 
@@ -190,18 +196,6 @@
   "trendForecastDescription": "Your recent emotional trend is visualized below.",
   "@trendForecastDescription": { "description": "Description text below the trend chart" },
 
-  "privacyPolicy": "Privacy Policy",
-  "@privacyPolicy": { "description": "Label for Privacy Policy item in settings" },
-
-  "termsOfService": "Terms of Service",
-  "@termsOfService": { "description": "Label for Terms of Service item in settings" },
-
-  "disclaimer": "Disclaimer",
-  "@disclaimer": { "description": "Label for Disclaimer item in settings" },
-
-  "faq": "FAQ",
-  "@faq": { "description": "Label for FAQ item in settings" },
-
   "privacyTitle": "Privacy Policy",
   "@privacyTitle": { "description": "Title for Privacy policy page" },
 
@@ -218,5 +212,17 @@
   "@restorePurchasesTitle": { "description": "Settings: list item to restore previously purchased items" },
 
   "restorePurchasesDone": "Purchases restored",
-  "@restorePurchasesDone": { "description": "SnackBar message shown after restore completes" }
+  "@restorePurchasesDone": { "description": "SnackBar message shown after restore completes" },
+
+  "trendScoreLegend": "Score Legend: 6=Excited, 5=Optimistic, 3=Neutral, 2=Confused, 1=Worried, 0=Cautious",
+  "@trendScoreLegend": { "description": "Legend for the trend chart scores" },
+
+  "premiumTrendUpsell": "Unlock trend charts, performance tracking, and personalized insights with Finqly Plus!",
+  "@premiumTrendUpsell": { "description": "Upsell text shown on the trend page when user is not premium" },
+
+  "dayLabel": "Day {n}",
+  "@dayLabel": {
+    "description": "Axis label for day N in trend chart",
+    "placeholders": { "n": {} }
+  }
 }
