@@ -16,7 +16,7 @@ class PremiumUnlockPage extends StatefulWidget {
 }
 
 class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
-  bool isLoading = false;
+  bool _isLoading = false;
   late final IapService _iap;
   String? _error;
 
@@ -27,19 +27,20 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
     _iap.init(
       onVerified: (p) async {
         await widget.subscriptionManager.setSubscribed(true);
-        if (mounted) {
-          setState(() => isLoading = false);
-          ScaffoldMessenger.of(context)
-              .showSnackBar(const SnackBar(content: Text('Purchase complete')));
-        }
+        if (!mounted) return;
+        setState(() => _isLoading = false);
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Purchase complete')));
       },
       onError: (e) {
-        if (mounted) {
-          setState(() {
-            isLoading = false;
-            _error = e.toString();
-          });
-        }
+        if (!mounted) return;
+        setState(() {
+          _isLoading = false;
+          _error = e.toString();
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Purchase error: $_error')),
+        );
       },
     );
   }
@@ -102,13 +103,24 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
               ),
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.lock_open, color: Colors.white),
-                onPressed: isLoading
+                onPressed: _isLoading
                     ? null
                     : () async {
-                        setState(() => isLoading = true);
-                        await _iap.buySubscription(yearly: false);
+                        setState(() => _isLoading = true);
+                        try {
+                          await _iap.buySubscription(yearly: false);
+                        } catch (e) {
+                          if (!mounted) return;
+                          setState(() {
+                            _isLoading = false;
+                            _error = e.toString();
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Purchase error: $e')),
+                          );
+                        }
                       },
-                label: isLoading
+                label: _isLoading
                     ? const SizedBox(
                         width: 20,
                         height: 20,
@@ -136,9 +148,10 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
               ),
             ),
             const SizedBox(height: 16),
-            Text(
-              "All payments are processed securely via Google Play Billing. Subscriptions auto-renew unless canceled. You can cancel anytime from your Google Play account.",
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
+            const Text(
+              'All payments are processed securely via Google Play Billing. '
+              'Subscriptions auto-renew unless canceled. You can cancel anytime from your Google Play account.',
+              style: TextStyle(fontSize: 12, color: Colors.grey),
               textAlign: TextAlign.center,
             ),
           ],
