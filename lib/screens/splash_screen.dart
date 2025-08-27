@@ -49,25 +49,27 @@ class _SplashScreenState extends State<SplashScreen>
     _rotationAnimation = Tween<double>(
       begin: 0.0,
       end: 2 * pi,
-    ).animate(CurvedAnimation(
-      parent: _logoController,
-      curve: Curves.easeOut,
-    ));
+    ).animate(
+      CurvedAnimation(parent: _logoController, curve: Curves.easeOut),
+    );
 
     _textAnimation = Tween<Offset>(
       begin: const Offset(0, 1),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _textController,
-      curve: Curves.easeOut,
-    ));
+    ).animate(
+      CurvedAnimation(parent: _textController, curve: Curves.easeOut),
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       precacheImage(const AssetImage('assets/images/finqly_logo.png'), context);
     });
 
-    _logoController.forward().then((_) => _textController.forward());
+    _logoController.forward().then((_) {
+      _textController.forward().then((_) => _startNavigationTimer());
+    });
+  }
 
+  void _startNavigationTimer() {
     _navTimer = Timer(const Duration(seconds: 2), () {
       if (!mounted || _navigated) return;
       _navigated = true;
@@ -95,7 +97,8 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor = isDark ? Colors.black : const Color(0xFF4B0082);
+    final backgroundColor =
+        isDark ? Theme.of(context).scaffoldBackgroundColor : const Color(0xFF4B0082);
     const textColor = Colors.white;
 
     return Scaffold(
@@ -110,13 +113,15 @@ class _SplashScreenState extends State<SplashScreen>
                 RotationTransition(
                   turns: _rotationAnimation,
                   child: Container(
-                    decoration: BoxDecoration(boxShadow: [
-                      BoxShadow(
-                        color: Colors.cyanAccent.withValues(alpha: 0.6),
-                        blurRadius: 25,
-                        spreadRadius: 5,
-                      ),
-                    ]),
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.cyanAccent.withValues(alpha: 0.6),
+                          blurRadius: 25,
+                          spreadRadius: 5,
+                        ),
+                      ],
+                    ),
                     child: ShaderMask(
                       shaderCallback: (Rect bounds) {
                         return const LinearGradient(

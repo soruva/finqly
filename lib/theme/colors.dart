@@ -1,16 +1,184 @@
+// /workspaces/finqly/lib/theme/theme.dart
 import 'package:flutter/material.dart';
+import 'colors.dart';
 
+/// Centralized ThemeData for Finqly app.
+/// Apply in MaterialApp:
+///   theme: AppTheme.light,
+///   darkTheme: AppTheme.dark,
+///   themeMode: ThemeMode.system
+class AppTheme {
+  // Common text theme using Nunito
+  static const _textThemeBase = TextTheme(
+    bodyLarge: TextStyle(fontFamily: 'Nunito', fontSize: 16),
+    bodyMedium: TextStyle(fontFamily: 'Nunito', fontSize: 14),
+    bodySmall: TextStyle(fontFamily: 'Nunito', fontSize: 12),
+    titleLarge: TextStyle(fontFamily: 'Nunito', fontSize: 18, fontWeight: FontWeight.bold),
+  );
 
-class AppColors {
-  static const Color primary = Color(0xFF4C4C9D);       
-  static const Color accentPurple = Color(0xFF9E80FF);  
-  static const Color background = Color(0xFFF4F6FA);    
+  // ---------- Light ----------
+  static final ThemeData light = _buildTheme(
+    brightness: Brightness.light,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: AppColors.primary,
+      brightness: Brightness.light,
+      primary: AppColors.primary,
+      secondary: AppColors.accentPurple,
+      background: AppColors.background,
+    ),
+    scaffoldBg: AppColors.background,
+    cardColor: AppColors.cardBackground,
+    dividerColor: AppColors.divider,
+    appBarForeground: Colors.white,
+    bodyTextColor: AppColors.textPrimary,
+    bodyTextSecondary: AppColors.textSecondary,
+    bodyTextMuted: AppColors.textMuted,
+    elevatedBg: AppColors.primary,
+    outlinedFg: AppColors.primary,
+    inputFill: AppColors.inputBackground,
+    inputBorder: AppColors.border,
+    inputFocused: AppColors.primary,
+    snackFg: Colors.white,
+  );
 
-  static const Color textPrimary = Color(0xFF333333);   
-  static const Color textSecondary = Color(0xFF555555); 
-  static const Color textMuted = Color(0xFF888888);     
+  // ---------- Dark ----------
+  static final ThemeData dark = _buildTheme(
+    brightness: Brightness.dark,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: AppColors.primary,
+      brightness: Brightness.dark,
+      primary: AppColors.primary,
+      secondary: AppColors.accentPurple,
+      background: AppColors.darkBackground,
+    ),
+    scaffoldBg: AppColors.darkBackground,
+    cardColor: AppColors.darkCard,
+    dividerColor: AppColors.darkMuted,
+    appBarForeground: Colors.white,
+    bodyTextColor: AppColors.darkText,
+    bodyTextSecondary: AppColors.darkMuted,
+    bodyTextMuted: AppColors.darkMuted,
+    elevatedBg: AppColors.accentPurple,
+    outlinedFg: AppColors.accentPurple,
+    inputFill: AppColors.darkCard,
+    inputBorder: AppColors.darkMuted,
+    inputFocused: AppColors.accentPurple,
+    snackFg: Colors.white,
+  );
 
-  static const Color success = Color(0xFF4CAF50);       
-  static const Color warning = Color(0xFFFF9800);       
-  static const Color danger = Color(0xFFF44336);        
+  // ---------- Builder ----------
+  static ThemeData _buildTheme({
+    required Brightness brightness,
+    required ColorScheme colorScheme,
+    required Color scaffoldBg,
+    required Color cardColor,
+    required Color dividerColor,
+    required Color appBarForeground,
+    required Color bodyTextColor,
+    required Color bodyTextSecondary,
+    required Color bodyTextMuted,
+    required Color elevatedBg,
+    required Color outlinedFg,
+    required Color inputFill,
+    required Color inputBorder,
+    required Color inputFocused,
+    required Color snackFg,
+  }) {
+    final isDark = brightness == Brightness.dark;
+
+    return ThemeData(
+      useMaterial3: true,
+      brightness: brightness,
+      colorScheme: colorScheme,
+      primaryColor: colorScheme.primary,
+      scaffoldBackgroundColor: scaffoldBg,
+      cardColor: cardColor,
+      dividerColor: dividerColor,
+
+      appBarTheme: AppBarTheme(
+        backgroundColor: colorScheme.primary,
+        foregroundColor: appBarForeground,
+        elevation: 0,
+        centerTitle: true,
+        titleTextStyle: const TextStyle(
+          fontFamily: 'Nunito', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white,
+        ),
+      ),
+
+      textTheme: _textThemeBase.copyWith(
+        bodyLarge: _textThemeBase.bodyLarge!.copyWith(color: bodyTextColor),
+        bodyMedium: _textThemeBase.bodyMedium!.copyWith(color: bodyTextSecondary),
+        bodySmall: _textThemeBase.bodySmall!.copyWith(color: bodyTextMuted),
+        titleLarge: _textThemeBase.titleLarge!.copyWith(color: bodyTextColor),
+      ),
+
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: elevatedBg,
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          textStyle: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w600, fontSize: 16),
+        ),
+      ),
+
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: outlinedFg,
+          side: BorderSide(color: outlinedFg, width: 1.4),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          textStyle: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w600, fontSize: 16),
+        ),
+      ),
+
+      inputDecorationTheme: InputDecorationTheme(
+        isDense: true,
+        filled: true,
+        fillColor: inputFill,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: inputBorder),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: inputBorder),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: inputFocused, width: 1.6),
+        ),
+        hintStyle: TextStyle(color: bodyTextMuted),
+      ),
+
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: isDark ? Colors.grey[850] : Colors.black87,
+        contentTextStyle: TextStyle(color: snackFg, fontFamily: 'Nunito'),
+        behavior: SnackBarBehavior.floating,
+      ),
+
+      dividerTheme: DividerThemeData(
+        color: dividerColor,
+        space: 1,
+        thickness: 1,
+      ),
+
+      iconTheme: IconThemeData(color: isDark ? bodyTextSecondary : bodyTextSecondary),
+      progressIndicatorTheme: ProgressIndicatorThemeData(color: colorScheme.secondary),
+      listTileTheme: ListTileThemeData(iconColor: colorScheme.primary),
+      checkboxTheme: CheckboxThemeData(
+        fillColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected) ? colorScheme.primary : inputBorder,
+        ),
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStatePropertyAll(colorScheme.primary),
+        trackColor: WidgetStatePropertyAll(colorScheme.primary.withOpacity(0.35)),
+      ),
+      chipTheme: ChipThemeData(
+        labelStyle: TextStyle(color: bodyTextColor, fontFamily: 'Nunito'),
+        backgroundColor: isDark ? AppColors.darkCard : Colors.white,
+        side: BorderSide(color: dividerColor),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      ),
+    );
+  }
 }

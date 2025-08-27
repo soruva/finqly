@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:finqly/l10n/app_localizations.dart';
-import 'package:finqly/theme/colors.dart';
+import 'package:finqly/theme/theme.dart';
 import 'package:finqly/screens/splash_screen.dart';
 import 'package:finqly/services/subscription_manager.dart';
 
@@ -30,25 +30,15 @@ class _FinqlyAppState extends State<FinqlyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Finqly',
-      theme: ThemeData(
-        primarySwatch: Colors.indigo,
-        fontFamily: 'Nunito',
-        scaffoldBackgroundColor: Colors.white,
-        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.indigo)
-            .copyWith(secondary: Colors.purpleAccent),
-      ),
-      darkTheme: ThemeData.dark().copyWith(
-        primaryColor: AppColors.primary,
-        scaffoldBackgroundColor: const Color(0xFF19162D),
-        colorScheme: ThemeData.dark().colorScheme.copyWith(
-          primary: AppColors.primary,
-          secondary: Colors.purpleAccent,
-        ),
-      ),
+
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
       themeMode: _themeMode,
+
       locale: _locale,
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
+
       home: SplashScreen(
         subscriptionManager: _subscriptionManager,
         currentLocale: _locale,
