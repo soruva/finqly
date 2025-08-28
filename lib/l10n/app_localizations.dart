@@ -359,6 +359,18 @@ abstract class AppLocalizations {
   /// **'Light Mode'**
   String get lightMode;
 
+  /// Label shown when dark mode switch is ON
+  ///
+  /// In en, this message translates to:
+  /// **'Dark mode is ON'**
+  String get darkModeOn;
+
+  /// Label shown when dark mode switch is OFF
+  ///
+  /// In en, this message translates to:
+  /// **'Dark mode is OFF'**
+  String get darkModeOff;
+
   /// Title for premium unlock screen
   ///
   /// In en, this message translates to:
@@ -473,30 +485,6 @@ abstract class AppLocalizations {
   /// **'Your recent emotional trend is visualized below.'**
   String get trendForecastDescription;
 
-  /// Label for Privacy Policy item in settings
-  ///
-  /// In en, this message translates to:
-  /// **'Privacy Policy'**
-  String get privacyPolicy;
-
-  /// Label for Terms of Service item in settings
-  ///
-  /// In en, this message translates to:
-  /// **'Terms of Service'**
-  String get termsOfService;
-
-  /// Label for Disclaimer item in settings
-  ///
-  /// In en, this message translates to:
-  /// **'Disclaimer'**
-  String get disclaimer;
-
-  /// Label for FAQ item in settings
-  ///
-  /// In en, this message translates to:
-  /// **'FAQ'**
-  String get faq;
-
   /// Title for Privacy policy page
   ///
   /// In en, this message translates to:
@@ -520,6 +508,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'FAQ'**
   String get faqTitle;
+
+  /// Settings: list item to restore previously purchased items
+  ///
+  /// In en, this message translates to:
+  /// **'Restore purchases'**
+  String get restorePurchasesTitle;
+
+  /// SnackBar message shown after restore completes
+  ///
+  /// In en, this message translates to:
+  /// **'Purchases restored'**
+  String get restorePurchasesDone;
+
+  /// Legend for the trend chart scores
+  ///
+  /// In en, this message translates to:
+  /// **'Score Legend: 6=Excited, 5=Optimistic, 3=Neutral, 2=Confused, 1=Worried, 0=Cautious'**
+  String get trendScoreLegend;
+
+  /// Upsell text shown on the trend page when user is not premium
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock trend charts, performance tracking, and personalized insights with Finqly Plus!'**
+  String get premiumTrendUpsell;
+
+  /// Axis label for day N in trend chart
+  ///
+  /// In en, this message translates to:
+  /// **'Day {n}'**
+  String dayLabel(Object n);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

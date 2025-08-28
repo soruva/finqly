@@ -140,6 +140,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get lightMode => 'Heller Modus';
 
   @override
+  String get darkModeOn => 'Dark mode is ON';
+
+  @override
+  String get darkModeOff => 'Dark mode is OFF';
+
+  @override
   String get premiumUnlockTitle => 'Premium-Inhalte freischalten';
 
   @override
@@ -197,18 +203,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get trendForecastDescription => 'Ihr aktueller emotionaler Trend wird unten angezeigt.';
 
   @override
-  String get privacyPolicy => 'Datenschutzerklärung';
-
-  @override
-  String get termsOfService => 'Nutzungsbedingungen';
-
-  @override
-  String get disclaimer => 'Haftungsausschluss';
-
-  @override
-  String get faq => 'FAQ';
-
-  @override
   String get privacyTitle => 'Privacy Policy';
 
   @override
@@ -219,4 +213,21 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get faqTitle => 'FAQ';
+
+  @override
+  String get restorePurchasesTitle => 'Käufe wiederherstellen';
+
+  @override
+  String get restorePurchasesDone => 'Käufe wiederhergestellt';
+
+  @override
+  String get trendScoreLegend => 'Score Legend: 6=Excited, 5=Optimistic, 3=Neutral, 2=Confused, 1=Worried, 0=Cautious';
+
+  @override
+  String get premiumTrendUpsell => 'Unlock trend charts, performance tracking, and personalized insights with Finqly Plus!';
+
+  @override
+  String dayLabel(Object n) {
+    return 'Day $n';
+  }
 }
