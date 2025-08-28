@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:finqly/theme/colors.dart';
 import 'package:finqly/l10n/app_localizations.dart';
@@ -6,6 +7,7 @@ import 'package:finqly/screens/premium_unlock_page.dart';
 import 'package:finqly/services/subscription_manager.dart';
 import 'package:finqly/services/history_service.dart';
 import 'package:finqly/services/iap_service.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 
 class DiagnosisPage extends StatefulWidget {
   final SubscriptionManager subscriptionManager;
@@ -19,7 +21,9 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
   String? selectedEmotionKey;
   bool _busy = false;
   String? _error;
+
   late final IapService _iap;
+  StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
 
   final Map<String, String> _emojis = const {
     'Optimistic': '😊',
@@ -33,41 +37,62 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
   @override
   void initState() {
     super.initState();
-    _iap = IapService();
-    _iap.init(
-      onVerified: (p) async {
-        await widget.subscriptionManager.setSubscribed(true);
-        if (!mounted) return;
-        setState(() => _busy = false);
 
-        final key = selectedEmotionKey;
-        if (key != null) {
-          if (!mounted) return;
-          // ignore: use_build_context_synchronously
-Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => BadgeScreen(
-                emotionKey: key,
-                subscriptionManager: widget.subscriptionManager,
-              ),
-            ),
+    _iap = IapService();
+    _iap.init();
+
+    _purchaseSub = _iap.purchaseStream.listen((purchases) async {
+      for (final p in purchases) {
+        try {
+          if (p.status == PurchaseStatus.purchased ||
+              p.status == PurchaseStatus.restored) {
+            if (p.productID == IapService.subscriptionId) {
+              await widget.subscriptionManager.setSubscribed(true);
+            }
+
+            final key = selectedEmotionKey;
+            if (mounted && key != null) {
+              setState(() => _busy = false);
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => BadgeScreen(
+                    emotionKey: key,
+                    subscriptionManager: widget.subscriptionManager,
+                  ),
+                ),
+              );
+            }
+          } else if (p.status == PurchaseStatus.error) {
+            if (!mounted) continue;
+            setState(() {
+              _busy = false;
+              _error = p.error?.message ?? 'purchase_error';
+            });
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Purchase error: $_error')),
+            );
+          }
+
+          if (p.pendingCompletePurchase) {
+            await InAppPurchase.instance.completePurchase(p);
+          }
+        } catch (e) {
+          if (!mounted) continue;
+          setState(() {
+            _busy = false;
+            _error = e.toString();
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Purchase error: $_error')),
           );
         }
-      },
-      onError: (e) {
-        if (!mounted) return;
-        setState(() {
-          _busy = false;
-          _error = e.toString();
-        });
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Purchase error: $_error')));
-      },
-    );
+      }
+    });
   }
 
   @override
   void dispose() {
+    _purchaseSub?.cancel();
     _iap.dispose();
     super.dispose();
   }
@@ -89,8 +114,10 @@ Navigator.of(context).push(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('Unlock options',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const Text(
+                'Unlock options',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 12),
               ListTile(
                 leading: const Icon(Icons.check_circle_outline),
@@ -108,12 +135,10 @@ Navigator.of(context).push(
               ListTile(
                 leading: const Icon(Icons.workspace_premium),
                 title: const Text('Go Premium'),
-                subtitle:
-                    const Text('Monthly or Yearly subscription available'),
+                subtitle: const Text('Monthly or Yearly subscription available'),
                 onTap: () {
                   Navigator.pop(context);
-                  // ignore: use_build_context_synchronously
-Navigator.push(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (_) => PremiumUnlockPage(
@@ -171,8 +196,7 @@ Navigator.push(
             child: SafeArea(
               bottom: false,
               child: SingleChildScrollView(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -200,14 +224,13 @@ Navigator.push(
                             setState(() => selectedEmotionKey = entry.key);
                             await _saveEmotionToHistory(entry.key);
                             if (!mounted) return;
+
                             if (isPremiumUser) {
-                              // ignore: use_build_context_synchronously
-Navigator.of(context).push(
+                              Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (_) => BadgeScreen(
                                     emotionKey: entry.key,
-                                    subscriptionManager:
-                                        widget.subscriptionManager,
+                                    subscriptionManager: widget.subscriptionManager,
                                   ),
                                 ),
                               );
@@ -222,8 +245,7 @@ Navigator.of(context).push(
                     if (!isPremiumUser)
                       Center(
                         child: Padding(
-                          padding: const EdgeInsets.only(
-                              bottom: 18, left: 4, right: 4),
+                          padding: const EdgeInsets.only(bottom: 18, left: 4, right: 4),
                           child: Text(
                             loc.premiumPrompt,
                             style: const TextStyle(
