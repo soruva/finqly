@@ -13,31 +13,40 @@ class IapService {
   factory IapService({IapVerifiedCallback? onVerified, IapErrorCallback? onError}) {
     if (onVerified != null) instance._onVerified = onVerified;
     if (onError != null) instance._onError = onError;
+    instance._ensureInit();
     return instance;
   }
 
-  // ---- IDs ----
-  static const String subscriptionId = 'finqly_premium';
+  // ---- Product IDs ----
+  static const String subscriptionId     = 'finqly_premium';
   static const String oneTimeDiagnosisId = 'inapp_one_time_diagnosis';
-  static const String starterBundleId = 'starter_bundle';
+  static const String starterBundleId    = 'starter_bundle';
 
   // ---- Internals ----
   final InAppPurchase _iap = InAppPurchase.instance;
   final List<ProductDetails> _products = [];
   bool _available = false;
+  bool _inited = false;
 
-  // Optional callbacks (for legacy screens)
   IapVerifiedCallback? _onVerified;
   IapErrorCallback? _onError;
 
   StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
 
-  // ---- Public API (legacy-friendly) ----
+  // ---- Public (legacy-friendly) ----
   bool get isAvailable => _available;
   List<ProductDetails> get products => List.unmodifiable(_products);
   Stream<List<PurchaseDetails>> get purchaseStream => _iap.purchaseStream;
 
+  void setCallbacks({IapVerifiedCallback? onVerified, IapErrorCallback? onError}) {
+    if (onVerified != null) _onVerified = onVerified;
+    if (onError != null) _onError = onError;
+  }
+
   Future<void> init() async {
+    if (_inited) return;
+    _inited = true;
+
     _available = await _iap.isAvailable();
     if (!_available) return;
 
@@ -50,10 +59,17 @@ class IapService {
     _purchaseSub ??= purchaseStream.listen((purchases) async {
       for (final p in purchases) {
         try {
-          if (p.status == PurchaseStatus.purchased || p.status == PurchaseStatus.restored) {
-            _onVerified?.call(p);
-          } else if (p.status == PurchaseStatus.error) {
-            _onError?.call(p.error ?? 'purchase_error');
+          switch (p.status) {
+            case PurchaseStatus.purchased:
+            case PurchaseStatus.restored:
+              _onVerified?.call(p);
+              break;
+            case PurchaseStatus.error:
+              _onError?.call(p.error ?? 'purchase_error');
+              break;
+            case PurchaseStatus.pending:
+            case PurchaseStatus.canceled:
+              break;
           }
           if (p.pendingCompletePurchase) {
             await _iap.completePurchase(p);
@@ -65,15 +81,26 @@ class IapService {
     });
   }
 
-  ProductDetails? _find(String id) {
-    try { return _products.firstWhere((p) => p.id == id); } catch (_) { return null; }
+  void _ensureInit() {
+    // ignore: discarded_futures
+    init();
   }
 
+  ProductDetails? _find(String id) {
+    try {
+      return _products.firstWhere((p) => p.id == id);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  // ---- Pricing (fallback) ----
   String priceForSubscription({required bool yearly}) {
     final pd = _find(subscriptionId);
     return pd?.price ?? '';
   }
 
+  // ---- Purchasing ----
   Future<void> buySubscription({required bool yearly}) async {
     final pd = _find(subscriptionId);
     if (pd == null) return;

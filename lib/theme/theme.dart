@@ -83,6 +83,7 @@ class AppTheme {
       scaffoldBackgroundColor: scaffoldBg,
       cardColor: cardColor,
       dividerColor: dividerColor,
+
       appBarTheme: AppBarTheme(
         backgroundColor: colorScheme.primary,
         foregroundColor: appBarForeground,
@@ -92,12 +93,14 @@ class AppTheme {
           fontFamily: 'Nunito', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white,
         ),
       ),
+
       textTheme: _textThemeBase.copyWith(
         bodyLarge: _textThemeBase.bodyLarge!.copyWith(color: bodyTextColor),
         bodyMedium: _textThemeBase.bodyMedium!.copyWith(color: bodyTextSecondary),
         bodySmall: _textThemeBase.bodySmall!.copyWith(color: bodyTextMuted),
         titleLarge: _textThemeBase.titleLarge!.copyWith(color: bodyTextColor),
       ),
+
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: elevatedBg,
@@ -106,6 +109,7 @@ class AppTheme {
           textStyle: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w600, fontSize: 16),
         ),
       ),
+
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: outlinedFg,
@@ -114,6 +118,7 @@ class AppTheme {
           textStyle: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w600, fontSize: 16),
         ),
       ),
+
       inputDecorationTheme: InputDecorationTheme(
         isDense: true,
         filled: true,
@@ -132,24 +137,32 @@ class AppTheme {
         ),
         hintStyle: TextStyle(color: bodyTextMuted),
       ),
+
       snackBarTheme: SnackBarThemeData(
         backgroundColor: isDark ? Colors.grey[850] : Colors.black87,
         contentTextStyle: TextStyle(color: snackFg, fontFamily: 'Nunito'),
         behavior: SnackBarBehavior.floating,
       ),
+
       dividerTheme: DividerThemeData(color: dividerColor, space: 1, thickness: 1),
+
       iconTheme: IconThemeData(color: bodyTextSecondary),
+
       progressIndicatorTheme: ProgressIndicatorThemeData(color: colorScheme.secondary),
+
       listTileTheme: ListTileThemeData(iconColor: colorScheme.primary),
+
       checkboxTheme: CheckboxThemeData(
-        fillColor: MaterialStateProperty.resolveWith(
-          (states) => states.contains(MaterialState.selected) ? colorScheme.primary : inputBorder,
+        fillColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected) ? colorScheme.primary : inputBorder,
         ),
       ),
       switchTheme: SwitchThemeData(
-        thumbColor: MaterialStatePropertyAll(colorScheme.primary),
-        trackColor: MaterialStatePropertyAll(colorScheme.primary.withValues(alpha: 0.35)),
+        thumbColor: WidgetStatePropertyAll(colorScheme.primary),
+        trackColor: WidgetStatePropertyAll(colorScheme.primary.withValues(alpha: 0.35)),
       ),
+      // ↑↑↑
+
       chipTheme: ChipThemeData(
         labelStyle: TextStyle(color: bodyTextColor, fontFamily: 'Nunito'),
         backgroundColor: isDark ? AppColors.darkCard : Colors.white,
