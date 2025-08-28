@@ -110,7 +110,7 @@ class EmotionBadge extends StatelessWidget {
       boxShadow: elevation > 0
           ? [
               BoxShadow(
-                color: Colors.black.withOpacity(0.12),
+                color: Colors.black.withValues(alpha: 0.12),
                 blurRadius: elevation * 2,
                 offset: Offset(0, elevation / 2),
               ),
