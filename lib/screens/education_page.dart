@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:finqly/theme/colors.dart';
 import 'package:finqly/l10n/app_localizations.dart';
 import 'package:finqly/screens/premium_unlock_page.dart';
 import 'package:finqly/services/subscription_manager.dart';
 import 'package:finqly/services/iap_service.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 
 class EducationPage extends StatefulWidget {
   final SubscriptionManager subscriptionManager;
@@ -30,6 +32,8 @@ class _EducationPageState extends State<EducationPage> {
   ];
 
   late final IapService _iap;
+  StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
+
   bool _busy = false;
   String? _error;
 
@@ -37,30 +41,52 @@ class _EducationPageState extends State<EducationPage> {
   void initState() {
     super.initState();
     _iap = IapService();
-    _iap.init(
-      onVerified: (p) async {
-        await widget.subscriptionManager.setSubscribed(true);
-        if (!mounted) return;
-        setState(() => _busy = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Purchase completed')),
-        );
-      },
-      onError: (e) {
-        if (!mounted) return;
-        setState(() {
-          _busy = false;
-          _error = e.toString();
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Purchase error: $_error')),
-        );
-      },
-    );
+    _iap.init();
+
+    _purchaseSub = _iap.purchaseStream.listen((purchases) async {
+      for (final p in purchases) {
+        try {
+          if (p.status == PurchaseStatus.purchased ||
+              p.status == PurchaseStatus.restored) {
+            if (p.productID == IapService.subscriptionId) {
+              await widget.subscriptionManager.setSubscribed(true);
+            }
+            if (!mounted) continue;
+            setState(() => _busy = false);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Purchase completed')),
+            );
+          } else if (p.status == PurchaseStatus.error) {
+            if (!mounted) continue;
+            setState(() {
+              _busy = false;
+              _error = p.error?.message ?? 'purchase_error';
+            });
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Purchase error: $_error')),
+            );
+          }
+
+          if (p.pendingCompletePurchase) {
+            await InAppPurchase.instance.completePurchase(p);
+          }
+        } catch (e) {
+          if (!mounted) continue;
+          setState(() {
+            _busy = false;
+            _error = e.toString();
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Purchase error: $_error')),
+          );
+        }
+      }
+    });
   }
 
   @override
   void dispose() {
+    _purchaseSub?.cancel();
     _iap.dispose();
     super.dispose();
   }
@@ -97,8 +123,7 @@ class _EducationPageState extends State<EducationPage> {
               ListTile(
                 leading: const Icon(Icons.workspace_premium),
                 title: const Text('Go Premium'),
-                subtitle:
-                    const Text('Monthly or Yearly subscription available'),
+                subtitle: const Text('Monthly or Yearly subscription available'),
                 onTap: () {
                   Navigator.pop(context);
                   Navigator.push(
@@ -130,8 +155,10 @@ class _EducationPageState extends State<EducationPage> {
 
         return Scaffold(
           appBar: AppBar(
-            title: Text(loc.investmentTipsTitle,
-                style: const TextStyle(fontWeight: FontWeight.bold)),
+            title: Text(
+              loc.investmentTipsTitle,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
             centerTitle: true,
             backgroundColor: AppColors.primary,
             foregroundColor: Colors.white,
@@ -151,8 +178,7 @@ class _EducationPageState extends State<EducationPage> {
                 const SizedBox(height: 20),
                 Expanded(
                   child: ListView.builder(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     itemCount: tipsKeys.length,
                     itemBuilder: (context, index) {
                       final key = tipsKeys[index];
@@ -187,8 +213,7 @@ class _EducationPageState extends State<EducationPage> {
                 if (!isPremium) ...[
                   const SizedBox(height: 10),
                   Padding(
-                    padding: const EdgeInsets.only(
-                        left: 14.0, right: 14.0, bottom: 6.0),
+                    padding: const EdgeInsets.only(left: 14.0, right: 14.0, bottom: 6.0),
                     child: Text(
                       loc.premiumFeatureExplain,
                       style: const TextStyle(
@@ -204,8 +229,7 @@ class _EducationPageState extends State<EducationPage> {
                     icon: const Icon(Icons.lock_open),
                     label: Text(loc.unlockInsights),
                     style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 30, vertical: 15),
+                      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                       backgroundColor: AppColors.accentPurple,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
@@ -224,10 +248,8 @@ class _EducationPageState extends State<EducationPage> {
                   ),
                 if (_error != null)
                   Padding(
-                    padding:
-                        const EdgeInsets.only(bottom: 12, left: 16, right: 16),
-                    child: Text('Error: $_error',
-                        style: const TextStyle(color: Colors.red)),
+                    padding: const EdgeInsets.only(bottom: 12, left: 16, right: 16),
+                    child: Text('Error: $_error', style: const TextStyle(color: Colors.red)),
                   ),
               ],
             ),
@@ -240,10 +262,10 @@ class _EducationPageState extends State<EducationPage> {
   Widget _buildTipCardFront(String tip, int idx) {
     final cardColors = [
       [AppColors.primary, AppColors.accentPurple],
-      [Color(0xFF72C6EF), Color(0xFFA7F0BA)],
-      [Color(0xFFF9D29D), Color(0xFFB5A1E5)],
-      [Color(0xFFFDCB82), Color(0xFF95D2FA)],
-      [Color(0xFFE9EAF8), Color(0xFFD0D5F7)],
+      [const Color(0xFF72C6EF), const Color(0xFFA7F0BA)],
+      [const Color(0xFFF9D29D), const Color(0xFFB5A1E5)],
+      [const Color(0xFFFDCB82), const Color(0xFF95D2FA)],
+      [const Color(0xFFE9EAF8), const Color(0xFFD0D5F7)],
     ];
     final gradient = cardColors[idx % cardColors.length];
     return Container(
