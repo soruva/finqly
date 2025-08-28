@@ -1,9 +1,11 @@
+// /workspaces/finqly/lib/services/subscription_manager.dart
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:finqly/services/iap_service.dart';
 
 /// Very thin local cache for "is premium" state.
-/// - Purchases are handled elsewhere (IapService).
-/// - Call [setSubscribed(true)] only after Play verification.
+/// - Purchases are handled in IapService.
+/// - Call [setSubscribed(true)] only after server-side verification in production.
 /// - UI can listen via [isSubscribedNotifier].
 class SubscriptionManager {
   static const _subscriptionKey = 'isSubscribed';
@@ -38,6 +40,14 @@ class SubscriptionManager {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_subscriptionKey);
     isSubscribedNotifier.value = false;
+  }
+
+  /// Restore previous purchases from the store.
+  /// NOTE: This delegates to IapService and then refreshes local state.
+  /// In production, you should update [isSubscribed] after server-side verification.
+  Future<void> restorePurchases() async {
+    await IapService.instance.restorePurchases();
+    await refresh();
   }
 
   void dispose() {
