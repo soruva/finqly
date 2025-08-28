@@ -1,10 +1,14 @@
+// /workspaces/finqly/lib/screens/emotion_history_page.dart
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:finqly/services/subscription_manager.dart';
-import 'package:finqly/services/history_service.dart';
 import 'package:intl/intl.dart';
-import 'package:finqly/screens/premium_unlock_page.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
+
 import 'package:finqly/l10n/app_localizations.dart';
+import 'package:finqly/screens/premium_unlock_page.dart';
+import 'package:finqly/services/history_service.dart';
 import 'package:finqly/services/iap_service.dart';
+import 'package:finqly/services/subscription_manager.dart';
 
 class EmotionHistoryPage extends StatefulWidget {
   final SubscriptionManager subscriptionManager;
@@ -27,6 +31,7 @@ class _EmotionHistoryPageState extends State<EmotionHistoryPage> {
   };
 
   late final IapService _iap;
+  StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
   bool _busy = false;
   String? _error;
 
@@ -36,29 +41,54 @@ class _EmotionHistoryPageState extends State<EmotionHistoryPage> {
     _loadHistory();
 
     _iap = IapService();
-    _iap.init(
-      onVerified: (p) async {
-        await widget.subscriptionManager.setSubscribed(true);
-        await _loadHistory();
-        if (!mounted) return;
-        setState(() => _busy = false);
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Purchase completed')));
-      },
-      onError: (e) {
-        if (!mounted) return;
-        setState(() {
-          _busy = false;
-          _error = e.toString();
-        });
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Purchase error: $_error')));
-      },
-    );
+    _iap.init();
+
+    _purchaseSub = _iap.purchaseStream.listen((purchases) async {
+      for (final p in purchases) {
+        try {
+          if (p.status == PurchaseStatus.purchased ||
+              p.status == PurchaseStatus.restored) {
+            if (p.productID == IapService.subscriptionId) {
+              await widget.subscriptionManager.setSubscribed(true);
+            }
+            await _loadHistory();
+
+            if (!mounted) continue;
+            setState(() => _busy = false);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Purchase completed')),
+            );
+          } else if (p.status == PurchaseStatus.error) {
+            if (!mounted) continue;
+            setState(() {
+              _busy = false;
+              _error = p.error?.message ?? 'purchase_error';
+            });
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Purchase error: $_error')),
+            );
+          }
+
+          if (p.pendingCompletePurchase) {
+            await InAppPurchase.instance.completePurchase(p);
+          }
+        } catch (e) {
+          if (!mounted) continue;
+          setState(() {
+            _busy = false;
+            _error = e.toString();
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Purchase error: $_error')),
+          );
+        }
+      }
+    });
   }
 
   @override
   void dispose() {
+    _purchaseSub?.cancel();
     _iap.dispose();
     super.dispose();
   }
@@ -70,6 +100,7 @@ class _EmotionHistoryPageState extends State<EmotionHistoryPage> {
   }
 
   Future<void> _showPaywall() async {
+    if (!mounted) return;
     showModalBottomSheet(
       context: context,
       showDragHandle: true,
@@ -82,9 +113,12 @@ class _EmotionHistoryPageState extends State<EmotionHistoryPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('Unlock options',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const Text(
+                'Unlock options',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 12),
+
               ListTile(
                 leading: const Icon(Icons.all_inclusive),
                 title: const Text('Starter Bundle: Diagnosis & Insights'),
@@ -98,11 +132,11 @@ class _EmotionHistoryPageState extends State<EmotionHistoryPage> {
                       },
               ),
               const Divider(),
+
               ListTile(
                 leading: const Icon(Icons.workspace_premium),
                 title: const Text('Go Premium'),
-                subtitle:
-                    const Text('Monthly or Yearly subscription available'),
+                subtitle: const Text('Monthly or Yearly subscription available'),
                 onTap: () async {
                   Navigator.pop(context);
                   await Navigator.push(
@@ -133,7 +167,9 @@ class _EmotionHistoryPageState extends State<EmotionHistoryPage> {
       builder: (context, isPremium, _) {
         final visibleHistory = isPremium
             ? _history
-            : (_history.length > 7 ? _history.sublist(_history.length - 7) : _history);
+            : (_history.length > 7
+                ? _history.sublist(_history.length - 7)
+                : _history);
 
         return Scaffold(
           appBar: AppBar(
@@ -146,13 +182,17 @@ class _EmotionHistoryPageState extends State<EmotionHistoryPage> {
               ? Center(
                   child: Text(
                     loc.emotionHistoryEmpty,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 )
               : Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(top: 18.0, bottom: 10.0),
+                      padding:
+                          const EdgeInsets.only(top: 18.0, bottom: 10.0),
                       child: Text(
                         isPremium
                             ? loc.emotionHistoryTitle
@@ -160,7 +200,8 @@ class _EmotionHistoryPageState extends State<EmotionHistoryPage> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: Theme.of(context).colorScheme.secondary,
+                          color:
+                              Theme.of(context).colorScheme.secondary,
                         ),
                       ),
                     ),
@@ -168,20 +209,23 @@ class _EmotionHistoryPageState extends State<EmotionHistoryPage> {
                       child: ListView.builder(
                         itemCount: visibleHistory.length,
                         itemBuilder: (context, idx) {
-                          final item = visibleHistory[visibleHistory.length - idx - 1];
+                          final item = visibleHistory[
+                              visibleHistory.length - idx - 1];
                           final date = item['timestamp'] ?? '';
                           final emotion = item['emotion'] ?? '';
                           String formattedDate = '';
                           if (date is String && date.isNotEmpty) {
                             try {
                               final dt = DateTime.parse(date);
-                              formattedDate = DateFormat('yyyy/MM/dd HH:mm').format(dt);
+                              formattedDate =
+                                  DateFormat('yyyy/MM/dd HH:mm').format(dt);
                             } catch (_) {
                               formattedDate = date;
                             }
                           }
                           return Card(
-                            margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 18, vertical: 8),
                             elevation: 3,
                             child: ListTile(
                               leading: Text(
@@ -228,7 +272,10 @@ class _EmotionHistoryPageState extends State<EmotionHistoryPage> {
                               onPressed: _showPaywall,
                               label: Text(
                                 loc.unlockInsights,
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
                               ),
                             ),
                           ],
@@ -241,9 +288,12 @@ class _EmotionHistoryPageState extends State<EmotionHistoryPage> {
                       ),
                     if (_error != null)
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 12, left: 16, right: 16),
-                        child: Text('Error: $_error',
-                            style: const TextStyle(color: Colors.red)),
+                        padding: const EdgeInsets.only(
+                            bottom: 12, left: 16, right: 16),
+                        child: Text(
+                          'Error: $_error',
+                          style: const TextStyle(color: Colors.red),
+                        ),
                       ),
                     const SizedBox(height: 6),
                   ],
