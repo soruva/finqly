@@ -1,3 +1,4 @@
+// /workspaces/finqly/lib/screens/premium_unlock_page.dart
 import 'package:flutter/material.dart';
 import 'package:finqly/services/subscription_manager.dart';
 import 'package:finqly/services/iap_service.dart';
@@ -24,25 +25,16 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
   void initState() {
     super.initState();
     _iap = IapService();
-    _iap.init(
-      onVerified: (p) async {
-        await widget.subscriptionManager.setSubscribed(true);
-        if (!mounted) return;
-        setState(() => _isLoading = false);
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Purchase complete')));
-      },
-      onError: (e) {
-        if (!mounted) return;
-        setState(() {
-          _isLoading = false;
-          _error = e.toString();
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Purchase error: $_error')),
-        );
-      },
-    );
+    _initIap();
+  }
+
+  Future<void> _initIap() async {
+    try {
+      await _iap.init();
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _error = e.toString());
+    }
   }
 
   @override
@@ -106,18 +98,33 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
                 onPressed: _isLoading
                     ? null
                     : () async {
-                        setState(() => _isLoading = true);
+                        setState(() {
+                          _isLoading = true;
+                          _error = null;
+                        });
                         try {
-                          await _iap.buySubscription(yearly: false);
+                          final ok = await _iap.buySubscription(yearly: false);
+                          if (!mounted) return;
+                          if (ok) {
+                            await widget.subscriptionManager.setSubscribed(true);
+                            if (!mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Purchase complete')),
+                            );
+                            Navigator.of(context).maybePop();
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Purchase failed')),
+                            );
+                          }
                         } catch (e) {
                           if (!mounted) return;
-                          setState(() {
-                            _isLoading = false;
-                            _error = e.toString();
-                          });
+                          setState(() => _error = e.toString());
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text('Purchase error: $e')),
                           );
+                        } finally {
+                          if (mounted) setState(() => _isLoading = false);
                         }
                       },
                 label: _isLoading
@@ -125,7 +132,9 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
                         width: 20,
                         height: 20,
                         child: CircularProgressIndicator(
-                            strokeWidth: 2, color: Colors.white),
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
                       )
                     : Text(
                         loc.premiumUnlockButton,

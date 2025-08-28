@@ -1,5 +1,5 @@
+// /workspaces/finqly/lib/screens/premium_plans_page.dart
 import 'package:flutter/material.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:finqly/services/subscription_manager.dart';
 import 'package:finqly/services/iap_service.dart';
 
@@ -29,20 +29,13 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
       _loading = true;
       _error = null;
     });
-    await _iap.init(
-      onVerified: (p) async {
-        await widget.subscriptionManager.setSubscribed(true);
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Purchase completed')),
-        );
-      },
-      onError: (e) {
-        if (!mounted) return;
-        setState(() => _error = e.toString());
-      },
-    );
-    if (mounted) setState(() => _loading = false);
+    try {
+      await _iap.init();
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
   }
 
   @override
@@ -51,37 +44,31 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
     super.dispose();
   }
 
-  ProductDetails? _pd(String id) {
-    try {
-      return _iap.products.firstWhere((e) => e.id == id);
-    } catch (_) {
-      return null;
-    }
-  }
+  String _monthlyPrice() => '\$9.99 / month';
+  String _yearlyPrice() => '\$99.99 / year';
+  String _oneTimeDiagnosisPrice() => '\$2.99 / time';
+  String _starterBundlePrice() => '\$19.99 (one time)';
 
-  // Show monthly/yearly using ProductDetails.price and safe fallbacks
-  String _subPrice({required bool yearly}) {
-    final pd = _pd(IapService.subscriptionId);
-    if (pd == null) {
-      return yearly ? '\$99.99 / year' : '\$9.99 / month';
-    }
-    final base = pd.price.isNotEmpty ? pd.price : (yearly ? '\$99.99' : '\$9.99');
-    return yearly ? '$base / year' : '$base / month';
-  }
-
-  String _inappPrice(String id, String fallback) {
-    final pd = _pd(id);
-    return (pd != null && pd.price.isNotEmpty) ? pd.price : fallback;
-  }
-
-  Future<void> _handleAction(Future<void> Function() action) async {
+  Future<void> _handlePurchase(Future<bool> Function() action) async {
     if (_isPurchasing) return;
     setState(() {
       _isPurchasing = true;
       _error = null;
     });
     try {
-      await action();
+      final ok = await action();
+      if (!mounted) return;
+      if (ok) {
+        await widget.subscriptionManager.setSubscribed(true);
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Purchase completed')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Purchase failed')),
+        );
+      }
     } catch (e) {
       if (!mounted) return;
       setState(() => _error = e.toString());
@@ -98,27 +85,27 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
     final items = [
       {
         'title': 'Monthly Plan',
-        'price': _subPrice(yearly: false),
+        'price': _monthlyPrice(),
         'desc': 'Unlock all premium features with a monthly subscription.',
-        'onPressed': () => _handleAction(() => _iap.buySubscription(yearly: false)),
+        'onPressed': () => _handlePurchase(() => _iap.buySubscription(yearly: false)),
       },
       {
         'title': 'Annual Plan',
-        'price': _subPrice(yearly: true),
+        'price': _yearlyPrice(),
         'desc': 'Save more! Yearly subscription, all premium features.',
-        'onPressed': () => _handleAction(() => _iap.buySubscription(yearly: true)),
+        'onPressed': () => _handlePurchase(() => _iap.buySubscription(yearly: true)),
       },
       {
         'title': 'One-time Diagnosis',
-        'price': '${_inappPrice(IapService.oneTimeDiagnosisId, '\$2.99')} / time',
+        'price': _oneTimeDiagnosisPrice(),
         'desc': 'Premium diagnosis one time only, no subscription needed.',
-        'onPressed': () => _handleAction(() => _iap.buyOneTime(IapService.oneTimeDiagnosisId)),
+        'onPressed': () => _handlePurchase(() => _iap.buyOneTime(IapService.oneTimeDiagnosisId)),
       },
       {
         'title': 'Starter Bundle',
-        'price': '${_inappPrice(IapService.starterBundleId, '\$19.99')} (one time)',
+        'price': _starterBundlePrice(),
         'desc': 'Pack: Diagnosis, Forecast & Education tips. Lifetime access.',
-        'onPressed': () => _handleAction(() => _iap.buyOneTime(IapService.starterBundleId)),
+        'onPressed': () => _handlePurchase(() => _iap.buyOneTime(IapService.starterBundleId)),
       },
     ];
 
@@ -130,15 +117,6 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
       body: Column(
         children: [
           if (_loading) const LinearProgressIndicator(minHeight: 2),
-          if (!_iap.isAvailable && !_loading)
-            const Padding(
-              padding: EdgeInsets.fromLTRB(24, 8, 24, 0),
-              child: Text(
-                'Play Store not available. Please sign in to Google Play and try again.',
-                style: TextStyle(color: Colors.orange, fontSize: 12),
-                textAlign: TextAlign.center,
-              ),
-            ),
           if (_error != null)
             Padding(
               padding: const EdgeInsets.all(12),
@@ -174,9 +152,9 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
                               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                             ),
                             ElevatedButton(
-                              onPressed: (_iap.isAvailable && !_isPurchasing)
-                                  ? plan['onPressed'] as VoidCallback
-                                  : null,
+                              onPressed: (_loading || _isPurchasing)
+                                  ? null
+                                  : plan['onPressed'] as VoidCallback,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.deepPurple,
                                 foregroundColor: Colors.white,
