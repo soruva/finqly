@@ -1,5 +1,5 @@
-// /workspaces/finqly/lib/screens/diagnosis_page.dart
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
@@ -44,7 +44,6 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
     _iap.init();
 
     _purchaseSub = _iap.purchaseStream.listen((purchases) async {
-      // capture before awaits
       final navigator = Navigator.of(context);
       final messenger = ScaffoldMessenger.of(context);
 
@@ -58,11 +57,9 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
 
             final key = selectedEmotionKey;
             if (!mounted) continue;
-
             setState(() => _busy = false);
 
             if (key != null) {
-              // use captured navigator
               navigator.push(
                 MaterialPageRoute(
                   builder: (_) => BadgeScreen(
@@ -78,7 +75,6 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
               _busy = false;
               _error = p.error?.message ?? 'purchase_error';
             });
-            // use captured messenger
             messenger.showSnackBar(
               SnackBar(content: Text('Purchase error: $_error')),
             );
@@ -113,10 +109,9 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
   }
 
   Future<void> _showPaywall() async {
-    // capture before any awaits
     final navigator = Navigator.of(context);
 
-    await showModalBottomSheet<void>(
+    await showModalBottomSheet(
       context: context,
       showDragHandle: true,
       shape: const RoundedRectangleBorder(
@@ -140,8 +135,7 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                 onTap: _busy
                     ? null
                     : () async {
-                        navigator.pop(); // close sheet
-                        if (!mounted) return;
+                        navigator.pop();
                         setState(() => _busy = true);
                         await _iap.buyOneTime(IapService.oneTimeDiagnosisId);
                       },
@@ -150,9 +144,10 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
               ListTile(
                 leading: const Icon(Icons.workspace_premium),
                 title: const Text('Go Premium'),
-                subtitle: const Text('Monthly or Yearly subscription available'),
+                subtitle:
+                    const Text('Monthly or Yearly subscription available'),
                 onTap: () {
-                  navigator.pop(); // close sheet
+                  navigator.pop();
                   navigator.push(
                     MaterialPageRoute(
                       builder: (_) => PremiumUnlockPage(
@@ -235,11 +230,11 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                           icon: _emojis[entry.key] ?? '',
                           label: entry.value,
                           onTap: () async {
+                            final navigator = Navigator.of(context);
+
                             setState(() => selectedEmotionKey = entry.key);
                             await _saveEmotionToHistory(entry.key);
                             if (!mounted) return;
-
-                            final navigator = Navigator.of(context);
 
                             if (isPremiumUser) {
                               navigator.push(
