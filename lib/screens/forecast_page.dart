@@ -1,13 +1,12 @@
-// /workspaces/finqly/lib/screens/forecast_page.dart
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:finqly/theme/colors.dart';
 import 'package:finqly/l10n/app_localizations.dart';
-import 'package:finqly/screens/premium_unlock_page.dart';
-import 'package:finqly/services/subscription_manager.dart';
 import 'package:finqly/screens/particle_background.dart';
+import 'package:finqly/screens/premium_unlock_page.dart';
 import 'package:finqly/services/iap_service.dart';
+import 'package:finqly/services/subscription_manager.dart';
+import 'package:finqly/theme/colors.dart';
 
 class ForecastPage extends StatefulWidget {
   final SubscriptionManager subscriptionManager;
@@ -36,6 +35,7 @@ class _ForecastPageState extends State<ForecastPage> {
   }
 
   Future<void> _showPaywall() async {
+    if (!mounted) return;
     showModalBottomSheet(
       context: context,
       showDragHandle: true,
@@ -61,22 +61,19 @@ class _ForecastPageState extends State<ForecastPage> {
                     ? null
                     : () async {
                         Navigator.pop(context);
-                        setState(() => _busy = true);
-                        final ok = await _iap.buyOneTime(IapService.starterBundleId);
-                        if (!mounted) return;
-                        setState(() => _busy = false);
-
-                        if (ok) {
+                        setState(() {
+                          _busy = true;
+                          _error = null;
+                        });
+                        try {
+                          await _iap.buyOneTime(IapService.starterBundleId);
+                          if (!mounted) return;
                           await widget.subscriptionManager.setSubscribed(true);
+                        } catch (e) {
                           if (!mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Purchase completed')),
-                          );
-                        } else {
-                          if (!mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Purchase failed')),
-                          );
+                          setState(() => _error = e.toString());
+                        } finally {
+                          if (mounted) setState(() => _busy = false);
                         }
                       },
               ),
@@ -85,9 +82,9 @@ class _ForecastPageState extends State<ForecastPage> {
                 leading: const Icon(Icons.workspace_premium),
                 title: const Text('Go Premium'),
                 subtitle: const Text('Monthly or Yearly subscription available'),
-                onTap: () async {
+                onTap: () {
                   Navigator.pop(context);
-                  await Navigator.push(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (_) => PremiumUnlockPage(
@@ -112,7 +109,7 @@ class _ForecastPageState extends State<ForecastPage> {
     return ValueListenableBuilder<bool>(
       valueListenable: widget.subscriptionManager.isSubscribedNotifier,
       builder: (context, isPremium, _) {
-        final forecastPercent = isPremium ? 3 + Random().nextDouble() * 5 : 0;
+        final forecastPercent = isPremium ? 3 + Random().nextDouble() * 5 : 0.0;
 
         return Scaffold(
           appBar: AppBar(
@@ -137,7 +134,7 @@ class _ForecastPageState extends State<ForecastPage> {
                   color: isPremium ? null : Colors.black.withValues(alpha: 0.5),
                 ),
                 child: isPremium
-                    ? _buildPremiumView(loc, forecastPercent.toDouble(), context)
+                    ? _buildPremiumView(loc, forecastPercent, context)
                     : _buildLockedView(loc),
               ),
               if (_busy)
@@ -148,6 +145,15 @@ class _ForecastPageState extends State<ForecastPage> {
                     child: LinearProgressIndicator(minHeight: 2),
                   ),
                 ),
+              if (_error != null)
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Text('Error: $_error',
+                        style: const TextStyle(color: Colors.redAccent)),
+                  ),
+                ),
             ],
           ),
         );
@@ -156,10 +162,7 @@ class _ForecastPageState extends State<ForecastPage> {
   }
 
   Widget _buildPremiumView(
-    AppLocalizations loc,
-    double forecastPercent,
-    BuildContext context,
-  ) {
+      AppLocalizations loc, double forecastPercent, BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -190,7 +193,9 @@ class _ForecastPageState extends State<ForecastPage> {
         ),
         const SizedBox(height: 32),
         ElevatedButton.icon(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            Navigator.pop(context);
+          },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.white,
             foregroundColor: AppColors.primary,
@@ -239,13 +244,6 @@ class _ForecastPageState extends State<ForecastPage> {
           icon: const Icon(Icons.lock_open),
           label: Text(loc.premiumCTA),
         ),
-        if (_error != null) ...[
-          const SizedBox(height: 8),
-          Text(
-            'Error: $_error',
-            style: const TextStyle(color: Colors.redAccent),
-          ),
-        ],
       ],
     );
   }

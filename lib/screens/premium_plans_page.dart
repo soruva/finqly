@@ -1,7 +1,6 @@
-// /workspaces/finqly/lib/screens/premium_plans_page.dart
 import 'package:flutter/material.dart';
-import 'package:finqly/services/subscription_manager.dart';
 import 'package:finqly/services/iap_service.dart';
+import 'package:finqly/services/subscription_manager.dart';
 
 class PremiumPlansPage extends StatefulWidget {
   final SubscriptionManager subscriptionManager;
@@ -32,7 +31,8 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
     try {
       await _iap.init();
     } catch (e) {
-      _error = e.toString();
+      if (!mounted) return;
+      setState(() => _error = e.toString());
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -44,31 +44,40 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
     super.dispose();
   }
 
-  String _monthlyPrice() => '\$9.99 / month';
-  String _yearlyPrice() => '\$99.99 / year';
-  String _oneTimeDiagnosisPrice() => '\$2.99 / time';
-  String _starterBundlePrice() => '\$19.99 (one time)';
+  ProductDetails? _pd(String id) {
+    try {
+      return _iap.products.firstWhere((e) => e.id == id);
+    } catch (_) {
+      return null;
+    }
+  }
 
-  Future<void> _handlePurchase(Future<bool> Function() action) async {
+  String _subPrice({required bool yearly}) {
+    final pd = _pd(IapService.subscriptionId);
+    if (pd == null) return yearly ? '\$99.99 / year' : '\$9.99 / month';
+    final base = pd.price.isNotEmpty ? pd.price : (yearly ? '\$99.99' : '\$9.99');
+    return yearly ? '$base / year' : '$base / month';
+  }
+
+  String _inappPrice(String id, String fallback) {
+    final pd = _pd(id);
+    return (pd != null && pd.price.isNotEmpty) ? pd.price : fallback;
+  }
+
+  Future<void> _handleAction(Future<void> Function() action) async {
     if (_isPurchasing) return;
     setState(() {
       _isPurchasing = true;
       _error = null;
     });
     try {
-      final ok = await action();
+      await action();
       if (!mounted) return;
-      if (ok) {
-        await widget.subscriptionManager.setSubscribed(true);
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Purchase completed')),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Purchase failed')),
-        );
-      }
+      await widget.subscriptionManager.setSubscribed(true);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Purchase completed')),
+      );
     } catch (e) {
       if (!mounted) return;
       setState(() => _error = e.toString());
@@ -85,27 +94,27 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
     final items = [
       {
         'title': 'Monthly Plan',
-        'price': _monthlyPrice(),
+        'price': _subPrice(yearly: false),
         'desc': 'Unlock all premium features with a monthly subscription.',
-        'onPressed': () => _handlePurchase(() => _iap.buySubscription(yearly: false)),
+        'onPressed': () => _handleAction(() => _iap.buySubscription(yearly: false)),
       },
       {
         'title': 'Annual Plan',
-        'price': _yearlyPrice(),
+        'price': _subPrice(yearly: true),
         'desc': 'Save more! Yearly subscription, all premium features.',
-        'onPressed': () => _handlePurchase(() => _iap.buySubscription(yearly: true)),
+        'onPressed': () => _handleAction(() => _iap.buySubscription(yearly: true)),
       },
       {
         'title': 'One-time Diagnosis',
-        'price': _oneTimeDiagnosisPrice(),
+        'price': '${_inappPrice(IapService.oneTimeDiagnosisId, '\$2.99')} / time',
         'desc': 'Premium diagnosis one time only, no subscription needed.',
-        'onPressed': () => _handlePurchase(() => _iap.buyOneTime(IapService.oneTimeDiagnosisId)),
+        'onPressed': () => _handleAction(() => _iap.buyOneTime(IapService.oneTimeDiagnosisId)),
       },
       {
         'title': 'Starter Bundle',
-        'price': _starterBundlePrice(),
+        'price': '${_inappPrice(IapService.starterBundleId, '\$19.99')} (one time)',
         'desc': 'Pack: Diagnosis, Forecast & Education tips. Lifetime access.',
-        'onPressed': () => _handlePurchase(() => _iap.buyOneTime(IapService.starterBundleId)),
+        'onPressed': () => _handleAction(() => _iap.buyOneTime(IapService.starterBundleId)),
       },
     ];
 
@@ -117,6 +126,15 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
       body: Column(
         children: [
           if (_loading) const LinearProgressIndicator(minHeight: 2),
+          if (!_iap.isAvailable && !_loading)
+            const Padding(
+              padding: EdgeInsets.fromLTRB(24, 8, 24, 0),
+              child: Text(
+                'Play Store not available. Please sign in to Google Play and try again.',
+                style: TextStyle(color: Colors.orange, fontSize: 12),
+                textAlign: TextAlign.center,
+              ),
+            ),
           if (_error != null)
             Padding(
               padding: const EdgeInsets.all(12),
@@ -152,9 +170,9 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
                               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                             ),
                             ElevatedButton(
-                              onPressed: (_loading || _isPurchasing)
-                                  ? null
-                                  : plan['onPressed'] as VoidCallback,
+                              onPressed: (_iap.isAvailable && !_isPurchasing)
+                                  ? plan['onPressed'] as VoidCallback
+                                  : null,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.deepPurple,
                                 foregroundColor: Colors.white,

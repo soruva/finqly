@@ -1,8 +1,7 @@
-// /workspaces/finqly/lib/screens/premium_unlock_page.dart
 import 'package:flutter/material.dart';
-import 'package:finqly/services/subscription_manager.dart';
-import 'package:finqly/services/iap_service.dart';
 import 'package:finqly/l10n/app_localizations.dart';
+import 'package:finqly/services/iap_service.dart';
+import 'package:finqly/services/subscription_manager.dart';
 
 class PremiumUnlockPage extends StatefulWidget {
   final SubscriptionManager subscriptionManager;
@@ -103,20 +102,14 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
                           _error = null;
                         });
                         try {
-                          final ok = await _iap.buySubscription(yearly: false);
+                          await _iap.buySubscription(yearly: false);
                           if (!mounted) return;
-                          if (ok) {
-                            await widget.subscriptionManager.setSubscribed(true);
-                            if (!mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Purchase complete')),
-                            );
-                            Navigator.of(context).maybePop();
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Purchase failed')),
-                            );
-                          }
+                          await widget.subscriptionManager.setSubscribed(true);
+                          if (!mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Purchase complete')),
+                          );
+                          Navigator.of(context).maybePop();
                         } catch (e) {
                           if (!mounted) return;
                           setState(() => _error = e.toString());
@@ -132,9 +125,7 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
                         width: 20,
                         height: 20,
                         child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
+                            strokeWidth: 2, color: Colors.white),
                       )
                     : Text(
                         loc.premiumUnlockButton,
