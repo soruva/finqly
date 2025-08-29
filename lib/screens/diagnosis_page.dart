@@ -1,5 +1,8 @@
+// /workspaces/finqly/lib/screens/diagnosis_page.dart
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
+
 import 'package:finqly/theme/colors.dart';
 import 'package:finqly/l10n/app_localizations.dart';
 import 'package:finqly/screens/badge_screen.dart';
@@ -7,7 +10,6 @@ import 'package:finqly/screens/premium_unlock_page.dart';
 import 'package:finqly/services/subscription_manager.dart';
 import 'package:finqly/services/history_service.dart';
 import 'package:finqly/services/iap_service.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
 
 class DiagnosisPage extends StatefulWidget {
   final SubscriptionManager subscriptionManager;
@@ -42,6 +44,10 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
     _iap.init();
 
     _purchaseSub = _iap.purchaseStream.listen((purchases) async {
+      // capture before awaits
+      final navigator = Navigator.of(context);
+      final messenger = ScaffoldMessenger.of(context);
+
       for (final p in purchases) {
         try {
           if (p.status == PurchaseStatus.purchased ||
@@ -51,9 +57,13 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
             }
 
             final key = selectedEmotionKey;
-            if (mounted && key != null) {
-              setState(() => _busy = false);
-              Navigator.of(context).push(
+            if (!mounted) continue;
+
+            setState(() => _busy = false);
+
+            if (key != null) {
+              // use captured navigator
+              navigator.push(
                 MaterialPageRoute(
                   builder: (_) => BadgeScreen(
                     emotionKey: key,
@@ -68,7 +78,8 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
               _busy = false;
               _error = p.error?.message ?? 'purchase_error';
             });
-            ScaffoldMessenger.of(context).showSnackBar(
+            // use captured messenger
+            messenger.showSnackBar(
               SnackBar(content: Text('Purchase error: $_error')),
             );
           }
@@ -82,7 +93,7 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
             _busy = false;
             _error = e.toString();
           });
-          ScaffoldMessenger.of(context).showSnackBar(
+          messenger.showSnackBar(
             SnackBar(content: Text('Purchase error: $_error')),
           );
         }
@@ -102,7 +113,10 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
   }
 
   Future<void> _showPaywall() async {
-    showModalBottomSheet(
+    // capture before any awaits
+    final navigator = Navigator.of(context);
+
+    await showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
       shape: const RoundedRectangleBorder(
@@ -126,7 +140,8 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                 onTap: _busy
                     ? null
                     : () async {
-                        Navigator.pop(context);
+                        navigator.pop(); // close sheet
+                        if (!mounted) return;
                         setState(() => _busy = true);
                         await _iap.buyOneTime(IapService.oneTimeDiagnosisId);
                       },
@@ -137,9 +152,8 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                 title: const Text('Go Premium'),
                 subtitle: const Text('Monthly or Yearly subscription available'),
                 onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
+                  navigator.pop(); // close sheet
+                  navigator.push(
                     MaterialPageRoute(
                       builder: (_) => PremiumUnlockPage(
                         subscriptionManager: widget.subscriptionManager,
@@ -225,8 +239,10 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                             await _saveEmotionToHistory(entry.key);
                             if (!mounted) return;
 
+                            final navigator = Navigator.of(context);
+
                             if (isPremiumUser) {
-                              Navigator.of(context).push(
+                              navigator.push(
                                 MaterialPageRoute(
                                   builder: (_) => BadgeScreen(
                                     emotionKey: entry.key,

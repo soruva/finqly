@@ -85,11 +85,12 @@ class _LegalWebViewPageState extends State<LegalWebViewPage> {
   }
 
   Future<void> _handleBack() async {
+    final navigator = Navigator.of(context);
     if (await _controller.canGoBack()) {
       await _controller.goBack();
     } else {
-      if (!context.mounted) return;
-      Navigator.of(context).maybePop();
+      if (!mounted) return;
+      navigator.maybePop();
     }
   }
 

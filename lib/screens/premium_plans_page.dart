@@ -1,3 +1,4 @@
+// /workspaces/finqly/lib/screens/premium_plans_page.dart
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:flutter/material.dart';
 import 'package:finqly/services/iap_service.dart';
@@ -67,22 +68,29 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
 
   Future<void> _handleAction(Future<void> Function() action) async {
     if (_isPurchasing) return;
+
+    // Capture before awaits to avoid context-after-await lint
+    final messenger = ScaffoldMessenger.of(context);
+
     setState(() {
       _isPurchasing = true;
       _error = null;
     });
+
     try {
       await action();
       if (!mounted) return;
+
       await widget.subscriptionManager.setSubscribed(true);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
+
+      messenger.showSnackBar(
         const SnackBar(content: Text('Purchase completed')),
       );
     } catch (e) {
       if (!mounted) return;
       setState(() => _error = e.toString());
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(content: Text('Purchase error: $e')),
       );
     } finally {
