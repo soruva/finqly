@@ -1,3 +1,4 @@
+// /workspaces/finqly/lib/screens/premium_unlock_page.dart
 import 'package:flutter/material.dart';
 import 'package:finqly/l10n/app_localizations.dart';
 import 'package:finqly/services/iap_service.dart';
@@ -97,27 +98,33 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
                 onPressed: _isLoading
                     ? null
                     : () async {
+                        // Capture before any awaits to avoid context-after-await lint
+                        final messenger = ScaffoldMessenger.of(context);
+                        final navigator = Navigator.of(context);
+
                         setState(() {
                           _isLoading = true;
                           _error = null;
                         });
+
                         try {
                           await _iap.buySubscription(yearly: false);
-                          if (!mounted) return;
                           await widget.subscriptionManager.setSubscribed(true);
+
                           if (!mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(
+                          messenger.showSnackBar(
                             const SnackBar(content: Text('Purchase complete')),
                           );
-                          Navigator.of(context).maybePop();
+                          navigator.maybePop();
                         } catch (e) {
                           if (!mounted) return;
                           setState(() => _error = e.toString());
-                          ScaffoldMessenger.of(context).showSnackBar(
+                          messenger.showSnackBar(
                             SnackBar(content: Text('Purchase error: $e')),
                           );
                         } finally {
-                          if (mounted) setState(() => _isLoading = false);
+                          if (!mounted) return;
+                          setState(() => _isLoading = false);
                         }
                       },
                 label: _isLoading
@@ -125,7 +132,9 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
                         width: 20,
                         height: 20,
                         child: CircularProgressIndicator(
-                            strokeWidth: 2, color: Colors.white),
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
                       )
                     : Text(
                         loc.premiumUnlockButton,
