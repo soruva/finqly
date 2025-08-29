@@ -1,3 +1,4 @@
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:flutter/material.dart';
 import 'package:finqly/services/iap_service.dart';
 import 'package:finqly/services/subscription_manager.dart';
