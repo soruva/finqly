@@ -53,10 +53,10 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
 
             final key = selectedEmotionKey;
 
-            if (!context.mounted) continue;
+            if (!mounted) continue;
             setState(() => _busy = false);
 
-            if (key != null && context.mounted) {
+            if (key != null && mounted) {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (_) => BadgeScreen(
@@ -67,12 +67,12 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
               );
             }
           } else if (p.status == PurchaseStatus.error) {
-            if (!context.mounted) continue;
+            if (!mounted) continue;
             setState(() {
               _busy = false;
               _error = p.error?.message ?? 'purchase_error';
             });
-            if (context.mounted) {
+            if (mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Purchase error: $_error')),
               );
@@ -83,12 +83,12 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
             await InAppPurchase.instance.completePurchase(p);
           }
         } catch (e) {
-          if (!context.mounted) continue;
+          if (!mounted) continue;
           setState(() {
             _busy = false;
             _error = e.toString();
           });
-          if (context.mounted) {
+          if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Purchase error: $_error')),
             );
@@ -232,7 +232,7 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
 
                             setState(() => selectedEmotionKey = entry.key);
                             await _saveEmotionToHistory(entry.key);
-                            if (!context.mounted) return;
+                            if (!mounted) return;
 
                             if (isPremiumUser) {
                               Navigator.of(context).push(
