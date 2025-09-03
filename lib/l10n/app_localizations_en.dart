@@ -230,4 +230,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String dayLabel(Object n) {
     return 'Day $n';
   }
+
+  @override
+  String get manageSubscriptionTitle => 'Manage subscription (Play Store)';
+
+  @override
+  String get openSubscriptionPageFailed => 'Could not open subscription page.';
+
+  @override
+  String get unlockOptionsTitle => 'Unlock options';
+
+  @override
+  String get oneTimeDiagnosisTitle => 'One-time Diagnosis';
+
+  @override
+  String get oneTimeDiagnosisSubtitle => '\$2.99 • No subscription required';
+
+  @override
+  String get goPremiumTitle => 'Go Premium';
+
+  @override
+  String get goPremiumSubtitle => 'Monthly or Yearly subscription available';
+
+  @override
+  String get purchaseErrorPrefix => 'Purchase error:';
 }

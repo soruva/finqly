@@ -24,7 +24,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get diagnosisQuestion => 'Como você se sente sobre o mercado neste momento?';
 
   @override
-  String get diagnosisButton => 'Run Diagnosis';
+  String get diagnosisButton => 'Executar diagnóstico';
 
   @override
   String get optionOptimistic => 'Otimista';
@@ -81,22 +81,22 @@ class AppLocalizationsPt extends AppLocalizations {
   String get investmentTips5 => 'Investir é uma jornada de longo prazo — não uma corrida.';
 
   @override
-  String get tapToFlip => 'Tap to flip';
+  String get tapToFlip => 'Toque para virar';
 
   @override
-  String get investmentTipsExplanation1 => 'Diversification is the golden rule!';
+  String get investmentTipsExplanation1 => 'A diversificação é a regra de ouro dos investidores bem-sucedidos!';
 
   @override
-  String get investmentTipsExplanation2 => 'Stay focused on the long term, not short-term feelings.';
+  String get investmentTipsExplanation2 => 'Não se deixe levar por sentimentos de curto prazo — pense a longo prazo.';
 
   @override
-  String get investmentTipsExplanation3 => 'Knowing your risk tolerance reduces mistakes.';
+  String get investmentTipsExplanation3 => 'Conhecer sua tolerância ao risco ajuda a evitar erros.';
 
   @override
-  String get investmentTipsExplanation4 => 'Stay informed. Avoid panic selling!';
+  String get investmentTipsExplanation4 => 'Estar informado é importante. Evite vendas em pânico!';
 
   @override
-  String get investmentTipsExplanation5 => 'Consistency builds your financial future.';
+  String get investmentTipsExplanation5 => 'Consistência constrói o seu futuro financeiro.';
 
   @override
   String get forecastTitle => 'Previsão de Investimento';
@@ -140,13 +140,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get lightMode => 'Modo claro';
 
   @override
-  String get darkModeOn => 'Dark mode is ON';
+  String get darkModeOn => 'Modo escuro ATIVADO';
 
   @override
-  String get darkModeOff => 'Dark mode is OFF';
+  String get darkModeOff => 'Modo escuro DESATIVADO';
 
   @override
-  String get premiumUnlockTitle => 'Desbloqueie Insights Premium';
+  String get premiumUnlockTitle => 'Desbloquear Insights Premium';
 
   @override
   String get premiumUnlockMessage => 'Acesse previsões avançadas, tendências emocionais e dicas de especialistas.';
@@ -194,7 +194,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get trendForecastTitle => 'Gráfico de tendência emocional';
 
   @override
-  String get premiumFeatureExplain => 'Desbloqueie este recurso Premium para acessar conteúdos exclusivos.';
+  String get premiumFeatureExplain => 'O Premium desbloqueia todos os gráficos de tendências e dicas exclusivas.';
 
   @override
   String get noTrendData => 'Nenhum dado de tendência disponível.';
@@ -203,13 +203,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get trendForecastDescription => 'Sua tendência emocional recente está visualizada abaixo.';
 
   @override
-  String get privacyTitle => 'Privacy Policy';
+  String get privacyTitle => 'Política de Privacidade';
 
   @override
-  String get termsTitle => 'Terms of Service';
+  String get termsTitle => 'Termos de Serviço';
 
   @override
-  String get disclaimerTitle => 'Disclaimer';
+  String get disclaimerTitle => 'Aviso Legal';
 
   @override
   String get faqTitle => 'FAQ';
@@ -221,13 +221,37 @@ class AppLocalizationsPt extends AppLocalizations {
   String get restorePurchasesDone => 'Compras restauradas';
 
   @override
-  String get trendScoreLegend => 'Score Legend: 6=Excited, 5=Optimistic, 3=Neutral, 2=Confused, 1=Worried, 0=Cautious';
+  String get trendScoreLegend => 'Legenda: 6=Animado, 5=Otimista, 3=Neutro, 2=Confuso, 1=Preocupado, 0=Cauteloso';
 
   @override
-  String get premiumTrendUpsell => 'Unlock trend charts, performance tracking, and personalized insights with Finqly Plus!';
+  String get premiumTrendUpsell => 'Desbloqueie gráficos de tendências, acompanhamento de desempenho e insights personalizados com o Finqly Plus!';
 
   @override
   String dayLabel(Object n) {
-    return 'Day $n';
+    return 'Dia $n';
   }
+
+  @override
+  String get manageSubscriptionTitle => 'Gerenciar assinatura (Play Store)';
+
+  @override
+  String get openSubscriptionPageFailed => 'Não foi possível abrir a página de assinatura.';
+
+  @override
+  String get unlockOptionsTitle => 'Opções de desbloqueio';
+
+  @override
+  String get oneTimeDiagnosisTitle => 'Diagnóstico único';
+
+  @override
+  String get oneTimeDiagnosisSubtitle => 'US\$ 2,99 • Sem necessidade de assinatura';
+
+  @override
+  String get goPremiumTitle => 'Ir para Premium';
+
+  @override
+  String get goPremiumSubtitle => 'Assinatura mensal ou anual disponível';
+
+  @override
+  String get purchaseErrorPrefix => 'Erro de compra:';
 }

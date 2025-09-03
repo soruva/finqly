@@ -24,7 +24,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get diagnosisQuestion => 'Comment vous sentez-vous par rapport au marché en ce moment ?';
 
   @override
-  String get diagnosisButton => 'Run Diagnosis';
+  String get diagnosisButton => 'Lancer le diagnostic';
 
   @override
   String get optionOptimistic => 'Optimiste';
@@ -36,10 +36,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get optionWorried => 'Inquiet';
 
   @override
-  String get optionConfused => 'Confus';
+  String get optionConfused => 'Perplexe';
 
   @override
-  String get optionExcited => 'Excité';
+  String get optionExcited => 'Enthousiaste';
 
   @override
   String get optionCautious => 'Prudent';
@@ -54,7 +54,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get badgeWorried => 'Vous êtes inquiet pour vos investissements.';
 
   @override
-  String get badgeConfused => 'Vous vous sentez incertain ou confus.';
+  String get badgeConfused => 'Vous vous sentez incertain ou perplexe.';
 
   @override
   String get badgeExcited => 'Vous êtes plein d\'énergie et prêt !';
@@ -78,32 +78,32 @@ class AppLocalizationsFr extends AppLocalizations {
   String get investmentTips4 => 'Restez informé, mais évitez de vendre dans la panique.';
 
   @override
-  String get investmentTips5 => 'Investir est un voyage à long terme — pas un sprint.';
+  String get investmentTips5 => 'Investir est un parcours de longue durée — pas un sprint.';
 
   @override
-  String get tapToFlip => 'Tap to flip';
+  String get tapToFlip => 'Touchez pour retourner';
 
   @override
-  String get investmentTipsExplanation1 => 'Diversification is the golden rule!';
+  String get investmentTipsExplanation1 => 'La diversification est la règle d’or des investisseurs !';
 
   @override
-  String get investmentTipsExplanation2 => 'Stay focused on the long term, not short-term feelings.';
+  String get investmentTipsExplanation2 => 'Ne vous laissez pas guider par le court terme — pensez long terme.';
 
   @override
-  String get investmentTipsExplanation3 => 'Knowing your risk tolerance reduces mistakes.';
+  String get investmentTipsExplanation3 => 'Connaître votre tolérance au risque réduit les erreurs.';
 
   @override
-  String get investmentTipsExplanation4 => 'Stay informed. Avoid panic selling!';
+  String get investmentTipsExplanation4 => 'S’informer est important. Évitez les ventes paniques !';
 
   @override
-  String get investmentTipsExplanation5 => 'Consistency builds your financial future.';
+  String get investmentTipsExplanation5 => 'La constance construit votre avenir financier.';
 
   @override
-  String get forecastTitle => 'Prévisions d\'investissement';
+  String get forecastTitle => 'Vos prévisions d\'investissement';
 
   @override
   String forecastMessage(Object percent) {
-    return 'Selon votre état d\'esprit et votre historique, vous devriez croître de $percent% ce mois-ci.';
+    return 'Selon votre état d’esprit et votre historique, une croissance de $percent% est attendue ce mois-ci.';
   }
 
   @override
@@ -140,16 +140,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get lightMode => 'Mode clair';
 
   @override
-  String get darkModeOn => 'Dark mode is ON';
+  String get darkModeOn => 'Le mode sombre est ACTIVÉ';
 
   @override
-  String get darkModeOff => 'Dark mode is OFF';
+  String get darkModeOff => 'Le mode sombre est DÉSACTIVÉ';
 
   @override
-  String get premiumUnlockTitle => 'Débloquez des informations Premium';
+  String get premiumUnlockTitle => 'Débloquer les insights Premium';
 
   @override
-  String get premiumUnlockMessage => 'Accédez à des prévisions avancées, des tendances émotionnelles et des conseils d\'experts.';
+  String get premiumUnlockMessage => 'Accédez à des prévisions avancées, des tendances émotionnelles et des conseils d’experts.';
 
   @override
   String get premiumUnlockButton => 'Débloquer maintenant';
@@ -158,25 +158,25 @@ class AppLocalizationsFr extends AppLocalizations {
   String get premiumDisclaimer => 'Vous pouvez annuler à tout moment. Aucun frais caché.';
 
   @override
-  String get upgradeToPremium => 'Passez à Finqly Plus';
+  String get upgradeToPremium => 'Passer à Finqly Plus';
 
   @override
-  String get unlockInsights => '💡 Débloquez des connaissances plus approfondies';
+  String get unlockInsights => '💡 Débloquez des insights plus profonds';
 
   @override
-  String get premiumFeature1 => 'Prévisions avancées basées sur les émotions.';
+  String get premiumFeature1 => 'Prévisions avancées basées sur des données émotionnelles.';
 
   @override
   String get premiumFeature2 => 'Suivez l’évolution de vos émotions dans le temps.';
 
   @override
-  String get premiumFeature3 => 'Recevez des conseils d\'experts en investissement.';
+  String get premiumFeature3 => 'Recevez des conseils d’experts en investissement.';
 
   @override
   String get premiumUnlockSuccess => 'Premium débloqué avec succès !';
 
   @override
-  String get premiumUnlockError => 'Une erreur s\'est produite. Veuillez réessayer.';
+  String get premiumUnlockError => 'Une erreur s’est produite. Veuillez réessayer.';
 
   @override
   String get emotionHistoryTitle => 'Historique des émotions';
@@ -194,7 +194,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get trendForecastTitle => 'Graphique de tendance émotionnelle';
 
   @override
-  String get premiumFeatureExplain => 'Débloquez cette fonctionnalité Premium pour accéder à du contenu exclusif.';
+  String get premiumFeatureExplain => 'Premium débloque toutes les fonctions de tendances, graphiques et conseils pro.';
 
   @override
   String get noTrendData => 'Aucune donnée de tendance disponible.';
@@ -203,13 +203,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get trendForecastDescription => 'Votre tendance émotionnelle récente est visualisée ci-dessous.';
 
   @override
-  String get privacyTitle => 'Privacy Policy';
+  String get privacyTitle => 'Politique de confidentialité';
 
   @override
-  String get termsTitle => 'Terms of Service';
+  String get termsTitle => 'Conditions d’utilisation';
 
   @override
-  String get disclaimerTitle => 'Disclaimer';
+  String get disclaimerTitle => 'Avertissement';
 
   @override
   String get faqTitle => 'FAQ';
@@ -221,13 +221,37 @@ class AppLocalizationsFr extends AppLocalizations {
   String get restorePurchasesDone => 'Achats restaurés';
 
   @override
-  String get trendScoreLegend => 'Score Legend: 6=Excited, 5=Optimistic, 3=Neutral, 2=Confused, 1=Worried, 0=Cautious';
+  String get trendScoreLegend => 'Légende : 6=Enthousiaste, 5=Optimiste, 3=Neutre, 2=Perplexe, 1=Inquiet, 0=Prudent';
 
   @override
-  String get premiumTrendUpsell => 'Unlock trend charts, performance tracking, and personalized insights with Finqly Plus!';
+  String get premiumTrendUpsell => 'Débloquez les graphiques de tendance, le suivi des performances et des insights personnalisés avec Finqly Plus !';
 
   @override
   String dayLabel(Object n) {
-    return 'Day $n';
+    return 'Jour $n';
   }
+
+  @override
+  String get manageSubscriptionTitle => 'Gérer l’abonnement (Play Store)';
+
+  @override
+  String get openSubscriptionPageFailed => 'Impossible d’ouvrir la page d’abonnement.';
+
+  @override
+  String get unlockOptionsTitle => 'Options de déblocage';
+
+  @override
+  String get oneTimeDiagnosisTitle => 'Diagnostic unique';
+
+  @override
+  String get oneTimeDiagnosisSubtitle => '2,99 \$ • Aucun abonnement requis';
+
+  @override
+  String get goPremiumTitle => 'Passer Premium';
+
+  @override
+  String get goPremiumSubtitle => 'Abonnement mensuel ou annuel disponible';
+
+  @override
+  String get purchaseErrorPrefix => 'Erreur d’achat :';
 }

@@ -538,6 +538,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Day {n}'**
   String dayLabel(Object n);
+
+  /// Settings: open Play subscription management
+  ///
+  /// In en, this message translates to:
+  /// **'Manage subscription (Play Store)'**
+  String get manageSubscriptionTitle;
+
+  /// Snackbar when Play subscription page can't open
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open subscription page.'**
+  String get openSubscriptionPageFailed;
+
+  /// Paywall sheet title
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock options'**
+  String get unlockOptionsTitle;
+
+  /// Paywall: one-time purchase option title
+  ///
+  /// In en, this message translates to:
+  /// **'One-time Diagnosis'**
+  String get oneTimeDiagnosisTitle;
+
+  /// Paywall: one-time purchase subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'\$2.99 • No subscription required'**
+  String get oneTimeDiagnosisSubtitle;
+
+  /// Paywall: premium option title
+  ///
+  /// In en, this message translates to:
+  /// **'Go Premium'**
+  String get goPremiumTitle;
+
+  /// Paywall: premium option subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly or Yearly subscription available'**
+  String get goPremiumSubtitle;
+
+  /// Snackbar prefix for purchase errors
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase error:'**
+  String get purchaseErrorPrefix;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -24,7 +24,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get diagnosisQuestion => '¿Cómo te sientes respecto al mercado en este momento?';
 
   @override
-  String get diagnosisButton => 'Run Diagnosis';
+  String get diagnosisButton => 'Ejecutar diagnóstico';
 
   @override
   String get optionOptimistic => 'Optimista';
@@ -140,10 +140,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get lightMode => 'Modo claro';
 
   @override
-  String get darkModeOn => 'Dark mode is ON';
+  String get darkModeOn => 'El modo oscuro está ACTIVADO';
 
   @override
-  String get darkModeOff => 'Dark mode is OFF';
+  String get darkModeOff => 'El modo oscuro está DESACTIVADO';
 
   @override
   String get premiumUnlockTitle => 'Desbloquear información Premium';
@@ -194,7 +194,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get trendForecastTitle => 'Gráfico de tendencia emocional';
 
   @override
-  String get premiumFeatureExplain => 'Desbloquea esta función con Premium para obtener información exclusiva.';
+  String get premiumFeatureExplain => 'Premium desbloquea todas las funciones de tendencias, gráficos y consejos pro.';
 
   @override
   String get noTrendData => 'No hay datos de tendencia disponibles.';
@@ -203,16 +203,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get trendForecastDescription => 'Tu tendencia emocional reciente se visualiza a continuación.';
 
   @override
-  String get privacyTitle => 'Privacy Policy';
+  String get privacyTitle => 'Política de privacidad';
 
   @override
-  String get termsTitle => 'Terms of Service';
+  String get termsTitle => 'Términos de servicio';
 
   @override
-  String get disclaimerTitle => 'Disclaimer';
+  String get disclaimerTitle => 'Descargo de responsabilidad';
 
   @override
-  String get faqTitle => 'FAQ';
+  String get faqTitle => 'Preguntas frecuentes';
 
   @override
   String get restorePurchasesTitle => 'Restaurar compras';
@@ -221,13 +221,37 @@ class AppLocalizationsEs extends AppLocalizations {
   String get restorePurchasesDone => 'Compras restauradas';
 
   @override
-  String get trendScoreLegend => 'Score Legend: 6=Excited, 5=Optimistic, 3=Neutral, 2=Confused, 1=Worried, 0=Cautious';
+  String get trendScoreLegend => 'Leyenda de puntuación: 6=Emocionado, 5=Optimista, 3=Neutral, 2=Confundido, 1=Preocupado, 0=Cauteloso';
 
   @override
-  String get premiumTrendUpsell => 'Unlock trend charts, performance tracking, and personalized insights with Finqly Plus!';
+  String get premiumTrendUpsell => '¡Desbloquea gráficos de tendencia, seguimiento de rendimiento e insights personalizados con Finqly Plus!';
 
   @override
   String dayLabel(Object n) {
-    return 'Day $n';
+    return 'Día $n';
   }
+
+  @override
+  String get manageSubscriptionTitle => 'Gestionar suscripción (Play Store)';
+
+  @override
+  String get openSubscriptionPageFailed => 'No se pudo abrir la página de suscripción.';
+
+  @override
+  String get unlockOptionsTitle => 'Opciones de desbloqueo';
+
+  @override
+  String get oneTimeDiagnosisTitle => 'Diagnóstico único';
+
+  @override
+  String get oneTimeDiagnosisSubtitle => '\$2.99 • No se requiere suscripción';
+
+  @override
+  String get goPremiumTitle => 'Hazte Premium';
+
+  @override
+  String get goPremiumSubtitle => 'Suscripción mensual o anual disponible';
+
+  @override
+  String get purchaseErrorPrefix => 'Error de compra:';
 }
