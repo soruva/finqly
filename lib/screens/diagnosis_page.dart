@@ -205,7 +205,8 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
             child: SafeArea(
               bottom: false,
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -230,6 +231,7 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                           icon: _emojis[entry.key] ?? '',
                           label: entry.value,
                           onTap: () async {
+                            if (_busy) return;
                             final navigator = Navigator.of(context);
 
                             setState(() => selectedEmotionKey = entry.key);
@@ -241,7 +243,8 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                                 MaterialPageRoute(
                                   builder: (_) => BadgeScreen(
                                     emotionKey: entry.key,
-                                    subscriptionManager: widget.subscriptionManager,
+                                    subscriptionManager:
+                                        widget.subscriptionManager,
                                   ),
                                 ),
                               );
@@ -256,7 +259,8 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                     if (!isPremiumUser)
                       Center(
                         child: Padding(
-                          padding: const EdgeInsets.only(bottom: 18, left: 4, right: 4),
+                          padding: const EdgeInsets.only(
+                              bottom: 18, left: 4, right: 4),
                           child: Text(
                             loc.premiumPrompt,
                             style: const TextStyle(
@@ -302,11 +306,11 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
       child: Container(
         height: 56,
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.96),
+          color: Colors.white.withOpacity(0.96),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.08),
+              color: Colors.black.withOpacity(0.08),
               blurRadius: 8,
               offset: const Offset(1, 3),
             ),

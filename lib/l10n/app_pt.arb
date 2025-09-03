@@ -16,6 +16,9 @@
   "diagnosisQuestion": "Como você se sente sobre o mercado neste momento?",
   "@diagnosisQuestion": { "description": "Pergunta sobre o sentimento do usuário sobre o mercado" },
 
+  "diagnosisButton": "Executar diagnóstico",
+  "@diagnosisButton": { "description": "Botão para executar o diagnóstico" },
+
   "optionOptimistic": "Otimista",
   "@optionOptimistic": { "description": "Opção emocional: otimista" },
 
@@ -76,6 +79,24 @@
   "investmentTips5": "Investir é uma jornada de longo prazo — não uma corrida.",
   "@investmentTips5": { "description": "Dica 5: investimento de longo prazo" },
 
+  "tapToFlip": "Toque para virar",
+  "@tapToFlip": { "description": "Dica para virar o cartão" },
+
+  "investmentTipsExplanation1": "A diversificação é a regra de ouro dos investidores bem-sucedidos!",
+  "@investmentTipsExplanation1": { "description": "Explicação da dica 1" },
+
+  "investmentTipsExplanation2": "Não se deixe levar por sentimentos de curto prazo — pense a longo prazo.",
+  "@investmentTipsExplanation2": { "description": "Explicação da dica 2" },
+
+  "investmentTipsExplanation3": "Conhecer sua tolerância ao risco ajuda a evitar erros.",
+  "@investmentTipsExplanation3": { "description": "Explicação da dica 3" },
+
+  "investmentTipsExplanation4": "Estar informado é importante. Evite vendas em pânico!",
+  "@investmentTipsExplanation4": { "description": "Explicação da dica 4" },
+
+  "investmentTipsExplanation5": "Consistência constrói o seu futuro financeiro.",
+  "@investmentTipsExplanation5": { "description": "Explicação da dica 5" },
+
   "forecastTitle": "Previsão de Investimento",
   "@forecastTitle": { "description": "Título da tela de previsão" },
 
@@ -124,7 +145,13 @@
   "lightMode": "Modo claro",
   "@lightMode": { "description": "Opção para modo claro" },
 
-  "premiumUnlockTitle": "Desbloqueie Insights Premium",
+  "darkModeOn": "Modo escuro ATIVADO",
+  "@darkModeOn": { "description": "Rótulo quando o modo escuro está ativado" },
+
+  "darkModeOff": "Modo escuro DESATIVADO",
+  "@darkModeOff": { "description": "Rótulo quando o modo escuro está desativado" },
+
+  "premiumUnlockTitle": "Desbloquear Insights Premium",
   "@premiumUnlockTitle": { "description": "Título da tela para recursos premium" },
 
   "premiumUnlockMessage": "Acesse previsões avançadas, tendências emocionais e dicas de especialistas.",
@@ -172,7 +199,7 @@
   "trendForecastTitle": "Gráfico de tendência emocional",
   "@trendForecastTitle": { "description": "Título do gráfico de tendências emocionais" },
 
-  "premiumFeatureExplain": "Desbloqueie este recurso Premium para acessar conteúdos exclusivos.",
+  "premiumFeatureExplain": "O Premium desbloqueia todos os gráficos de tendências e dicas exclusivas.",
   "@premiumFeatureExplain": { "description": "Breve explicação dos benefícios Premium" },
 
   "noTrendData": "Nenhum dado de tendência disponível.",
@@ -181,6 +208,57 @@
   "trendForecastDescription": "Sua tendência emocional recente está visualizada abaixo.",
   "@trendForecastDescription": { "description": "Texto explicativo abaixo do gráfico de tendência" },
 
+  "privacyTitle": "Política de Privacidade",
+  "@privacyTitle": { "description": "Título da página de política de privacidade" },
+
+  "termsTitle": "Termos de Serviço",
+  "@termsTitle": { "description": "Título da página de termos de serviço" },
+
+  "disclaimerTitle": "Aviso Legal",
+  "@disclaimerTitle": { "description": "Título da página de aviso legal" },
+
+  "faqTitle": "FAQ",
+  "@faqTitle": { "description": "Título da página FAQ" },
+
   "restorePurchasesTitle": "Restaurar compras",
-  "restorePurchasesDone": "Compras restauradas"
+  "@restorePurchasesTitle": { "description": "Item de configurações para restaurar compras" },
+
+  "restorePurchasesDone": "Compras restauradas",
+  "@restorePurchasesDone": { "description": "SnackBar após restauração concluída" },
+
+  "trendScoreLegend": "Legenda: 6=Animado, 5=Otimista, 3=Neutro, 2=Confuso, 1=Preocupado, 0=Cauteloso",
+  "@trendScoreLegend": { "description": "Legenda para os scores do gráfico de tendência" },
+
+  "premiumTrendUpsell": "Desbloqueie gráficos de tendências, acompanhamento de desempenho e insights personalizados com o Finqly Plus!",
+  "@premiumTrendUpsell": { "description": "Upsell exibido na página de tendências para não-premium" },
+
+  "dayLabel": "Dia {n}",
+  "@dayLabel": {
+    "description": "Rótulo de eixo para o Dia N no gráfico de tendência",
+    "placeholders": { "n": {} }
+  },
+
+  "manageSubscriptionTitle": "Gerenciar assinatura (Play Store)",
+  "@manageSubscriptionTitle": { "description": "Abrir a gestão de assinatura no Play Store" },
+
+  "openSubscriptionPageFailed": "Não foi possível abrir a página de assinatura.",
+  "@openSubscriptionPageFailed": { "description": "Snackbar quando a página de assinatura não pode ser aberta" },
+
+  "unlockOptionsTitle": "Opções de desbloqueio",
+  "@unlockOptionsTitle": { "description": "Título da folha de paywall" },
+
+  "oneTimeDiagnosisTitle": "Diagnóstico único",
+  "@oneTimeDiagnosisTitle": { "description": "Opção de compra única" },
+
+  "oneTimeDiagnosisSubtitle": "US$ 2,99 • Sem necessidade de assinatura",
+  "@oneTimeDiagnosisSubtitle": { "description": "Subtítulo da compra única" },
+
+  "goPremiumTitle": "Ir para Premium",
+  "@goPremiumTitle": { "description": "Opção para assinar Premium" },
+
+  "goPremiumSubtitle": "Assinatura mensal ou anual disponível",
+  "@goPremiumSubtitle": { "description": "Subtítulo da opção Premium" },
+
+  "purchaseErrorPrefix": "Erro de compra:",
+  "@purchaseErrorPrefix": { "description": "Prefixo de erro para Snackbar de compra" }
 }

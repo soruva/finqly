@@ -224,5 +224,29 @@
   "@dayLabel": {
     "description": "Axis label for day N in trend chart",
     "placeholders": { "n": {} }
-  }
+  },
+
+  "manageSubscriptionTitle": "Manage subscription (Play Store)",
+  "@manageSubscriptionTitle": { "description": "Settings: open Play subscription management" },
+
+  "openSubscriptionPageFailed": "Could not open subscription page.",
+  "@openSubscriptionPageFailed": { "description": "Snackbar when Play subscription page can't open" },
+
+  "unlockOptionsTitle": "Unlock options",
+  "@unlockOptionsTitle": { "description": "Paywall sheet title" },
+
+  "oneTimeDiagnosisTitle": "One-time Diagnosis",
+  "@oneTimeDiagnosisTitle": { "description": "Paywall: one-time purchase option title" },
+
+  "oneTimeDiagnosisSubtitle": "$2.99 • No subscription required",
+  "@oneTimeDiagnosisSubtitle": { "description": "Paywall: one-time purchase subtitle" },
+
+  "goPremiumTitle": "Go Premium",
+  "@goPremiumTitle": { "description": "Paywall: premium option title" },
+
+  "goPremiumSubtitle": "Monthly or Yearly subscription available",
+  "@goPremiumSubtitle": { "description": "Paywall: premium option subtitle" },
+
+  "purchaseErrorPrefix": "Purchase error:",
+  "@purchaseErrorPrefix": { "description": "Snackbar prefix for purchase errors" }
 }

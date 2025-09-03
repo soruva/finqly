@@ -16,6 +16,9 @@
   "diagnosisQuestion": "Wie fühlen Sie sich momentan in Bezug auf den Markt?",
   "@diagnosisQuestion": { "description": "Frage zum aktuellen Marktgefühl" },
 
+  "diagnosisButton": "Diagnose ausführen",
+  "@diagnosisButton": { "description": "Button zum Ausführen der Diagnose" },
+
   "optionOptimistic": "Optimistisch",
   "@optionOptimistic": { "description": "Emotionsoption: optimistisch" },
 
@@ -71,9 +74,9 @@
   "@investmentTips5": { "description": "Tipp 5: Langzeitperspektive" },
 
   "tapToFlip": "Zum Umdrehen tippen",
-  "@tapToFlip": { "description": "Hinweis zum Flip-Karten" },
+  "@tapToFlip": { "description": "Hinweis für das Umdrehen der Karte" },
 
-  "investmentTipsExplanation1": "Diversifikation ist das oberste Gebot erfolgreicher Investoren!",
+  "investmentTipsExplanation1": "Diversifikation ist das oberste Gebot erfolgreicher Anleger!",
   "@investmentTipsExplanation1": { "description": "Erklärung zu Tipp 1" },
 
   "investmentTipsExplanation2": "Lassen Sie sich nicht von kurzfristigen Gefühlen leiten – denken Sie langfristig.",
@@ -82,16 +85,16 @@
   "investmentTipsExplanation3": "Wer seine Risikobereitschaft kennt, macht weniger Fehler.",
   "@investmentTipsExplanation3": { "description": "Erklärung zu Tipp 3" },
 
-  "investmentTipsExplanation4": "Information ist wichtig, aber Panikverkäufe vermeiden!",
+  "investmentTipsExplanation4": "Information ist wichtig – vermeiden Sie dennoch Panikverkäufe!",
   "@investmentTipsExplanation4": { "description": "Erklärung zu Tipp 4" },
 
-  "investmentTipsExplanation5": "Durchhalten zahlt sich für Ihre Zukunft aus.",
+  "investmentTipsExplanation5": "Durchhaltevermögen zahlt sich für Ihre Zukunft aus.",
   "@investmentTipsExplanation5": { "description": "Erklärung zu Tipp 5" },
 
   "forecastTitle": "Ihre Investitionsprognose",
   "@forecastTitle": { "description": "Titel der Prognose-Seite" },
 
-  "forecastMessage": "Basierend auf Ihrer Einstellung und bisherigen Trends wird ein Wachstum von {percent}% in diesem Monat erwartet.",
+  "forecastMessage": "Basierend auf Ihrer Einstellung und Ihrem Verlauf wird in diesem Monat ein Wachstum von {percent}% erwartet.",
   "@forecastMessage": {
     "description": "Prognoseanzeige basierend auf Emotionen und Verlauf",
     "placeholders": { "percent": {} }
@@ -100,11 +103,11 @@
   "premiumPrompt": "Sie sind kurz davor, noch tiefere Einblicke freizuschalten.",
   "@premiumPrompt": { "description": "Premium-Upgrade-Prompt" },
 
-  "premiumCTA": "Premium-Prognose freischalten",
+  "premiumCTA": "Premium-Prognose erhalten",
   "@premiumCTA": { "description": "Button für Premium-Prognose" },
 
   "language": "Sprache",
-  "@language": { "description": "Spracheinstellung-Label" },
+  "@language": { "description": "Label für Spracheinstellung" },
 
   "languageEnglish": "Englisch",
   "@languageEnglish": { "description": "Englisch" },
@@ -130,17 +133,23 @@
   "lightMode": "Heller Modus",
   "@lightMode": { "description": "Option für hellen Modus" },
 
-  "premiumUnlockTitle": "Premium-Inhalte freischalten",
-  "@premiumUnlockTitle": { "description": "Titel des Premium-Features" },
+  "darkModeOn": "Dunkler Modus ist AKTIV",
+  "@darkModeOn": { "description": "Label, wenn der dunkle Modus aktiv ist" },
 
-  "premiumUnlockMessage": "Erhalten Sie Zugang zu erweiterten Prognosen, emotionalen Trends und Experten-Tipps.",
+  "darkModeOff": "Dunkler Modus ist INAKTIV",
+  "@darkModeOff": { "description": "Label, wenn der dunkle Modus inaktiv ist" },
+
+  "premiumUnlockTitle": "Premium-Einblicke freischalten",
+  "@premiumUnlockTitle": { "description": "Titel für Premium-Freischaltung" },
+
+  "premiumUnlockMessage": "Erhalten Sie Zugang zu erweiterten Prognosen, Emotionstrends und Experten-Tipps.",
   "@premiumUnlockMessage": { "description": "Marketingtext für Premium" },
 
   "premiumUnlockButton": "Jetzt freischalten",
   "@premiumUnlockButton": { "description": "Button zum Freischalten von Premium" },
 
   "premiumDisclaimer": "Jederzeit kündbar. Keine versteckten Kosten.",
-  "@premiumDisclaimer": { "description": "Vertrauensbotschaft für Nutzer" },
+  "@premiumDisclaimer": { "description": "Vertrauenshinweis" },
 
   "upgradeToPremium": "Upgrade auf Finqly Plus",
   "@upgradeToPremium": { "description": "Buttontext für Premium-Seite" },
@@ -151,7 +160,7 @@
   "premiumFeature1": "Erweiterte Prognosen mit Emotionsdaten.",
   "@premiumFeature1": { "description": "Premium-Feature 1" },
 
-  "premiumFeature2": "Emotionale Trends im Zeitverlauf verfolgen.",
+  "premiumFeature2": "Emotionstrends im Zeitverlauf verfolgen.",
   "@premiumFeature2": { "description": "Premium-Feature 2" },
 
   "premiumFeature3": "Experten-Tipps zur Geldanlage erhalten.",
@@ -172,33 +181,72 @@
   "educationTitle": "Finanzbildung",
   "@educationTitle": { "description": "Titel des Bildungsbereichs" },
 
-  "other": "Andere",
-  "@other": { "description": "Kategorie 'Andere'" },
+  "other": "Sonstiges",
+  "@other": { "description": "Kategorie 'Sonstiges'" },
 
   "trendForecastTitle": "Emotionstrend-Diagramm",
   "@trendForecastTitle": { "description": "Titel des Trenddiagramms" },
 
-  "premiumFeatureExplain": "Schalte diese Funktion mit Premium frei, um exklusive Einblicke zu erhalten.",
-  "@premiumFeatureExplain": { "description": "Kurze Erklärung der Premiumvorteile" },
+  "premiumFeatureExplain": "Premium schaltet alle Trend-, Diagramm- und Pro-Tipps-Funktionen frei.",
+  "@premiumFeatureExplain": { "description": "Kurze Erklärung der Premium-Vorteile" },
 
   "noTrendData": "Keine Trenddaten verfügbar.",
   "@noTrendData": { "description": "Meldung bei fehlenden Trenddaten" },
 
-  "trendForecastDescription": "Ihr aktueller emotionaler Trend wird unten angezeigt.",
+  "trendForecastDescription": "Ihr jüngster Emotionstrend wird unten visualisiert.",
   "@trendForecastDescription": { "description": "Erklärung unterhalb des Trenddiagramms" },
 
-  "privacyPolicy": "Datenschutzerklärung",
-  "@privacyPolicy": { "description": "Label für Datenschutzerklärung im Menü" },
+  "privacyTitle": "Datenschutzerklärung",
+  "@privacyTitle": { "description": "Titel für die Datenschutzerklärungs-Seite" },
 
-  "termsOfService": "Nutzungsbedingungen",
-  "@termsOfService": { "description": "Label für Nutzungsbedingungen im Menü" },
+  "termsTitle": "Nutzungsbedingungen",
+  "@termsTitle": { "description": "Titel für die Nutzungsbedingungen-Seite" },
 
-  "disclaimer": "Haftungsausschluss",
-  "@disclaimer": { "description": "Label für Haftungsausschluss im Menü" },
+  "disclaimerTitle": "Haftungsausschluss",
+  "@disclaimerTitle": { "description": "Titel für die Haftungsausschluss-Seite" },
 
-  "faq": "FAQ",
-  "@faq": { "description": "Label für FAQ im Menü" },
+  "faqTitle": "FAQ",
+  "@faqTitle": { "description": "Titel für die FAQ-Seite" },
 
   "restorePurchasesTitle": "Käufe wiederherstellen",
-  "restorePurchasesDone": "Käufe wiederhergestellt"
+  "@restorePurchasesTitle": { "description": "Einstellung: frühere Käufe wiederherstellen" },
+
+  "restorePurchasesDone": "Käufe wiederhergestellt",
+  "@restorePurchasesDone": { "description": "SnackBar nach erfolgreicher Wiederherstellung" },
+
+  "trendScoreLegend": "Legende: 6=Aufgeregt, 5=Optimistisch, 3=Neutral, 2=Verwirrt, 1=Besorgt, 0=Vorsichtig",
+  "@trendScoreLegend": { "description": "Legende der Trend-Scores" },
+
+  "premiumTrendUpsell": "Schalten Sie Trenddiagramme, Performance-Tracking und personalisierte Einblicke mit Finqly Plus frei!",
+  "@premiumTrendUpsell": { "description": "Upsell-Text auf der Trend-Seite für Nicht-Premium" },
+
+  "dayLabel": "Tag {n}",
+  "@dayLabel": {
+    "description": "Achsenbeschriftung Tag N im Trenddiagramm",
+    "placeholders": { "n": {} }
+  },
+
+  "manageSubscriptionTitle": "Abo verwalten (Play Store)",
+  "@manageSubscriptionTitle": { "description": "Einstellung: Play-Aboverwaltung öffnen" },
+
+  "openSubscriptionPageFailed": "Abo-Seite konnte nicht geöffnet werden.",
+  "@openSubscriptionPageFailed": { "description": "Snackbar, wenn Play-Aboseite nicht geöffnet werden kann" },
+
+  "unlockOptionsTitle": "Freischalt-Optionen",
+  "@unlockOptionsTitle": { "description": "Titel des Paywall-Sheets" },
+
+  "oneTimeDiagnosisTitle": "Einmalige Diagnose",
+  "@oneTimeDiagnosisTitle": { "description": "Paywall: Option für Einmalkauf" },
+
+  "oneTimeDiagnosisSubtitle": "$2.99 • Keine Abonnements erforderlich",
+  "@oneTimeDiagnosisSubtitle": { "description": "Paywall: Untertitel für Einmalkauf" },
+
+  "goPremiumTitle": "Premium werden",
+  "@goPremiumTitle": { "description": "Paywall: Premium-Option" },
+
+  "goPremiumSubtitle": "Monatliches oder jährliches Abo verfügbar",
+  "@goPremiumSubtitle": { "description": "Paywall: Untertitel für Premium-Option" },
+
+  "purchaseErrorPrefix": "Kauf-Fehler:",
+  "@purchaseErrorPrefix": { "description": "Prefix in Snackbar bei Kauf-Fehlern" }
 }

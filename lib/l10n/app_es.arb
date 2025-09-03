@@ -16,6 +16,9 @@
   "diagnosisQuestion": "¿Cómo te sientes respecto al mercado en este momento?",
   "@diagnosisQuestion": { "description": "Pregunta sobre el sentimiento del usuario hacia el mercado" },
 
+  "diagnosisButton": "Ejecutar diagnóstico",
+  "@diagnosisButton": { "description": "Botón para ejecutar el diagnóstico" },
+
   "optionOptimistic": "Optimista",
   "@optionOptimistic": { "description": "Opción emocional: optimista" },
 
@@ -115,9 +118,6 @@
   "premiumCTA": "Obtener pronóstico Premium",
   "@premiumCTA": { "description": "Botón para obtener el pronóstico premium" },
 
-  "settingsTitle": "Configuraciones",
-  "@settingsTitle": { "description": "Título de la página de configuraciones" },
-
   "language": "Idioma",
   "@language": { "description": "Etiqueta de idioma en configuraciones" },
 
@@ -136,17 +136,26 @@
   "languageGerman": "Alemán",
   "@languageGerman": { "description": "Idioma: Alemán" },
 
+  "settingsTitle": "Configuraciones",
+  "@settingsTitle": { "description": "Título de la página de configuraciones" },
+
   "darkMode": "Modo oscuro",
   "@darkMode": { "description": "Opción para modo oscuro" },
 
   "lightMode": "Modo claro",
   "@lightMode": { "description": "Opción para modo claro" },
 
+  "darkModeOn": "El modo oscuro está ACTIVADO",
+  "@darkModeOn": { "description": "Etiqueta cuando el modo oscuro está activado" },
+
+  "darkModeOff": "El modo oscuro está DESACTIVADO",
+  "@darkModeOff": { "description": "Etiqueta cuando el modo oscuro está desactivado" },
+
   "premiumUnlockTitle": "Desbloquear información Premium",
   "@premiumUnlockTitle": { "description": "Título de la pantalla para desbloquear funciones premium" },
 
   "premiumUnlockMessage": "Accede a pronósticos avanzados, tendencias emocionales y consejos de expertos.",
-  "@premiumUnlockMessage": { "description": "Texto promocional para destacar los beneficios de la versión premium" },
+  "@premiumUnlockMessage": { "description": "Texto promocional de beneficios premium" },
 
   "premiumUnlockButton": "Desbloquear ahora",
   "@premiumUnlockButton": { "description": "Botón para activar la suscripción premium" },
@@ -155,10 +164,10 @@
   "@premiumDisclaimer": { "description": "Nota legal o de tranquilidad para el usuario" },
 
   "upgradeToPremium": "Mejorar a Finqly Plus",
-  "@upgradeToPremium": { "description": "Texto para el botón que lleva al usuario a la página premium" },
+  "@upgradeToPremium": { "description": "Texto del botón para ir a Premium" },
 
   "unlockInsights": "💡 Desbloquea conocimientos más profundos",
-  "@unlockInsights": { "description": "Texto del botón para animar al usuario a desbloquear funciones premium desde la pantalla de resultados" },
+  "@unlockInsights": { "description": "Botón para animar a desbloquear funciones premium" },
 
   "premiumFeature1": "Pronósticos avanzados con datos emocionales.",
   "@premiumFeature1": { "description": "Función premium 1" },
@@ -182,7 +191,7 @@
   "@emotionHistoryEmpty": { "description": "Mensaje cuando no hay datos emocionales registrados" },
 
   "educationTitle": "Educación financiera",
-  "@educationTitle": { "description": "Título de la sección educativa o consejos financieros" },
+  "@educationTitle": { "description": "Título de la sección educativa" },
 
   "other": "Otros",
   "@other": { "description": "Categoría 'Otros'" },
@@ -190,15 +199,66 @@
   "trendForecastTitle": "Gráfico de tendencia emocional",
   "@trendForecastTitle": { "description": "Título del gráfico de tendencias de emociones" },
 
-  "premiumFeatureExplain": "Desbloquea esta función con Premium para obtener información exclusiva.",
-  "@premiumFeatureExplain": { "description": "Explicación breve de las ventajas de Premium" },
+  "premiumFeatureExplain": "Premium desbloquea todas las funciones de tendencias, gráficos y consejos pro.",
+  "@premiumFeatureExplain": { "description": "Explicación breve de ventajas Premium" },
 
   "noTrendData": "No hay datos de tendencia disponibles.",
-  "@noTrendData": { "description": "Mensaje cuando no hay datos de tendencia para mostrar" },
+  "@noTrendData": { "description": "Mensaje cuando no hay datos de tendencia" },
 
   "trendForecastDescription": "Tu tendencia emocional reciente se visualiza a continuación.",
-  "@trendForecastDescription": { "description": "Texto explicativo bajo el gráfico de tendencia" },
+  "@trendForecastDescription": { "description": "Texto bajo el gráfico de tendencia" },
+
+  "privacyTitle": "Política de privacidad",
+  "@privacyTitle": { "description": "Título para la página de privacidad" },
+
+  "termsTitle": "Términos de servicio",
+  "@termsTitle": { "description": "Título para la página de términos" },
+
+  "disclaimerTitle": "Descargo de responsabilidad",
+  "@disclaimerTitle": { "description": "Título para la página de descargo" },
+
+  "faqTitle": "Preguntas frecuentes",
+  "@faqTitle": { "description": "Título de la página de preguntas frecuentes" },
 
   "restorePurchasesTitle": "Restaurar compras",
-  "restorePurchasesDone": "Compras restauradas"
+  "@restorePurchasesTitle": { "description": "Elemento de ajustes para restaurar compras" },
+
+  "restorePurchasesDone": "Compras restauradas",
+  "@restorePurchasesDone": { "description": "SnackBar tras completar la restauración" },
+
+  "trendScoreLegend": "Leyenda de puntuación: 6=Emocionado, 5=Optimista, 3=Neutral, 2=Confundido, 1=Preocupado, 0=Cauteloso",
+  "@trendScoreLegend": { "description": "Leyenda de puntajes del gráfico de tendencia" },
+
+  "premiumTrendUpsell": "¡Desbloquea gráficos de tendencia, seguimiento de rendimiento e insights personalizados con Finqly Plus!",
+  "@premiumTrendUpsell": { "description": "Upsell en la página de tendencia para no premium" },
+
+  "dayLabel": "Día {n}",
+  "@dayLabel": {
+    "description": "Etiqueta del eje para el día N en el gráfico",
+    "placeholders": { "n": {} }
+  },
+
+  "manageSubscriptionTitle": "Gestionar suscripción (Play Store)",
+  "@manageSubscriptionTitle": { "description": "Abrir la gestión de suscripción en Play" },
+
+  "openSubscriptionPageFailed": "No se pudo abrir la página de suscripción.",
+  "@openSubscriptionPageFailed": { "description": "Snackbar si no se puede abrir la página de suscripción" },
+
+  "unlockOptionsTitle": "Opciones de desbloqueo",
+  "@unlockOptionsTitle": { "description": "Título de la hoja del paywall" },
+
+  "oneTimeDiagnosisTitle": "Diagnóstico único",
+  "@oneTimeDiagnosisTitle": { "description": "Opción de compra única" },
+
+  "oneTimeDiagnosisSubtitle": "$2.99 • No se requiere suscripción",
+  "@oneTimeDiagnosisSubtitle": { "description": "Subtítulo de compra única" },
+
+  "goPremiumTitle": "Hazte Premium",
+  "@goPremiumTitle": { "description": "Opción para ir a Premium" },
+
+  "goPremiumSubtitle": "Suscripción mensual o anual disponible",
+  "@goPremiumSubtitle": { "description": "Subtítulo de Premium" },
+
+  "purchaseErrorPrefix": "Error de compra:",
+  "@purchaseErrorPrefix": { "description": "Prefijo de error en Snackbar de compra" }
 }

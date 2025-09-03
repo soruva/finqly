@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+
 import 'package:finqly/l10n/app_localizations.dart';
 import 'package:finqly/services/subscription_manager.dart';
 import 'package:finqly/screens/legal_webview_page.dart';
 import 'package:finqly/screens/emotion_history_page.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingsPage extends StatefulWidget {
   final Locale currentLocale;
   final void Function(Locale) onLocaleChanged;
-  final void Function(bool) onThemeChanged; // true = dark
+  /// true = dark mode
+  final void Function(bool) onThemeChanged;
   final SubscriptionManager subscriptionManager;
 
   const SettingsPage({
@@ -26,6 +29,7 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   bool? _isDark;
   String? _appVersion;
+  bool _restoring = false;
 
   static const supportedLocales = <Locale>[
     Locale('en'),
@@ -77,6 +81,26 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  Future<void> _openManageSubscriptions() async {
+    final uri = Uri.parse(
+      'https://play.google.com/store/account/subscriptions'
+      '?sku=finqly_premium&package=com.soruvalab.finqly',
+    );
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+      if (!ok) {
+        messenger.showSnackBar(
+          const SnackBar(content: Text('Could not open subscription page.')),
+        );
+      }
+    } catch (_) {
+      messenger.showSnackBar(
+        const SnackBar(content: Text('Could not open subscription page.')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
@@ -120,12 +144,12 @@ class _SettingsPageState extends State<SettingsPage> {
               onChanged: (Locale? newLocale) {
                 if (newLocale != null) _changeLanguage(newLocale);
               },
-              items: [
-                DropdownMenuItem(value: const Locale('en'), child: Text(loc.languageEnglish)),
-                DropdownMenuItem(value: const Locale('es'), child: Text(loc.languageSpanish)),
-                DropdownMenuItem(value: const Locale('fr'), child: Text(loc.languageFrench)),
-                DropdownMenuItem(value: const Locale('pt'), child: Text(loc.languagePortuguese)),
-                DropdownMenuItem(value: const Locale('de'), child: Text(loc.languageGerman)),
+              items: const [
+                DropdownMenuItem(value: Locale('en'), child: Text('English')),
+                DropdownMenuItem(value: Locale('es'), child: Text('Español')),
+                DropdownMenuItem(value: Locale('fr'), child: Text('Français')),
+                DropdownMenuItem(value: Locale('pt'), child: Text('Português')),
+                DropdownMenuItem(value: Locale('de'), child: Text('Deutsch')),
               ],
             ),
 
@@ -170,17 +194,41 @@ class _SettingsPageState extends State<SettingsPage> {
               onTap: () => _openLegalPage(loc.faqTitle, 'faq.html'),
             ),
 
+            ListTile(
+              leading: const Icon(Icons.manage_accounts),
+              title: const Text('Manage subscription (Play Store)'),
+              trailing: const Icon(Icons.open_in_new),
+              onTap: _openManageSubscriptions,
+            ),
+
             const Divider(height: 32),
 
             ListTile(
               leading: const Icon(Icons.restore),
               title: Text(loc.restorePurchasesTitle),
+              trailing: _restoring
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : null,
               onTap: () async {
-                await widget.subscriptionManager.restorePurchases();
-                if (!mounted) return;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(loc.restorePurchasesDone)),
-                );
+                if (_restoring) return;
+                final messenger = ScaffoldMessenger.of(context);
+                setState(() => _restoring = true);
+                try {
+                  await widget.subscriptionManager.restorePurchases();
+                  messenger.showSnackBar(
+                    SnackBar(content: Text(loc.restorePurchasesDone)),
+                  );
+                } catch (e) {
+                  messenger.showSnackBar(
+                    SnackBar(content: Text('Restore error: $e')),
+                  );
+                } finally {
+                  if (mounted) setState(() => _restoring = false);
+                }
               },
             ),
 
