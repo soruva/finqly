@@ -232,7 +232,7 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
 
                             setState(() => selectedEmotionKey = entry.key);
                             await _saveEmotionToHistory(entry.key);
-                            if (!mounted) return;
+                            if (!context.mounted) return;
 
                             if (isPremiumUser) {
                               Navigator.of(context).push(
