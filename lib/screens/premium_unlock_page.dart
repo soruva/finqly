@@ -98,9 +98,6 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
                 onPressed: _isLoading
                     ? null
                     : () async {
-                        final navigator = Navigator.of(context);
-                        final messenger = ScaffoldMessenger.of(context);
-
                         setState(() {
                           _isLoading = true;
                           _error = null;
@@ -108,17 +105,20 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
                         try {
                           await _iap.buySubscription(yearly: false);
                           if (!mounted) return;
+
                           await widget.subscriptionManager.setSubscribed(true);
                           if (!mounted) return;
-                          messenger.showSnackBar(
-                            const SnackBar(content: Text('Purchase complete')),
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(loc.premiumUnlockSuccess)),
                           );
-                          navigator.maybePop();
+                          Navigator.of(context).maybePop();
                         } catch (e) {
                           if (!mounted) return;
                           setState(() => _error = e.toString());
-                          messenger.showSnackBar(
-                            SnackBar(content: Text('Purchase error: $e')),
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('${loc.premiumUnlockError} ($e)')),
                           );
                         } finally {
                           if (mounted) {
@@ -131,7 +131,9 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
                         width: 20,
                         height: 20,
                         child: CircularProgressIndicator(
-                            strokeWidth: 2, color: Colors.white),
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
                       )
                     : Text(
                         loc.premiumUnlockButton,
@@ -154,10 +156,9 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
               ),
             ),
             const SizedBox(height: 16),
-            const Text(
-              'All payments are processed securely via Google Play Billing. '
-              'Subscriptions auto-renew unless canceled. You can cancel anytime from your Google Play account.',
-              style: TextStyle(fontSize: 12, color: Colors.grey),
+            Text(
+              loc.premiumDisclaimer,
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
               textAlign: TextAlign.center,
             ),
           ],
