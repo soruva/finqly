@@ -6,16 +6,13 @@ plugins {
 
 android {
     namespace = "com.soruvalab.finqly"
-
     compileSdk = 34
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
-    }
+    kotlinOptions { jvmTarget = JavaVersion.VERSION_17.toString() }
 
     defaultConfig {
         applicationId = "com.soruvalab.finqly"
@@ -35,18 +32,25 @@ android {
             }
         }
     }
+
     buildTypes {
         getByName("release") {
             if (signingConfigs.findByName("release") != null) {
                 signingConfig = signingConfigs.getByName("release")
             }
             // isMinifyEnabled = true
-            // proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            // isShrinkResources = true
+            // proguardFiles(
+            //     getDefaultProguardFile("proguard-android-optimize.txt"),
+            //     "proguard-rules.pro"
+            // )
         }
         getByName("debug") { }
     }
+
+    // packaging {
+    //     resources { excludes += setOf("META-INF/*") }
+    // }
 }
 
-flutter {
-    source = "../.."
-}
+flutter { source = "../.." }
