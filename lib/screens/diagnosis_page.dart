@@ -39,14 +39,10 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
   @override
   void initState() {
     super.initState();
-
     _iap = IapService();
     _iap.init();
 
     _purchaseSub = _iap.purchaseStream.listen((purchases) async {
-      final navigator = Navigator.of(context);
-      final messenger = ScaffoldMessenger.of(context);
-
       for (final p in purchases) {
         try {
           if (p.status == PurchaseStatus.purchased ||
@@ -56,11 +52,12 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
             }
 
             final key = selectedEmotionKey;
-            if (!mounted) continue;
+
+            if (!context.mounted) continue;
             setState(() => _busy = false);
 
-            if (key != null) {
-              navigator.push(
+            if (key != null && context.mounted) {
+              Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (_) => BadgeScreen(
                     emotionKey: key,
@@ -70,28 +67,32 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
               );
             }
           } else if (p.status == PurchaseStatus.error) {
-            if (!mounted) continue;
+            if (!context.mounted) continue;
             setState(() {
               _busy = false;
               _error = p.error?.message ?? 'purchase_error';
             });
-            messenger.showSnackBar(
-              SnackBar(content: Text('Purchase error: $_error')),
-            );
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Purchase error: $_error')),
+              );
+            }
           }
 
           if (p.pendingCompletePurchase) {
             await InAppPurchase.instance.completePurchase(p);
           }
         } catch (e) {
-          if (!mounted) continue;
+          if (!context.mounted) continue;
           setState(() {
             _busy = false;
             _error = e.toString();
           });
-          messenger.showSnackBar(
-            SnackBar(content: Text('Purchase error: $_error')),
-          );
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Purchase error: $_error')),
+            );
+          }
         }
       }
     });
@@ -109,8 +110,6 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
   }
 
   Future<void> _showPaywall() async {
-    final navigator = Navigator.of(context);
-
     await showModalBottomSheet(
       context: context,
       showDragHandle: true,
@@ -135,7 +134,7 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                 onTap: _busy
                     ? null
                     : () async {
-                        navigator.pop();
+                        Navigator.of(context).pop();
                         setState(() => _busy = true);
                         await _iap.buyOneTime(IapService.oneTimeDiagnosisId);
                       },
@@ -144,11 +143,10 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
               ListTile(
                 leading: const Icon(Icons.workspace_premium),
                 title: const Text('Go Premium'),
-                subtitle:
-                    const Text('Monthly or Yearly subscription available'),
+                subtitle: const Text('Monthly or Yearly subscription available'),
                 onTap: () {
-                  navigator.pop();
-                  navigator.push(
+                  Navigator.of(context).pop();
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (_) => PremiumUnlockPage(
                         subscriptionManager: widget.subscriptionManager,
@@ -205,8 +203,7 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
             child: SafeArea(
               bottom: false,
               child: SingleChildScrollView(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -232,19 +229,17 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                           label: entry.value,
                           onTap: () async {
                             if (_busy) return;
-                            final navigator = Navigator.of(context);
 
                             setState(() => selectedEmotionKey = entry.key);
                             await _saveEmotionToHistory(entry.key);
-                            if (!mounted) return;
+                            if (!context.mounted) return;
 
                             if (isPremiumUser) {
-                              navigator.push(
+                              Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (_) => BadgeScreen(
                                     emotionKey: entry.key,
-                                    subscriptionManager:
-                                        widget.subscriptionManager,
+                                    subscriptionManager: widget.subscriptionManager,
                                   ),
                                 ),
                               );
@@ -259,8 +254,7 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                     if (!isPremiumUser)
                       Center(
                         child: Padding(
-                          padding: const EdgeInsets.only(
-                              bottom: 18, left: 4, right: 4),
+                          padding: const EdgeInsets.only(bottom: 18, left: 4, right: 4),
                           child: Text(
                             loc.premiumPrompt,
                             style: const TextStyle(
@@ -306,11 +300,11 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
       child: Container(
         height: 56,
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.96),
+          color: Colors.white.withValues(alpha: 0.96),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
+              color: Colors.black.withValues(alpha: 0.08),
               blurRadius: 8,
               offset: const Offset(1, 3),
             ),

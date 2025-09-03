@@ -1,7 +1,7 @@
 name: finqly
 description: Finqly helps you understand your emotions and forecast your financial mindset.
 publish_to: 'none'
-version: 1.0.0+2
+version: 1.0.3+4
 
 environment:
   sdk: '^3.8.0'
