@@ -82,7 +82,6 @@ class AppTheme {
       primaryColor: colorScheme.primary,
       scaffoldBackgroundColor: scaffoldBg,
       cardColor: cardColor,
-      dividerColor: dividerColor,
 
       appBarTheme: AppBarTheme(
         backgroundColor: colorScheme.primary,
@@ -153,15 +152,19 @@ class AppTheme {
       listTileTheme: ListTileThemeData(iconColor: colorScheme.primary),
 
       checkboxTheme: CheckboxThemeData(
-        fillColor: WidgetStateProperty.resolveWith(
-          (states) => states.contains(WidgetState.selected) ? colorScheme.primary : inputBorder,
+        fillColor: MaterialStateProperty.resolveWith(
+          (states) => states.contains(MaterialState.selected) ? colorScheme.primary : inputBorder,
         ),
       ),
       switchTheme: SwitchThemeData(
-        thumbColor: WidgetStatePropertyAll(colorScheme.primary),
-        trackColor: WidgetStatePropertyAll(colorScheme.primary.withValues(alpha: 0.35)),
+        thumbColor: const MaterialStatePropertyAll<Color>(Colors.white),
+        trackColor: MaterialStateProperty.resolveWith((states) {
+          final selected = states.contains(MaterialState.selected);
+          return selected
+              ? colorScheme.primary
+              : colorScheme.primary.withValues(alpha: 0.35);
+        }),
       ),
-      // ↑↑↑
 
       chipTheme: ChipThemeData(
         labelStyle: TextStyle(color: bodyTextColor, fontFamily: 'Nunito'),
