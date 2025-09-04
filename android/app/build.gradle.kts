@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.soruvalab.finqly"
-    compileSdk = 34
+    compileSdk = 36
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -17,7 +17,7 @@ android {
     defaultConfig {
         applicationId = "com.soruvalab.finqly"
         minSdk = maxOf(21, flutter.minSdkVersion)
-        targetSdk = 34
+        targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
