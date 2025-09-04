@@ -99,6 +99,7 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
                 onPressed: _isLoading
                     ? null
                     : () async {
+                        // pre-capture objects/strings so we don't use BuildContext after awaits
                         final navigator = Navigator.of(context);
                         final messenger = ScaffoldMessenger.of(context);
                         final successMsg = loc.premiumUnlockSuccess;
@@ -109,7 +110,6 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
                           _error = null;
                         });
 
-                        Object? errorObj;
                         try {
                           await _iap.buySubscription(yearly: false);
                           await widget.subscriptionManager.setSubscribed(true);
@@ -119,8 +119,9 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
                           );
                           navigator.maybePop();
                         } catch (e) {
-                          errorObj = e;
-                          setState(() => _error = e.toString());
+                          if (mounted) {
+                            setState(() => _error = e.toString());
+                          }
                           messenger.showSnackBar(
                             SnackBar(content: Text('$errorPrefix: $e')),
                           );
