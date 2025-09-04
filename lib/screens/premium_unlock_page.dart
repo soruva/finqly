@@ -1,3 +1,4 @@
+// lib/screens/premium_unlock_page.dart
 import 'package:flutter/material.dart';
 
 import 'package:finqly/l10n/app_localizations.dart';
@@ -98,27 +99,30 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
                 onPressed: _isLoading
                     ? null
                     : () async {
+                        final navigator = Navigator.of(context);
+                        final messenger = ScaffoldMessenger.of(context);
+                        final successMsg = loc.premiumUnlockSuccess;
+                        final errorPrefix = loc.premiumUnlockError;
+
                         setState(() {
                           _isLoading = true;
                           _error = null;
                         });
+
+                        Object? errorObj;
                         try {
                           await _iap.buySubscription(yearly: false);
-                          if (!mounted) return;
-
                           await widget.subscriptionManager.setSubscribed(true);
-                          if (!mounted) return;
 
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(loc.premiumUnlockSuccess)),
+                          messenger.showSnackBar(
+                            SnackBar(content: Text(successMsg)),
                           );
-                          Navigator.of(context).maybePop();
+                          navigator.maybePop();
                         } catch (e) {
-                          if (!mounted) return;
+                          errorObj = e;
                           setState(() => _error = e.toString());
-
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('${loc.premiumUnlockError} ($e)')),
+                          messenger.showSnackBar(
+                            SnackBar(content: Text('$errorPrefix: $e')),
                           );
                         } finally {
                           if (mounted) {
@@ -156,9 +160,10 @@ class _PremiumUnlockPageState extends State<PremiumUnlockPage> {
               ),
             ),
             const SizedBox(height: 16),
-            Text(
-              loc.premiumDisclaimer,
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
+            const Text(
+              'All payments are processed securely via Google Play Billing. '
+              'Subscriptions auto-renew unless canceled. You can cancel anytime from your Google Play account.',
+              style: TextStyle(fontSize: 12, color: Colors.grey),
               textAlign: TextAlign.center,
             ),
           ],
