@@ -89,7 +89,10 @@ class AppTheme {
         elevation: 0,
         centerTitle: true,
         titleTextStyle: const TextStyle(
-          fontFamily: 'Nunito', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white,
+          fontFamily: 'Nunito',
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          color: Colors.white,
         ),
       ),
 
@@ -105,7 +108,11 @@ class AppTheme {
           backgroundColor: elevatedBg,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          textStyle: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w600, fontSize: 16),
+          textStyle: const TextStyle(
+            fontFamily: 'Nunito',
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+          ),
         ),
       ),
 
@@ -114,7 +121,11 @@ class AppTheme {
           foregroundColor: outlinedFg,
           side: BorderSide(color: outlinedFg, width: 1.4),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          textStyle: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w600, fontSize: 16),
+          textStyle: const TextStyle(
+            fontFamily: 'Nunito',
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+          ),
         ),
       ),
 
@@ -152,14 +163,16 @@ class AppTheme {
       listTileTheme: ListTileThemeData(iconColor: colorScheme.primary),
 
       checkboxTheme: CheckboxThemeData(
-        fillColor: MaterialStateProperty.resolveWith(
-          (states) => states.contains(MaterialState.selected) ? colorScheme.primary : inputBorder,
+        fillColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? colorScheme.primary
+              : inputBorder,
         ),
       ),
       switchTheme: SwitchThemeData(
-        thumbColor: const MaterialStatePropertyAll<Color>(Colors.white),
-        trackColor: MaterialStateProperty.resolveWith((states) {
-          final selected = states.contains(MaterialState.selected);
+        thumbColor: const WidgetStatePropertyAll<Color>(Colors.white),
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          final selected = states.contains(WidgetState.selected);
           return selected
               ? colorScheme.primary
               : colorScheme.primary.withValues(alpha: 0.35);
