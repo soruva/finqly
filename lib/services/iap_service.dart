@@ -1,7 +1,9 @@
 // lib/services/iap_service.dart
 import 'dart:async';
+
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
+import 'package:in_app_purchase_android/billing_client_wrappers.dart';
 
 typedef IapVerifiedCallback = void Function(PurchaseDetails purchase);
 typedef IapErrorCallback = void Function(Object error, [StackTrace? stack]);
@@ -18,6 +20,7 @@ class IapService {
     return instance;
   }
 
+  // ---- Product IDs ----
   static const String subscriptionId     = 'finqly_premium';
   static const String oneTimeDiagnosisId = 'inapp_one_time_diagnosis';
   static const String starterBundleId    = 'starter_bundle';
@@ -69,7 +72,6 @@ class IapService {
               break;
             case PurchaseStatus.pending:
             case PurchaseStatus.canceled:
-              // no-op
               break;
           }
           if (p.pendingCompletePurchase) {
@@ -95,10 +97,6 @@ class IapService {
     }
   }
 
-  GooglePlayProductDetails? _asGoogle(ProductDetails pd) {
-    return pd is GooglePlayProductDetails ? pd : null;
-  }
-
   GooglePlayProductDetails? _findGoogle(String id) {
     final pd = _find(id);
     return pd is GooglePlayProductDetails ? pd : null;
@@ -115,17 +113,21 @@ class IapService {
 
     final wantTag = yearly ? 'year' : 'month';
     final byTag = offers.firstWhere(
-      (o) => (o.offerTags ?? const <String>[]).map((t) => t.toLowerCase()).contains(wantTag),
+      (o) => (o.offerTags ?? const <String>[])
+          .map((t) => t.toLowerCase())
+          .contains(wantTag),
       orElse: () => offers.first,
     );
     return byTag;
   }
 
+  // ---- Pricing helper (fallback with formattedPrice) ----
   String priceForSubscription({required bool yearly}) {
     final pd = _subPd();
     if (pd == null) return '';
     final offer = _pickOffer(pd: pd, yearly: yearly);
     if (offer == null) return pd.price;
+
     final phases = offer.pricingPhases.pricingPhaseList;
     if (phases.isEmpty) return pd.price;
     return phases.first.formattedPrice;
@@ -139,15 +141,9 @@ class IapService {
 
     final offer = _pickOffer(pd: pd, yearly: yearly);
 
-    PurchaseParam param;
-    if (offer != null) {
-      param = GooglePlayPurchaseParam(
-        productDetails: pd,
-        offerToken: offer.offerToken,
-      );
-    } else {
-      param = PurchaseParam(productDetails: pd);
-    }
+    final PurchaseParam param = (offer != null)
+        ? GooglePlayPurchaseParam(productDetails: pd, offerToken: offer.offerToken)
+        : PurchaseParam(productDetails: pd);
 
     await _iap.buyNonConsumable(purchaseParam: param);
   }
