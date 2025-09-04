@@ -1,15 +1,11 @@
 // lib/services/iap_service.dart
 import 'dart:async';
-
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:in_app_purchase_android/in_app_purchase_android.dart';
-import 'package:in_app_purchase_android/billing_client_wrappers.dart';
 
 typedef IapVerifiedCallback = void Function(PurchaseDetails purchase);
 typedef IapErrorCallback = void Function(Object error, [StackTrace? stack]);
 
 class IapService {
-  // ---- Singleton ----
   IapService._internal();
   static final IapService instance = IapService._internal();
 
@@ -20,12 +16,11 @@ class IapService {
     return instance;
   }
 
-  // ---- Product IDs ----
+  // Product IDs
   static const String subscriptionId     = 'finqly_premium';
   static const String oneTimeDiagnosisId = 'inapp_one_time_diagnosis';
   static const String starterBundleId    = 'starter_bundle';
 
-  // ---- Internals ----
   final InAppPurchase _iap = InAppPurchase.instance;
   final List<ProductDetails> _products = [];
   bool _available = false;
@@ -36,7 +31,6 @@ class IapService {
 
   StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
 
-  // ---- Public ----
   bool get isAvailable => _available;
   List<ProductDetails> get products => List.unmodifiable(_products);
   Stream<List<PurchaseDetails>> get purchaseStream => _iap.purchaseStream;
@@ -97,54 +91,18 @@ class IapService {
     }
   }
 
-  GooglePlayProductDetails? _findGoogle(String id) {
-    final pd = _find(id);
-    return pd is GooglePlayProductDetails ? pd : null;
-  }
-
-  GooglePlayProductDetails? _subPd() => _findGoogle(subscriptionId);
-
-  GooglePlayProductDetailsSubscriptionOfferDetails? _pickOffer({
-    required GooglePlayProductDetails pd,
-    required bool yearly,
-  }) {
-    final offers = pd.subscriptionOfferDetails;
-    if (offers == null || offers.isEmpty) return null;
-
-    final wantTag = yearly ? 'year' : 'month';
-    final byTag = offers.firstWhere(
-      (o) => (o.offerTags ?? const <String>[])
-          .map((t) => t.toLowerCase())
-          .contains(wantTag),
-      orElse: () => offers.first,
-    );
-    return byTag;
-  }
-
-  // ---- Pricing helper (fallback with formattedPrice) ----
   String priceForSubscription({required bool yearly}) {
-    final pd = _subPd();
-    if (pd == null) return '';
-    final offer = _pickOffer(pd: pd, yearly: yearly);
-    if (offer == null) return pd.price;
-
-    final phases = offer.pricingPhases.pricingPhaseList;
-    if (phases.isEmpty) return pd.price;
-    return phases.first.formattedPrice;
+    final pd = _find(subscriptionId);
+    return pd?.price ?? '';
   }
 
   // ---- Purchasing ----
   Future<void> buySubscription({required bool yearly}) async {
     if (!_available) return;
-    final pd = _subPd();
+    final pd = _find(subscriptionId);
     if (pd == null) return;
 
-    final offer = _pickOffer(pd: pd, yearly: yearly);
-
-    final PurchaseParam param = (offer != null)
-        ? GooglePlayPurchaseParam(productDetails: pd, offerToken: offer.offerToken)
-        : PurchaseParam(productDetails: pd);
-
+    final param = PurchaseParam(productDetails: pd);
     await _iap.buyNonConsumable(purchaseParam: param);
   }
 
