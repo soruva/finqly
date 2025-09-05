@@ -1,7 +1,8 @@
+// lib/screens/diagnosis_page.dart
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_review/in_app_review.dart';
 
 import 'package:finqly/theme/colors.dart';
 import 'package:finqly/l10n/app_localizations.dart';
@@ -36,6 +37,8 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
     'Cautious': '🤔',
   };
 
+  final InAppReview _inAppReview = InAppReview.instance;
+
   @override
   void initState() {
     super.initState();
@@ -50,9 +53,7 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
             if (p.productID == IapService.subscriptionId) {
               await widget.subscriptionManager.setSubscribed(true);
             }
-
             final key = selectedEmotionKey;
-
             if (!mounted) continue;
             setState(() => _busy = false);
 
@@ -72,13 +73,10 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
               _busy = false;
               _error = p.error?.message ?? 'purchase_error';
             });
-            if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Purchase error: $_error')),
-              );
-            }
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Purchase error: $_error')),
+            );
           }
-
           if (p.pendingCompletePurchase) {
             await InAppPurchase.instance.completePurchase(p);
           }
@@ -88,11 +86,9 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
             _busy = false;
             _error = e.toString();
           });
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Purchase error: $_error')),
-            );
-          }
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Purchase error: $_error')),
+          );
         }
       }
     });
@@ -107,6 +103,20 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
 
   Future<void> _saveEmotionToHistory(String emotion) async {
     await HistoryService().addEntry(emotion);
+    final history = await HistoryService().getHistory();
+    if (history.length >= 5) {
+      _maybeRequestReview();
+    }
+  }
+
+  Future<void> _maybeRequestReview() async {
+    try {
+      if (await _inAppReview.isAvailable()) {
+        await _inAppReview.requestReview();
+      }
+    } catch (_) {
+      // ignore silently
+    }
   }
 
   Future<void> _showPaywall() async {
@@ -166,7 +176,6 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-
     final emotionOptions = {
       'Optimistic': loc.optionOptimistic,
       'Neutral': loc.optionNeutral,
@@ -229,7 +238,6 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                           label: entry.value,
                           onTap: () async {
                             if (_busy) return;
-
                             setState(() => selectedEmotionKey = entry.key);
                             await _saveEmotionToHistory(entry.key);
                             if (!context.mounted) return;
