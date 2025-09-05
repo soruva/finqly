@@ -17,7 +17,7 @@ android {
     defaultConfig {
         applicationId = "com.soruvalab.finqly"
         minSdk = maxOf(21, flutter.minSdkVersion)
-        targetSdk = 36
+        targetSdk = 34
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
