@@ -28,20 +28,9 @@ jobs:
 
       - name: Prepare site
         run: |
-          set -e
-          ts="$(date -u +%FT%TZ)"
-          echo "$ts" | tee probe-actions.txt
           mkdir -p finqly
-          echo "$ts" > finqly/probe-actions.txt
-
-          latest=$(ls -1d finqly/v/* | sort | tail -n 1)
-          echo "Latest version is $latest"
-
-          cp "$latest/privacy.html" finqly/privacy.html
-          cp "$latest/terms.html" finqly/terms.html
-          cp "$latest/disclaimer.html" finqly/disclaimer.html
-          cp "$latest/faq.html" finqly/faq.html
-
+          ts="$(date -u +%FT%TZ)"
+          echo "$ts" | tee probe-actions.txt | tee finqly/probe-actions.txt >/dev/null
           touch .nojekyll
 
       - name: Prepare _site

@@ -120,3 +120,4 @@ app.*.symbols
 lib/l10n/untranslated.json
 lib/generated/
 *.iml
+_site/
