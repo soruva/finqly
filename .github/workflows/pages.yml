@@ -2,7 +2,7 @@ name: Deploy static site to GitHub Pages
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
   workflow_dispatch:
 
 permissions:
@@ -19,27 +19,30 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
+
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # 配信物にタイムスタンプと .nojekyll を入れておく（検証用）
       - name: Generate probes
         run: |
-          date -u +%FT%TZ | tee probe-actions.txt > finqly/probe-actions.txt
+          set -e
+          mkdir -p finqly
+          ts="$(date -u +%FT%TZ)"
+          printf "%s\n" "$ts" | tee probe-actions.txt | tee finqly/probe-actions.txt >/dev/null
           touch .nojekyll
 
-      # ★ここが肝：リポジトリのルート「.」をアップロード
-      # （finqly/v/* を含む *すべて* が Pages に載る）
-      - name: Setup Pages
-        id: pages
-        uses: actions/configure-pages@v5
+      - name: Prepare _site
+        run: |
+          mkdir -p _site
+          rsync -av --delete ./ _site/
 
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: _site
 
       - name: Deploy to GitHub Pages
         id: deploy
