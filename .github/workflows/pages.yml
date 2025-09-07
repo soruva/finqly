@@ -28,20 +28,15 @@ jobs:
 
       - name: Prepare site
         run: |
-          mkdir -p finqly
+          set -e
           ts="$(date -u +%FT%TZ)"
-          echo "$ts" | tee probe-actions.txt | tee finqly/probe-actions.txt >/dev/null
-          touch .nojekyll
-
-      - name: Prepare _site
-        run: |
-          mkdir -p _site
-          rsync -av --delete ./ _site/
+          echo "$ts" | tee docs/probe-actions.txt
+          touch docs/.nojekyll
 
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
+          path: docs
 
       - name: Deploy to GitHub Pages
         id: deploy
