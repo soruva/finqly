@@ -4,6 +4,18 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+import java.util.Properties
+import java.io.FileInputStream
+
+// --- read key.properties as fallback (when CM_* env vars are absent) ---
+val keystoreProps = Properties().apply {
+    val f = rootProject.file("key.properties")
+    if (f.exists()) {
+        load(FileInputStream(f))
+    }
+}
+// ----------------------------------------------------------------------
+
 android {
     namespace = "com.soruvalab.finqly"
     compileSdk = 36
@@ -27,16 +39,23 @@ android {
             create("release") {
                 storeFile = file(System.getenv("CM_KEYSTORE"))
                 storePassword = System.getenv("CM_KEYSTORE_PASSWORD")
-                keyAlias = System.getenv("CM_KEY_ALIAS")
+                keyAlias = System.getenv("CM_KEY_ALIAS"))
                 keyPassword = System.getenv("CM_KEY_PASSWORD")
+            }
+        } else if (keystoreProps.getProperty("storeFile") != null) {
+            create("release") {
+                storeFile = file(keystoreProps.getProperty("storeFile"))
+                storePassword = keystoreProps.getProperty("storePassword")
+                keyAlias = keystoreProps.getProperty("keyAlias")
+                keyPassword = keystoreProps.getProperty("keyPassword")
             }
         }
     }
 
     buildTypes {
         getByName("release") {
-            if (signingConfigs.findByName("release") != null) {
-                signingConfig = signingConfigs.getByName("release")
+            signingConfigs.findByName("release")?.let { sc ->
+                signingConfig = sc
             }
             // isMinifyEnabled = true
             // isShrinkResources = true
