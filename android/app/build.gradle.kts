@@ -1,11 +1,11 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
     id("dev.flutter.flutter-gradle-plugin")
 }
-
-import java.util.Properties
-import java.io.FileInputStream
 
 // --- read key.properties as fallback (when CM_* env vars are absent) ---
 val keystoreProps = Properties().apply {
@@ -39,7 +39,7 @@ android {
             create("release") {
                 storeFile = file(System.getenv("CM_KEYSTORE"))
                 storePassword = System.getenv("CM_KEYSTORE_PASSWORD")
-                keyAlias = System.getenv("CM_KEY_ALIAS"))
+                keyAlias = System.getenv("CM_KEY_ALIAS")
                 keyPassword = System.getenv("CM_KEY_PASSWORD")
             }
         } else if (keystoreProps.getProperty("storeFile") != null) {
