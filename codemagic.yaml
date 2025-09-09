@@ -18,7 +18,20 @@ workflows:
             echo "CM_KEYSTORE_BASE64 is missing"; exit 1
           fi
           echo "$CM_KEYSTORE_BASE64" | base64 -d > /tmp/my-release-key.jks
-          export CM_KEYSTORE="/tmp/my-release-key.jks"
+          echo "CM_KEYSTORE=/tmp/my-release-key.jks" >> $CM_ENV
+
+      - name: Write key.properties (fallback)
+        script: |
+          for v in CM_KEYSTORE_PASSWORD CM_KEY_ALIAS CM_KEY_PASSWORD; do
+            if [ -z "${!v}" ]; then echo "Missing env: $v"; exit 1; fi
+          done
+          cat > android/key.properties <<EOF
+storeFile=/tmp/my-release-key.jks
+storePassword=$CM_KEYSTORE_PASSWORD
+keyAlias=$CM_KEY_ALIAS
+keyPassword=$CM_KEY_PASSWORD
+EOF
+          echo "Wrote android/key.properties"
 
       - name: Flutter pub get
         script: flutter pub get
@@ -38,14 +51,9 @@ workflows:
 
       - name: Verify AAB signature
         script: |
-          if [ ! -f build/app/outputs/bundle/release/app-release.aab ]; then
-            echo "AAB not found"; exit 1
-          fi
-          jarsigner -verify -verbose -certs build/app/outputs/bundle/release/app-release.aab
-
-      # - name: Build APK
-      #   script: flutter build apk --release --tree-shake-icons --split-debug-info=build/symbols
-
+          AAB=build/app/outputs/bundle/release/app-release.aab
+          if [ ! -f "$AAB" ]; then echo "AAB not found"; exit 1; fi
+          jarsigner -verify -verbose -certs "$AAB"
     artifacts:
       - build/app/outputs/bundle/release/app-release.aab
       - build/symbols/**
