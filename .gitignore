@@ -35,11 +35,6 @@ windows/flutter/
 .vscode/
 *.iml
 
-# Pub lock (optional: keep if you want reproducible builds)
-pubspec.lock
-temp_project*/pubspec.lock
-temp_project_fixed/pubspec.lock
-
 # ==== Keystore & secrets ====
 android/key.properties
 android/app/upload-keystore.jks
