@@ -1,16 +1,15 @@
+// android/app/build.gradle.kts
 import java.util.Properties
-import java.io.FileInputStream
 
 plugins {
     id("com.android.application")
-    id("kotlin-android")
+    id("org.jetbrains.kotlin.android")
     id("dev.flutter.flutter-gradle-plugin")
 }
 
 android {
     namespace = "com.soruvalab.finqly"
-
-    compileSdk = 35
+    compileSdk = 35                          // ← 35
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -21,9 +20,7 @@ android {
     defaultConfig {
         applicationId = "com.soruvalab.finqly"
         minSdk = maxOf(21, flutter.minSdkVersion)
-
-        targetSdk = 35
-
+        targetSdk = 35                       // ← 34 → 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
@@ -75,12 +72,11 @@ android {
                 throw GradleException("Release signing is NOT configured. Set CM_* envs or android/key.properties.")
             }
             signingConfig = signingConfigs.getByName("release")
-
             // isMinifyEnabled = true
             // isShrinkResources = true
             // proguardFiles(
-            //     getDefaultProguardFile("proguard-android-optimize.txt"),
-            //     "proguard-rules.pro"
+            //   getDefaultProguardFile("proguard-android-optimize.txt"),
+            //   "proguard-rules.pro"
             // )
         }
         getByName("debug") { }
