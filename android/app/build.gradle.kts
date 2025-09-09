@@ -1,20 +1,8 @@
-import java.util.Properties
-import java.io.FileInputStream
-
 plugins {
     id("com.android.application")
     id("kotlin-android")
     id("dev.flutter.flutter-gradle-plugin")
 }
-
-// --- read key.properties as fallback (when CM_* env vars are absent) ---
-val keystoreProps = Properties().apply {
-    val f = rootProject.file("key.properties")
-    if (f.exists()) {
-        load(FileInputStream(f))
-    }
-}
-// ----------------------------------------------------------------------
 
 android {
     namespace = "com.soruvalab.finqly"
@@ -34,16 +22,24 @@ android {
         versionName = flutter.versionName
     }
 
+    val cmKeystore: String? = System.getenv("CM_KEYSTORE")
+    val cmKeystorePass: String? = System.getenv("CM_KEYSTORE_PASSWORD")
+    val cmKeyAlias: String? = System.getenv("CM_KEY_ALIAS")
+    val cmKeyPass: String? = System.getenv("CM_KEY_PASSWORD")
+
+    val keystoreProps = java.util.Properties().apply {
+        val f = rootProject.file("android/key.properties")
+        if (f.exists()) f.inputStream().use { load(it) }
+    }
+
     signingConfigs {
-        if (System.getenv("CM_KEYSTORE") != null) {
-            create("release") {
-                storeFile = file(System.getenv("CM_KEYSTORE"))
-                storePassword = System.getenv("CM_KEYSTORE_PASSWORD")
-                keyAlias = System.getenv("CM_KEY_ALIAS")
-                keyPassword = System.getenv("CM_KEY_PASSWORD")
-            }
-        } else if (keystoreProps.getProperty("storeFile") != null) {
-            create("release") {
+        create("release") {
+            if (!cmKeystore.isNullOrBlank()) {
+                storeFile = file(cmKeystore)
+                storePassword = cmKeystorePass
+                keyAlias = cmKeyAlias
+                keyPassword = cmKeyPass
+            } else if (keystoreProps.getProperty("storeFile") != null) {
                 storeFile = file(keystoreProps.getProperty("storeFile"))
                 storePassword = keystoreProps.getProperty("storePassword")
                 keyAlias = keystoreProps.getProperty("keyAlias")
@@ -54,22 +50,13 @@ android {
 
     buildTypes {
         getByName("release") {
-            signingConfigs.findByName("release")?.let { sc ->
-                signingConfig = sc
-            }
+            signingConfig = signingConfigs.getByName("release")
             // isMinifyEnabled = true
             // isShrinkResources = true
-            // proguardFiles(
-            //     getDefaultProguardFile("proguard-android-optimize.txt"),
-            //     "proguard-rules.pro"
-            // )
+            // proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
         getByName("debug") { }
     }
-
-    // packaging {
-    //     resources { excludes += setOf("META-INF/*") }
-    // }
 }
 
 flutter { source = "../.." }
