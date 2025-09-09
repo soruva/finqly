@@ -9,7 +9,8 @@ plugins {
 
 android {
     namespace = "com.soruvalab.finqly"
-    compileSdk = 36
+
+    compileSdk = 35
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -20,12 +21,13 @@ android {
     defaultConfig {
         applicationId = "com.soruvalab.finqly"
         minSdk = maxOf(21, flutter.minSdkVersion)
-        targetSdk = 34
+
+        targetSdk = 35
+
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
-    // --- Signing config ---
     val cmKeystore: String? = System.getenv("CM_KEYSTORE")
     val cmKeystorePass: String? = System.getenv("CM_KEYSTORE_PASSWORD")
     val cmKeyAlias: String? = System.getenv("CM_KEY_ALIAS")
@@ -73,7 +75,7 @@ android {
                 throw GradleException("Release signing is NOT configured. Set CM_* envs or android/key.properties.")
             }
             signingConfig = signingConfigs.getByName("release")
-            // ProGuard / R8
+
             // isMinifyEnabled = true
             // isShrinkResources = true
             // proguardFiles(
