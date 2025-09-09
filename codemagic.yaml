@@ -21,18 +21,25 @@ workflows:
           fi
           echo "$CM_KEYSTORE_BASE64" | base64 -d > /tmp/my-release-key.jks
           export CM_KEYSTORE="/tmp/my-release-key.jks"
+          echo 'CM_KEYSTORE=/tmp/my-release-key.jks' >> "$CM_ENV"
           ls -l "$CM_KEYSTORE"
 
       - name: Write android/key.properties
         script: |
-          set -euo pipefail
+          set -eo pipefail
+          : "${CM_KEYSTORE:?CM_KEYSTORE missing}"
+          : "${CM_KEYSTORE_PASSWORD:?CM_KEYSTORE_PASSWORD missing}"
+          : "${CM_KEY_ALIAS:?CM_KEY_ALIAS missing}"
+          : "${CM_KEY_PASSWORD:?CM_KEY_PASSWORD missing}"
+
           mkdir -p android
           cat > android/key.properties <<EOF
-          storeFile=$CM_KEYSTORE
-          storePassword=$CM_KEYSTORE_PASSWORD
-          keyAlias=$CM_KEY_ALIAS
-          keyPassword=$CM_KEY_PASSWORD
+          storeFile=${CM_KEYSTORE}
+          storePassword=${CM_KEYSTORE_PASSWORD}
+          keyAlias=${CM_KEY_ALIAS}
+          keyPassword=${CM_KEY_PASSWORD}
           EOF
+
           echo "Wrote android/key.properties:"
           sed 's/=.*/=*** (redacted)/' android/key.properties
 
@@ -41,6 +48,7 @@ workflows:
 
       - name: Build AAB (release)
         script: |
+          set -e
           mkdir -p build/symbols
           flutter build appbundle --release \
             --tree-shake-icons \
@@ -48,8 +56,9 @@ workflows:
 
       - name: Verify AAB signature
         script: |
+          set -e
           test -f build/app/outputs/bundle/release/app-release.aab
-          jarsigner -verify -verbose -certs build/app/outputs/bundle/release/app-release.aab
+          jarsigner -verify -verbose -certs build/app/outputs/bundle/release/app-release.aab | sed -n '1,40p'
 
     artifacts:
       - build/app/outputs/bundle/release/app-release.aab
