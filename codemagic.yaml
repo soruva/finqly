@@ -11,36 +11,33 @@ workflows:
         - ~/.pub-cache
         - ~/.gradle/caches
         - ~/.gradle/wrapper
+
     scripts:
-      - name: Restore keystore
+      - name: Restore keystore from env
         script: |
-          if [ -z "$CM_KEYSTORE_BASE64" ]; then
+          set -euo pipefail
+          if [ -z "${CM_KEYSTORE_BASE64:-}" ]; then
             echo "CM_KEYSTORE_BASE64 is missing"; exit 1
           fi
           echo "$CM_KEYSTORE_BASE64" | base64 -d > /tmp/my-release-key.jks
-          echo "CM_KEYSTORE=/tmp/my-release-key.jks" >> $CM_ENV
+          export CM_KEYSTORE="/tmp/my-release-key.jks"
+          ls -l "$CM_KEYSTORE"
 
-      - name: Write key.properties (fallback)
+      - name: Write android/key.properties
         script: |
-          for v in CM_KEYSTORE_PASSWORD CM_KEY_ALIAS CM_KEY_PASSWORD; do
-            if [ -z "${!v}" ]; then echo "Missing env: $v"; exit 1; fi
-          done
+          set -euo pipefail
+          mkdir -p android
           cat > android/key.properties <<EOF
-storeFile=/tmp/my-release-key.jks
-storePassword=$CM_KEYSTORE_PASSWORD
-keyAlias=$CM_KEY_ALIAS
-keyPassword=$CM_KEY_PASSWORD
-EOF
-          echo "Wrote android/key.properties"
+          storeFile=$CM_KEYSTORE
+          storePassword=$CM_KEYSTORE_PASSWORD
+          keyAlias=$CM_KEY_ALIAS
+          keyPassword=$CM_KEY_PASSWORD
+          EOF
+          echo "Wrote android/key.properties:"
+          sed 's/=.*/=*** (redacted)/' android/key.properties
 
       - name: Flutter pub get
         script: flutter pub get
-
-      - name: (optional) Generate l10n
-        script: flutter gen-l10n
-
-      - name: (optional) Static analysis (won't fail build)
-        script: flutter analyze || true
 
       - name: Build AAB (release)
         script: |
@@ -51,9 +48,9 @@ EOF
 
       - name: Verify AAB signature
         script: |
-          AAB=build/app/outputs/bundle/release/app-release.aab
-          if [ ! -f "$AAB" ]; then echo "AAB not found"; exit 1; fi
-          jarsigner -verify -verbose -certs "$AAB"
+          test -f build/app/outputs/bundle/release/app-release.aab
+          jarsigner -verify -verbose -certs build/app/outputs/bundle/release/app-release.aab
+
     artifacts:
       - build/app/outputs/bundle/release/app-release.aab
       - build/symbols/**
