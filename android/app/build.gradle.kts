@@ -1,5 +1,6 @@
 // android/app/build.gradle.kts
 import java.util.Properties
+import kotlin.math.max
 
 plugins {
     id("com.android.application")
@@ -9,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.soruvalab.finqly"
-    compileSdk = 35                          // ← 35
+    compileSdk = 35
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -20,8 +21,9 @@ android {
     defaultConfig {
         applicationId = "com.soruvalab.finqly"
         minSdk = maxOf(21, flutter.minSdkVersion)
-        targetSdk = 35                       // ← 34 → 35
-        versionCode = flutter.versionCode
+        targetSdk = 35
+
+        versionCode = max(6, flutter.versionCode)
         versionName = flutter.versionName
     }
 
@@ -72,6 +74,7 @@ android {
                 throw GradleException("Release signing is NOT configured. Set CM_* envs or android/key.properties.")
             }
             signingConfig = signingConfigs.getByName("release")
+
             // isMinifyEnabled = true
             // isShrinkResources = true
             // proguardFiles(
