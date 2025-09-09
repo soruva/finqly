@@ -1,4 +1,5 @@
 # ==== Android / Flutter common ====
+
 # Local SDK & build cache
 /local.properties
 /.gradle/
@@ -13,6 +14,31 @@ build/
 **/.flutter-plugins-dependencies
 **/.packages
 **/GeneratedPluginRegistrant.java
+**/GeneratedPluginRegistrant.swift
+**/generated_plugin_registrant.cc
+**/generated_plugin_registrant.h
+**/generated_plugins.cmake
+
+# iOS / macOS
+ios/Flutter/Flutter.podspec
+ios/Flutter/.last_build_id
+ios/Flutter/Generated.xcconfig
+ios/Flutter/ephemeral/
+macos/Flutter/ephemeral/
+
+# Linux / Windows generated
+linux/flutter/
+windows/flutter/
+
+# IntelliJ / VSCode project files
+.idea/
+.vscode/
+*.iml
+
+# Pub lock (optional: keep if you want reproducible builds)
+pubspec.lock
+temp_project*/pubspec.lock
+temp_project_fixed/pubspec.lock
 
 # ==== Keystore & secrets ====
 android/key.properties
@@ -23,7 +49,13 @@ my-release-key.jks.base64
 *.b64
 key.properties
 
-# ==== DO NOT ignore these (Gradle wrapper) ==== 
+# ==== Ignore temporary or test dirs ====
+_site/
+finqly/
+temp_project*/
+temp_project_fixed/
+
+# ==== DO NOT ignore these (Gradle wrapper) ====
 !gradlew
 !gradlew.bat
 !android/gradle/wrapper/gradle-wrapper.jar
