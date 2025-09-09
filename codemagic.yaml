@@ -13,26 +13,52 @@ workflows:
         - ~/.gradle/wrapper
 
     scripts:
-      - name: Restore keystore from env
+      - name: Restore keystore from env (robust)
         script: |
           set -euo pipefail
-          if [ -z "${CM_KEYSTORE_BASE64:-}" ]; then
-            echo "CM_KEYSTORE_BASE64 is missing"; exit 1
+          : "${CM_KEYSTORE_BASE64:?CM_KEYSTORE_BASE64 missing}"
+          : "${CM_KEYSTORE_PASSWORD:?CM_KEYSTORE_PASSWORD missing}"
+          : "${CM_KEY_ALIAS:?CM_KEY_ALIAS missing}"
+          : "${CM_KEY_PASSWORD:?CM_KEY_PASSWORD missing}"
+
+          CLEAN_B64="$(printf '%s' "$CM_KEYSTORE_BASE64" | tr -d '\r\n')"
+          if printf '%s' "$CLEAN_B64" | base64 --decode > /tmp/my-release-key.jks 2>/dev/null; then
+            :
+          elif printf '%s' "$CLEAN_B64" | base64 -d > /tmp/my-release-key.jks 2>/dev/null; then
+            :
+          else
+            echo "Failed to decode CM_KEYSTORE_BASE64. Check for copy/paste or hidden whitespace."
+            exit 1
           fi
-          echo "$CM_KEYSTORE_BASE64" | base64 -d > /tmp/my-release-key.jks
+
           export CM_KEYSTORE="/tmp/my-release-key.jks"
           echo 'CM_KEYSTORE=/tmp/my-release-key.jks' >> "$CM_ENV"
           ls -l "$CM_KEYSTORE"
 
+          if ! keytool -list -v -keystore "$CM_KEYSTORE" -storepass "$CM_KEYSTORE_PASSWORD" > /dev/null 2>&1; then
+            echo "::error:: Keystore store password is incorrect (CM_KEYSTORE_PASSWORD)."
+            exit 1
+          fi
+
+          keytool -list -v -keystore "$CM_KEYSTORE" -storepass "$CM_KEYSTORE_PASSWORD" | sed -n '1,20p' || true
+          echo "[signing] keystore restored and verified (storepass)."
+
+      - name: Ensure clean key.properties (avoid stale file)
+        script: |
+          set -euo pipefail
+          if [ -f android/key.properties ]; then
+            rm -f android/key.properties
+          fi
+          mkdir -p android
+
       - name: Write android/key.properties
         script: |
-          set -eo pipefail
+          set -euo pipefail
           : "${CM_KEYSTORE:?CM_KEYSTORE missing}"
           : "${CM_KEYSTORE_PASSWORD:?CM_KEYSTORE_PASSWORD missing}"
           : "${CM_KEY_ALIAS:?CM_KEY_ALIAS missing}"
           : "${CM_KEY_PASSWORD:?CM_KEY_PASSWORD missing}"
 
-          mkdir -p android
           cat > android/key.properties <<EOF
           storeFile=${CM_KEYSTORE}
           storePassword=${CM_KEYSTORE_PASSWORD}
@@ -59,6 +85,7 @@ workflows:
           set -e
           test -f build/app/outputs/bundle/release/app-release.aab
           jarsigner -verify -verbose -certs build/app/outputs/bundle/release/app-release.aab | sed -n '1,40p'
+          echo "[signing] AAB signature verified."
 
     artifacts:
       - build/app/outputs/bundle/release/app-release.aab

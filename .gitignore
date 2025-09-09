@@ -20,6 +20,7 @@ android/app/upload-keystore.jks
 my-release-key.jks.base64
 **/*.jks
 **/*.keystore
+*.b64
 key.properties
 
 # ==== DO NOT ignore these (Gradle wrapper) ==== 
