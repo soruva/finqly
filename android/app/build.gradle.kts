@@ -1,6 +1,5 @@
-// android/app/build.gradle.kts
-
 import java.util.Properties
+import java.io.FileInputStream
 
 plugins {
     id("com.android.application")
@@ -26,45 +25,55 @@ android {
         versionName = flutter.versionName
     }
 
+    // --- Signing config ---
+    val cmKeystore: String? = System.getenv("CM_KEYSTORE")
+    val cmKeystorePass: String? = System.getenv("CM_KEYSTORE_PASSWORD")
+    val cmKeyAlias: String? = System.getenv("CM_KEY_ALIAS")
+    val cmKeyPass: String? = System.getenv("CM_KEY_PASSWORD")
+
+    val keystoreProps = Properties().apply {
+        val f = rootProject.file("android/key.properties")
+        if (f.exists()) f.inputStream().use { this.load(it) }
+    }
+
+    fun hasEnvSigning() =
+        !cmKeystore.isNullOrBlank() && !cmKeystorePass.isNullOrBlank() &&
+        !cmKeyAlias.isNullOrBlank() && !cmKeyPass.isNullOrBlank()
+
+    fun hasFileSigning() =
+        keystoreProps.getProperty("storeFile")?.isNotBlank() == true &&
+        keystoreProps.getProperty("storePassword")?.isNotBlank() == true &&
+        keystoreProps.getProperty("keyAlias")?.isNotBlank() == true &&
+        keystoreProps.getProperty("keyPassword")?.isNotBlank() == true
+
+    println("[signing] CM vars? ${hasEnvSigning()} ; key.properties? ${hasFileSigning()}")
+
     signingConfigs {
-        val cmKeystore: String? = System.getenv("CM_KEYSTORE")
-        val cmKeystorePass: String? = System.getenv("CM_KEYSTORE_PASSWORD")
-        val cmKeyAlias: String? = System.getenv("CM_KEY_ALIAS")
-        val cmKeyPass: String? = System.getenv("CM_KEY_PASSWORD")
-
-        // key.properties
-        val props = Properties()
-        val propsFile = rootProject.file("android/key.properties")
-        if (propsFile.exists()) {
-            propsFile.inputStream().use { props.load(it) }
-        }
-
-        if (!cmKeystore.isNullOrBlank()
-            && !cmKeystorePass.isNullOrBlank()
-            && !cmKeyAlias.isNullOrBlank()
-            && !cmKeyPass.isNullOrBlank()
-        ) {
+        if (hasEnvSigning()) {
             create("release") {
-                storeFile = file(cmKeystore)
+                storeFile = file(cmKeystore!!)
                 storePassword = cmKeystorePass
                 keyAlias = cmKeyAlias
                 keyPassword = cmKeyPass
             }
-        } else if (props.getProperty("storeFile") != null) {
+        } else if (hasFileSigning()) {
             create("release") {
-                storeFile = file(props.getProperty("storeFile"))
-                storePassword = props.getProperty("storePassword")
-                keyAlias = props.getProperty("keyAlias")
-                keyPassword = props.getProperty("keyPassword")
+                storeFile = file(keystoreProps.getProperty("storeFile"))
+                storePassword = keystoreProps.getProperty("storePassword")
+                keyAlias = keystoreProps.getProperty("keyAlias")
+                keyPassword = keystoreProps.getProperty("keyPassword")
             }
         }
     }
 
     buildTypes {
         getByName("release") {
-            if (signingConfigs.findByName("release") != null) {
-                signingConfig = signingConfigs.getByName("release")
+            val hasSigning = signingConfigs.findByName("release") != null
+            if (!hasSigning) {
+                throw GradleException("Release signing is NOT configured. Set CM_* envs or android/key.properties.")
             }
+            signingConfig = signingConfigs.getByName("release")
+            // ProGuard / R8
             // isMinifyEnabled = true
             // isShrinkResources = true
             // proguardFiles(
