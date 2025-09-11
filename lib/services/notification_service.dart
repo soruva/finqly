@@ -2,7 +2,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_native_timezone_updated_gradle/flutter_native_timezone.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tzdata;
 
@@ -25,18 +24,13 @@ class NotificationService {
     _initialized = true;
 
     tzdata.initializeTimeZones();
-    String tzName = 'UTC';
     try {
-      tzName = await FlutterNativeTimezone.getLocalTimezone();
-    } catch (_) {
-      tzName = 'UTC';
-    }
-    try {
-      tz.setLocalLocation(tz.getLocation(tzName));
+      tz.setLocalLocation(tz.getLocation('Asia/Tokyo'));
     } catch (_) {
       tz.setLocalLocation(tz.getLocation('UTC'));
     }
 
+    // Android init
     const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
     const init = InitializationSettings(android: androidInit);
 
@@ -49,10 +43,12 @@ class NotificationService {
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
 
+    // Android 13+ permission
     await _fln
         .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
         ?.requestNotificationsPermission();
 
+    // Channels
     final android = _fln.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
     await android?.createNotificationChannel(const AndroidNotificationChannel(
       _channelIdDaily,
@@ -102,6 +98,7 @@ class NotificationService {
   }
 
   tz.TZDateTime _nextWeekdayAt(int weekday, int hour, int minute) {
+    // weekday: Monday=1 ... Sunday=7
     final now = tz.TZDateTime.now(tz.local);
     var scheduled = tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
     while (scheduled.weekday != weekday || scheduled.isBefore(now)) {
