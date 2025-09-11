@@ -15,6 +15,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions { jvmTarget = JavaVersion.VERSION_17.toString() }
 
@@ -27,6 +28,7 @@ android {
         versionName = flutter.versionName
     }
 
+    // ---- Signing (Codemagic env or key.properties) ----
     val cmKeystore: String? = System.getenv("CM_KEYSTORE")
     val cmKeystorePass: String? = System.getenv("CM_KEYSTORE_PASSWORD")
     val cmKeyAlias: String? = System.getenv("CM_KEY_ALIAS")
@@ -75,6 +77,7 @@ android {
             }
             signingConfig = signingConfigs.getByName("release")
 
+            // ProGuard/R8
             // isMinifyEnabled = true
             // isShrinkResources = true
             // proguardFiles(
@@ -87,3 +90,7 @@ android {
 }
 
 flutter { source = "../.." }
+
+dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.2")
+}
