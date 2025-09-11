@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tzdata;
 
@@ -23,19 +24,28 @@ class NotificationService {
     if (_initialized) return;
     _initialized = true;
 
-    // Timezone
     tzdata.initializeTimeZones();
-    final locName = await tz.local.localizationsDelegate.load(null).then((_) => tz.local.name).catchError((_) => 'UTC');
-    tz.setLocalLocation(tz.getLocation(locName));
+    String tzName = 'UTC';
+    try {
+      tzName = await FlutterNativeTimezone.getLocalTimezone();
+    } catch (_) {
+      tzName = 'UTC';
+    }
+    try {
+      tz.setLocalLocation(tz.getLocation(tzName));
+    } catch (_) {
+      tz.setLocalLocation(tz.getLocation('UTC'));
+    }
 
     // Android init
     const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
+    final init = const InitializationSettings(android: androidInit);
 
-    final init = InitializationSettings(android: androidInit);
     await _fln.initialize(
       init,
       onDidReceiveNotificationResponse: (resp) {
-        if (resp.payload != null) _tappedPayload.add(resp.payload!);
+        final payload = resp.payload;
+        if (payload != null) _tappedPayload.add(payload);
       },
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
@@ -45,7 +55,7 @@ class NotificationService {
         .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
         ?.requestNotificationsPermission();
 
-    // Channels
+    // Notification channels
     final android = _fln.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
     await android?.createNotificationChannel(const AndroidNotificationChannel(
       _channelIdDaily,
@@ -62,7 +72,7 @@ class NotificationService {
   }
 
   static @pragma('vm:entry-point') void notificationTapBackground(NotificationResponse resp) {
-    // no-op; required entry point for background
+    // no-op
   }
 
   NotificationDetails _dailyDetails() => const NotificationDetails(
@@ -95,7 +105,7 @@ class NotificationService {
   }
 
   tz.TZDateTime _nextWeekdayAt(int weekday, int hour, int minute) {
-    // weekday: Monday=1 ... Sunday=7 (Dart DateTime)
+    // weekday: Monday=1 ... Sunday=7
     final now = tz.TZDateTime.now(tz.local);
     var scheduled = tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
     while (scheduled.weekday != weekday || scheduled.isBefore(now)) {
@@ -113,7 +123,7 @@ class NotificationService {
     await _fln.zonedSchedule(
       id,
       'Finqly',
-      'Take today’s check-in in 1 minute – keep your streak!',
+      'Take today’s check-in – keep your streak!',
       _nextDailyAt(9, 0),
       _dailyDetails(),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
