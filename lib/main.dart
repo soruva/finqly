@@ -6,11 +6,18 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:finqly/l10n/app_localizations.dart';
 import 'package:finqly/theme/theme.dart';
 import 'package:finqly/screens/splash_screen.dart';
+import 'package:finqly/screens/report_page.dart';
 import 'package:finqly/services/subscription_manager.dart';
 import 'package:finqly/services/iap_service.dart';
+import 'package:finqly/services/notification_service.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await NotificationService().init();
+  await NotificationService().scheduleDailyNineAM(enabled: true);
+  await NotificationService().scheduleWeeklyReportMondayNineAM(enabled: true);
+
   runApp(const FinqlyApp());
 }
 
@@ -22,11 +29,14 @@ class FinqlyApp extends StatefulWidget {
 }
 
 class _FinqlyAppState extends State<FinqlyApp> {
+  final _navKey = GlobalKey<NavigatorState>();
+
   final SubscriptionManager _subscriptionManager = SubscriptionManager();
   Locale _locale = const Locale('en');
   ThemeMode _themeMode = ThemeMode.light;
 
   StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
+  StreamSubscription<String>? _notifTapSub;
 
   void _setLocale(Locale newLocale) => setState(() => _locale = newLocale);
   void _setTheme(bool isDarkMode) =>
@@ -58,11 +68,22 @@ class _FinqlyAppState extends State<FinqlyApp> {
         }
       }
     });
+
+    _notifTapSub = NotificationService().onTap.listen((payload) {
+      final nav = _navKey.currentState;
+      if (nav == null) return;
+      if (payload == 'open_report') {
+        nav.push(MaterialPageRoute(builder: (_) => const ReportPage()));
+      } else if (payload == 'open_home') {
+        //popUntil
+      }
+    });
   }
 
   @override
   void dispose() {
     _purchaseSub?.cancel();
+    _notifTapSub?.cancel();
     _subscriptionManager.dispose();
     super.dispose();
   }
@@ -70,6 +91,7 @@ class _FinqlyAppState extends State<FinqlyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: _navKey,
       debugShowCheckedModeBanner: false,
       title: 'Finqly',
 

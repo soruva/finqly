@@ -1,6 +1,7 @@
 // lib/services/iap_service.dart
 import 'dart:async';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 
 typedef IapVerifiedCallback = void Function(PurchaseDetails purchase);
 typedef IapErrorCallback = void Function(Object error, [StackTrace? stack]);
@@ -16,8 +17,11 @@ class IapService {
     return instance;
   }
 
-  // Product IDs
-  static const String subscriptionId     = 'finqly_premium';
+  static const String subscriptionId = 'finqly_premium';
+
+  static const String monthlyBasePlanId = 'monthly-auto-basic';
+  static const String yearlyBasePlanId  = 'yearly-autobasic';
+
   static const String oneTimeDiagnosisId = 'inapp_one_time_diagnosis';
   static const String starterBundleId    = 'starter_bundle';
 
@@ -47,7 +51,12 @@ class IapService {
     _available = await _iap.isAvailable();
     if (!_available) return;
 
-    const ids = <String>{subscriptionId, oneTimeDiagnosisId, starterBundleId};
+    const ids = <String>{
+      subscriptionId,
+      oneTimeDiagnosisId,
+      starterBundleId,
+    };
+
     final resp = await _iap.queryProductDetails(ids);
     _products
       ..clear()
@@ -91,18 +100,42 @@ class IapService {
     }
   }
 
-  String priceForSubscription({required bool yearly}) {
-    final pd = _find(subscriptionId);
-    return pd?.price ?? '';
+  SubscriptionOfferDetails? _pickOffer({
+    required bool yearly,
+  }) {
+    final sub = _find(subscriptionId);
+    final offers = sub?.subscriptionOfferDetails;
+    if (offers == null || offers.isEmpty) return null;
+
+    final wantedBasePlanId = yearly ? yearlyBasePlanId : monthlyBasePlanId;
+
+    final matched = offers.where((o) => o.basePlanId == wantedBasePlanId);
+    if (matched.isNotEmpty) return matched.first;
+
+    return offers.first;
   }
 
-  // ---- Purchasing ----
+  String priceForSubscription({required bool yearly}) {
+    final offer = _pickOffer(yearly: yearly);
+    final phases = offer?.pricingPhases.pricingPhaseList;
+    if (phases != null && phases.isNotEmpty) {
+      return phases.first.formattedPrice;
+    }
+    return yearly ? '\$99.99 / year' : '\$9.99 / month';
+  }
+
   Future<void> buySubscription({required bool yearly}) async {
     if (!_available) return;
-    final pd = _find(subscriptionId);
-    if (pd == null) return;
 
-    final param = PurchaseParam(productDetails: pd);
+    final sub = _find(subscriptionId);
+    final offer = _pickOffer(yearly: yearly);
+    if (sub == null || offer == null) return;
+
+    final param = GooglePlayPurchaseParam(
+      productDetails: sub,
+      offerToken: offer.offerToken,
+    );
+
     await _iap.buyNonConsumable(purchaseParam: param);
   }
 
