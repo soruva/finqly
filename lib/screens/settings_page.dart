@@ -1,3 +1,4 @@
+// /workspaces/finqly/lib/screens/settings_page.dart
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -38,6 +39,14 @@ class _SettingsPageState extends State<SettingsPage> {
     Locale('pt'),
     Locale('de'),
   ];
+
+  static const Map<String, String> _nativeLanguageLabels = {
+    'en': 'English',
+    'es': 'Español',
+    'fr': 'Français',
+    'pt': 'Português',
+    'de': 'Deutsch',
+  };
 
   @override
   void initState() {
@@ -105,9 +114,12 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
 
-    final effectiveLocale = supportedLocales.contains(widget.currentLocale)
-        ? widget.currentLocale
-        : const Locale('en');
+    final localeFromContext = Localizations.localeOf(context);
+    final effectiveLocale = supportedLocales.contains(localeFromContext)
+        ? localeFromContext
+        : (supportedLocales.contains(widget.currentLocale)
+            ? widget.currentLocale
+            : const Locale('en'));
 
     return Scaffold(
       appBar: AppBar(
@@ -138,19 +150,20 @@ class _SettingsPageState extends State<SettingsPage> {
 
             Text(loc.language, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 12),
+
             DropdownButton<Locale>(
               value: effectiveLocale,
               isExpanded: true,
               onChanged: (Locale? newLocale) {
                 if (newLocale != null) _changeLanguage(newLocale);
               },
-              items: const [
-                DropdownMenuItem(value: Locale('en'), child: Text('English')),
-                DropdownMenuItem(value: Locale('es'), child: Text('Español')),
-                DropdownMenuItem(value: Locale('fr'), child: Text('Français')),
-                DropdownMenuItem(value: Locale('pt'), child: Text('Português')),
-                DropdownMenuItem(value: Locale('de'), child: Text('Deutsch')),
-              ],
+              items: supportedLocales.map((locale) {
+                final label = _nativeLanguageLabels[locale.languageCode] ?? locale.languageCode;
+                return DropdownMenuItem<Locale>(
+                  value: locale,
+                  child: Text(label),
+                );
+              }).toList(),
             ),
 
             const SizedBox(height: 24),
