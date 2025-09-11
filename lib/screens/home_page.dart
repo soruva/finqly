@@ -36,168 +36,174 @@ class MyHomePage extends StatelessWidget {
             end: Alignment.bottomRight,
           ),
         ),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 44, horizontal: 18),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    loc.appTitle,
-                    style: const TextStyle(
-                      fontFamily: 'Nunito',
-                      fontSize: 34,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 2.0,
-                      color: Colors.white,
-                      shadows: [
-                        Shadow(
-                          color: Colors.black26,
-                          blurRadius: 7,
-                          offset: Offset(1, 2),
-                        ),
-                      ],
+        child: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 44, horizontal: 18),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      loc.appTitle,
+                      style: const TextStyle(
+                        fontFamily: 'Nunito',
+                        fontSize: 34,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 2.0,
+                        color: Colors.white,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black26,
+                            blurRadius: 7,
+                            offset: Offset(1, 2),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    "Emotion & Investing",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xFFB39DDB),
-                      fontSize: 16,
-                      letterSpacing: 0.7,
+                    const SizedBox(height: 10),
+                    Text(
+                      "Emotion & Investing",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFFB39DDB),
+                        fontSize: 16,
+                        letterSpacing: 0.7,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 40),
+                    const SizedBox(height: 40),
 
-                  _homeButton(
-                    context,
-                    icon: Icons.flash_on,
-                    label: loc.startButton,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => DiagnosisPage(
-                            subscriptionManager: subscriptionManager,
+                    _homeButton(
+                      context,
+                      icon: Icons.flash_on,
+                      label: loc.startButton,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => DiagnosisPage(
+                              subscriptionManager: subscriptionManager,
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
+                        );
+                      },
+                    ),
 
-                  _homeButton(
-                    context,
-                    icon: Icons.trending_up,
-                    label: loc.forecastTitle,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ForecastPage(
-                            subscriptionManager: subscriptionManager,
+                    _homeButton(
+                      context,
+                      icon: Icons.trending_up,
+                      label: loc.forecastTitle,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ForecastPage(
+                              subscriptionManager: subscriptionManager,
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
+                        );
+                      },
+                    ),
 
-                  _premiumTrendButton(context, loc),
+                    _premiumTrendButton(context, loc),
 
-                  _homeButton(
-                    context,
-                    icon: Icons.workspace_premium,
-                    label: loc.premiumUnlockTitle,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => PremiumUnlockPage(
-                            subscriptionManager: subscriptionManager,
+                    _homeButton(
+                      context,
+                      icon: Icons.workspace_premium,
+                      label: loc.premiumUnlockTitle,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => PremiumUnlockPage(
+                              subscriptionManager: subscriptionManager,
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                    isPremium: true,
-                  ),
+                        );
+                      },
+                      isPremium: true,
+                    ),
 
-                  _homeButton(
-                    context,
-                    icon: Icons.menu_book,
-                    label: loc.educationTitle,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => EducationPage(
-                            subscriptionManager: subscriptionManager,
+                    _homeButton(
+                      context,
+                      icon: Icons.menu_book,
+                      label: loc.educationTitle,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => EducationPage(
+                              subscriptionManager: subscriptionManager,
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
+                        );
+                      },
+                    ),
 
-                  _homeButton(
-                    context,
-                    icon: Icons.settings,
-                    label: loc.settingsTitle,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => SettingsPage(
-                            subscriptionManager: subscriptionManager,
-                            currentLocale: currentLocale,
-                            onLocaleChanged: onLocaleChanged,
-                            onThemeChanged: onThemeChanged,
+                    _homeButton(
+                      context,
+                      icon: Icons.settings,
+                      label: loc.settingsTitle,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => SettingsPage(
+                              subscriptionManager: subscriptionManager,
+                              currentLocale: currentLocale,
+                              onLocaleChanged: onLocaleChanged,
+                              onThemeChanged: onThemeChanged,
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 36),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 36),
 
-                  ValueListenableBuilder<bool>(
-                    valueListenable: subscriptionManager.isSubscribedNotifier,
-                    builder: (context, isPremium, _) {
-                      return !isPremium
-                          ? Container(
-                              margin: const EdgeInsets.only(bottom: 8),
-                              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-                              decoration: BoxDecoration(
-                                color: Colors.deepPurple.withValues(alpha: 0.84),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(Icons.lock, color: Colors.amber, size: 22),
-                                  const SizedBox(width: 9),
-                                  Text(
-                                    loc.premiumPrompt,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15,
+                    ValueListenableBuilder<bool>(
+                      valueListenable: subscriptionManager.isSubscribedNotifier,
+                      builder: (context, isPremium, _) {
+                        return !isPremium
+                            ? Container(
+                                margin: const EdgeInsets.only(bottom: 8),
+                                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                                decoration: BoxDecoration(
+                                  color: Colors.deepPurple.withValues(alpha: 0.84),
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.lock, color: Colors.amber, size: 22),
+                                    const SizedBox(width: 9),
+                                    Flexible(
+                                      child: Text(
+                                        loc.premiumPrompt,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          : const SizedBox.shrink();
-                    },
-                  ),
-
-                  Text(
-                    "© SoruvaLab",
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.white.withValues(alpha: 0.55),
+                                  ],
+                                ),
+                              )
+                            : const SizedBox.shrink();
+                      },
                     ),
-                  ),
-                ],
+
+                    Text(
+                      "© SoruvaLab",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white.withValues(alpha: 0.55),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -210,37 +216,39 @@ class MyHomePage extends StatelessWidget {
     return ValueListenableBuilder<bool>(
       valueListenable: subscriptionManager.isSubscribedNotifier,
       builder: (context, isPremium, child) {
-        return Stack(
-          alignment: Alignment.centerRight,
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _homeButton(
-              context,
-              icon: Icons.show_chart,
-              label: loc.trendForecastTitle,
-              onTap: isPremium
-                  ? () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => TrendPage(subscriptionManager: subscriptionManager),
-                        ),
-                      );
-                    }
-                  : () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => PremiumUnlockPage(
-                            subscriptionManager: subscriptionManager,
+            Expanded(
+              child: _homeButton(
+                context,
+                icon: Icons.show_chart,
+                label: loc.trendForecastTitle,
+                onTap: isPremium
+                    ? () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => TrendPage(subscriptionManager: subscriptionManager),
                           ),
-                        ),
-                      );
-                    },
-              isPremium: isPremium,
+                        );
+                      }
+                    : () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => PremiumUnlockPage(
+                              subscriptionManager: subscriptionManager,
+                            ),
+                          ),
+                        );
+                      },
+                isPremium: isPremium,
+              ),
             ),
             if (!isPremium)
-              Padding(
-                padding: const EdgeInsets.only(right: 32.0),
+              const Padding(
+                padding: EdgeInsets.only(left: 8.0, right: 16.0),
                 child: Icon(Icons.lock, color: Colors.deepPurple, size: 22),
               ),
           ],
@@ -263,8 +271,8 @@ class MyHomePage extends StatelessWidget {
         height: 62,
         child: ElevatedButton.icon(
           icon: Icon(
-            icon, 
-            size: 28, 
+            icon,
+            size: 28,
             color: isPremium ? Colors.deepPurple : AppColors.primary,
           ),
           label: Center(

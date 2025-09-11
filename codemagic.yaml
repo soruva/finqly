@@ -4,9 +4,8 @@ workflows:
     max_build_duration: 30
     environment:
       flutter: stable
-      java: 17
       groups:
-        - finqly_signing       # CM_KEYSTORE_BASE64 / CM_KEYSTORE_PASSWORD / CM_KEY_ALIAS / CM_KEY_PASSWORD
+        - finqly_signing
     cache:
       cache_paths:
         - ~/.pub-cache
@@ -14,13 +13,21 @@ workflows:
         - ~/.gradle/wrapper
 
     scripts:
-      - name: Print toolchain versions
+      - name: Sanity check required assets
         script: |
           set -e
-          flutter --version
-          java -version
-          echo "JAVA_HOME=${JAVA_HOME:-unset}"
-          gradle -v || true
+          for f in \
+            assets/images/finqly_logo.png \
+            assets/images/badges/optimistic.png \
+            assets/images/badges/neutral.png \
+            assets/images/badges/worried.png \
+            assets/images/badges/confused.png \
+            assets/images/badges/cautious.png \
+            assets/images/badges/excited.png
+          do
+            [ -f "$f" ] || { echo "::error:: Missing required asset: $f"; exit 1; }
+          done
+          echo "All required assets exist."
 
       - name: Restore keystore from env (robust)
         script: |
@@ -29,32 +36,18 @@ workflows:
           : "${CM_KEYSTORE_PASSWORD:?CM_KEYSTORE_PASSWORD missing}"
           : "${CM_KEY_ALIAS:?CM_KEY_ALIAS missing}"
           : "${CM_KEY_PASSWORD:?CM_KEY_PASSWORD missing}"
-
           CLEAN_B64="$(printf '%s' "$CM_KEYSTORE_BASE64" | tr -d '\r\n')"
-          if printf '%s' "$CLEAN_B64" | base64 --decode > /tmp/my-release-key.jks 2>/dev/null; then
-            :
-          elif printf '%s' "$CLEAN_B64" | base64 -d > /tmp/my-release-key.jks 2>/dev/null; then
-            :
+          if printf '%s' "$CLEAN_B64" | base64 --decode > /tmp/my-release-key.jks 2>/dev/null; then :;
+          elif printf '%s' "$CLEAN_B64" | base64 -d > /tmp/my-release-key.jks 2>/dev/null; then :;
           else
-            echo "::error:: Failed to decode CM_KEYSTORE_BASE64. Check for hidden whitespace or truncation."
-            exit 1
+            echo "Failed to decode CM_KEYSTORE_BASE64"; exit 1
           fi
-
           export CM_KEYSTORE="/tmp/my-release-key.jks"
           echo 'CM_KEYSTORE=/tmp/my-release-key.jks' >> "$CM_ENV"
-          ls -l "$CM_KEYSTORE"
+          keytool -list -v -keystore "$CM_KEYSTORE" -storepass "$CM_KEYSTORE_PASSWORD" > /dev/null || { echo "::error:: wrong storepass"; exit 1; }
+          echo "[signing] keystore restored and verified (storepass)."
 
-          keytool -list -v -keystore "$CM_KEYSTORE" -storepass "$CM_KEYSTORE_PASSWORD" >/dev/null
-
-          ALIAS_LIST=$(keytool -list -v -keystore "$CM_KEYSTORE" -storepass "$CM_KEYSTORE_PASSWORD" | grep -i "^Alias name:" | awk '{print $3}')
-          echo "[signing] Found alias(es): $ALIAS_LIST"
-          if ! echo "$ALIAS_LIST" | grep -Fxq "$CM_KEY_ALIAS"; then
-            echo "::warning:: CM_KEY_ALIAS ($CM_KEY_ALIAS) not found in keystore aliases ($ALIAS_LIST)."
-          fi
-
-          echo "[signing] Keystore restored and storepass verified."
-
-      - name: Ensure clean key.properties (avoid stale file)
+      - name: Ensure clean key.properties
         script: |
           set -euo pipefail
           rm -f android/key.properties || true
@@ -63,29 +56,17 @@ workflows:
       - name: Write android/key.properties
         script: |
           set -euo pipefail
-          : "${CM_KEYSTORE:?CM_KEYSTORE missing}"
-          : "${CM_KEYSTORE_PASSWORD:?CM_KEYSTORE_PASSWORD missing}"
-          : "${CM_KEY_ALIAS:?CM_KEY_ALIAS missing}"
-          : "${CM_KEY_PASSWORD:?CM_KEY_PASSWORD missing}"
-
           cat > android/key.properties <<EOF
           storeFile=${CM_KEYSTORE}
           storePassword=${CM_KEYSTORE_PASSWORD}
           keyAlias=${CM_KEY_ALIAS}
           keyPassword=${CM_KEY_PASSWORD}
           EOF
-
           echo "Wrote android/key.properties:"
           sed 's/=.*/=*** (redacted)/' android/key.properties
 
       - name: Flutter pub get
         script: flutter pub get
-
-      - name: Flutter clean (optional)
-        script: |
-          set -e
-          flutter clean
-          rm -rf build || true
 
       - name: Build AAB (release)
         script: |
@@ -94,14 +75,12 @@ workflows:
           flutter build appbundle --release \
             --tree-shake-icons \
             --split-debug-info=build/symbols
-            # --no-shrink
 
       - name: Verify AAB signature
         script: |
           set -e
-          AAB=build/app/outputs/bundle/release/app-release.aab
-          test -f "$AAB"
-          jarsigner -verify -verbose -certs "$AAB" | sed -n '1,40p'
+          test -f build/app/outputs/bundle/release/app-release.aab
+          jarsigner -verify -verbose -certs build/app/outputs/bundle/release/app-release.aab | sed -n '1,60p'
           echo "[signing] AAB signature verified."
 
     artifacts:

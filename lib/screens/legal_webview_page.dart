@@ -56,11 +56,13 @@ class _LegalWebViewPageState extends State<LegalWebViewPage> {
             }
 
             final uri = Uri.tryParse(url);
-            if (uri == null) {
-              return NavigationDecision.prevent;
-            }
+            if (uri == null) return NavigationDecision.prevent;
 
-            const allowed = {'http', 'https', 'mailto', 'tel', 'market', 'geo', 'maps'};
+            const allowed = {
+              'http', 'https',
+              'mailto', 'tel',
+              'market', 'geo', 'maps'
+            };
 
             if (allowed.contains(uri.scheme)) {
               if (await canLaunchUrl(uri)) {
@@ -85,12 +87,11 @@ class _LegalWebViewPageState extends State<LegalWebViewPage> {
   }
 
   Future<void> _handleBack() async {
-    final navigator = Navigator.of(context);
     if (await _controller.canGoBack()) {
       await _controller.goBack();
     } else {
       if (!mounted) return;
-      navigator.maybePop();
+      Navigator.of(context).maybePop();
     }
   }
 
@@ -133,13 +134,23 @@ class _LegalWebViewPageState extends State<LegalWebViewPage> {
                       label: const Text(reloadText),
                       onPressed: _reload,
                     ),
+                    const SizedBox(height: 8),
+                    ElevatedButton.icon(
+                      icon: const Icon(Icons.arrow_back),
+                      label: const Text("Back"),
+                      onPressed: _handleBack,
+                    ),
                   ],
                 ),
               )
             else
               WebViewWidget(controller: _controller),
+
             if (_isLoading && !_hasError)
-              const Center(child: CircularProgressIndicator()),
+              Container(
+                color: Colors.white70,
+                child: const Center(child: CircularProgressIndicator()),
+              ),
           ],
         ),
       ),
