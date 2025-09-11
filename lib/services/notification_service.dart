@@ -64,7 +64,8 @@ class NotificationService {
     ));
   }
 
-  static @pragma('vm:entry-point') void notificationTapBackground(NotificationResponse resp) {
+  @pragma('vm:entry-point') 
+  static void notificationTapBackground(NotificationResponse resp) {
     // no-op
   }
 
