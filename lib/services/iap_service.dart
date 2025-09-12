@@ -155,8 +155,8 @@ class IapService {
   Future<bool> restorePurchases() async {
     if (!_available) return false;
     try {
-      final ok = await _iap.restorePurchases();
-      return ok;
+      await _iap.restorePurchases();
+      return true;
     } catch (_) {
       return false;
     }
