@@ -1,6 +1,5 @@
 // lib/services/notification_service.dart
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tzdata;
@@ -23,14 +22,16 @@ class NotificationService {
     if (_initialized) return;
     _initialized = true;
 
+    // ---- Timezone init: device local → fallback UTC
     tzdata.initializeTimeZones();
     try {
-      tz.setLocalLocation(tz.getLocation('Asia/Tokyo'));
+      final localName = tz.local.name;
+      tz.setLocalLocation(tz.getLocation(localName));
     } catch (_) {
       tz.setLocalLocation(tz.getLocation('UTC'));
     }
 
-    // Android init
+    // ---- Platform init
     const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
     const init = InitializationSettings(android: androidInit);
 
@@ -43,19 +44,22 @@ class NotificationService {
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
 
-    // Android 13+ permission
+    // Android 13+ permissions
     await _fln
         .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
         ?.requestNotificationsPermission();
 
-    // Channels
-    final android = _fln.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+    // ---- Channels
+    final android = _fln
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+
     await android?.createNotificationChannel(const AndroidNotificationChannel(
       _channelIdDaily,
       'Daily reminders',
       description: 'Daily Finqly reminder at 9:00',
       importance: Importance.defaultImportance,
     ));
+
     await android?.createNotificationChannel(const AndroidNotificationChannel(
       _channelIdWeekly,
       'Weekly report',
@@ -64,9 +68,10 @@ class NotificationService {
     ));
   }
 
-  @pragma('vm:entry-point') 
+  // Background tap handler must be a static/top-level entry point
+  @pragma('vm:entry-point')
   static void notificationTapBackground(NotificationResponse resp) {
-    // no-op
+    // no-op (handled when app is foregrounded)
   }
 
   NotificationDetails _dailyDetails() => const NotificationDetails(
@@ -98,8 +103,8 @@ class NotificationService {
     return scheduled;
   }
 
+  // weekday: Monday=1 ... Sunday=7
   tz.TZDateTime _nextWeekdayAt(int weekday, int hour, int minute) {
-    // weekday: Monday=1 ... Sunday=7
     final now = tz.TZDateTime.now(tz.local);
     var scheduled = tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
     while (scheduled.weekday != weekday || scheduled.isBefore(now)) {
@@ -121,7 +126,8 @@ class NotificationService {
       _nextDailyAt(9, 0),
       _dailyDetails(),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.wallClockTime,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.wallClockTime,
       matchDateTimeComponents: DateTimeComponents.time,
       payload: 'open_home',
     );
@@ -140,7 +146,8 @@ class NotificationService {
       _nextWeekdayAt(DateTime.monday, 9, 0),
       _weeklyDetails(),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.wallClockTime,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.wallClockTime,
       matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
       payload: 'open_report',
     );

@@ -1,4 +1,4 @@
-// /workspaces/finqly/lib/main.dart
+// lib/main.dart
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
@@ -13,12 +13,20 @@ import 'package:finqly/services/notification_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  await NotificationService().init();
-  await NotificationService().scheduleDailyNineAM(enabled: true);
-  await NotificationService().scheduleWeeklyReportMondayNineAM(enabled: true);
-
   runApp(const FinqlyApp());
+
+  unawaited(_initNotifications());
+}
+
+Future<void> _initNotifications() async {
+  try {
+    final ns = NotificationService();
+    await ns.init();
+    await ns.scheduleDailyNineAM(enabled: true);
+    await ns.scheduleWeeklyReportMondayNineAM(enabled: true);
+  } catch (_) {
+    // Swallow the error to avoid startup failure
+  }
 }
 
 class FinqlyApp extends StatefulWidget {
@@ -30,8 +38,8 @@ class FinqlyApp extends StatefulWidget {
 
 class _FinqlyAppState extends State<FinqlyApp> {
   final _navKey = GlobalKey<NavigatorState>();
-
   final SubscriptionManager _subscriptionManager = SubscriptionManager();
+
   Locale _locale = const Locale('en');
   ThemeMode _themeMode = ThemeMode.light;
 
@@ -47,7 +55,6 @@ class _FinqlyAppState extends State<FinqlyApp> {
     super.initState();
 
     _subscriptionManager.init();
-
     IapService.instance.init();
 
     _purchaseSub = IapService.instance.purchaseStream.listen((purchases) async {
@@ -72,10 +79,11 @@ class _FinqlyAppState extends State<FinqlyApp> {
     _notifTapSub = NotificationService().onTap.listen((payload) {
       final nav = _navKey.currentState;
       if (nav == null) return;
+
       if (payload == 'open_report') {
         nav.push(MaterialPageRoute(builder: (_) => const ReportPage()));
       } else if (payload == 'open_home') {
-        //popUntil
+        nav.popUntil((route) => route.isFirst);
       }
     });
   }
