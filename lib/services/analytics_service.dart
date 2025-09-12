@@ -9,14 +9,10 @@ class AnalyticsService {
   static void logEvent(String name, [Map<String, dynamic>? params]) {
     final data = params ?? const {};
     developer.log(
-      'Analytics event: $name',
+      'Analytics event: $name data=$data', // message
       name: 'Analytics',
-      error: null,
-      sequenceNumber: null,
-      level: 800, // INFO
+      level: 800,
       time: DateTime.now(),
-      zone: Zone.current,
-      message: data.toString(),
     );
   }
 
