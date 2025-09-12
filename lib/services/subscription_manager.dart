@@ -1,4 +1,4 @@
-// /workspaces/finqly/lib/services/subscription_manager.dart
+// lib/services/subscription_manager.dart
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:finqly/services/iap_service.dart';
@@ -42,12 +42,15 @@ class SubscriptionManager {
     isSubscribedNotifier.value = false;
   }
 
-  /// Restore previous purchases from the store.
-  /// NOTE: This delegates to IapService and then refreshes local state.
-  /// In production, you should update [isSubscribed] after server-side verification.
-  Future<void> restorePurchases() async {
-    await IapService.instance.restorePurchases();
-    await refresh();
+  /// ✅ Restore purchases end-to-end:
+  /// 1) Ask store to restore
+  /// 2) Query IapService for active entitlement
+  /// 3) Reflect locally (note: in production, prefer server-side verification first)
+  Future<bool> restorePurchases() async {
+    final restored = await IapService.instance.restorePurchases();
+    final active = await IapService.instance.hasActiveSubscription();
+    await setSubscribed(active);
+    return restored && active;
   }
 
   void dispose() {

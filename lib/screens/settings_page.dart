@@ -2,11 +2,14 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:finqly/l10n/app_localizations.dart';
 import 'package:finqly/services/subscription_manager.dart';
 import 'package:finqly/screens/legal_webview_page.dart';
 import 'package:finqly/screens/emotion_history_page.dart';
+import 'package:finqly/screens/report_page.dart';
+import 'package:finqly/services/notification_service.dart';
 
 class SettingsPage extends StatefulWidget {
   final Locale currentLocale;
@@ -32,6 +35,12 @@ class _SettingsPageState extends State<SettingsPage> {
   String? _appVersion;
   bool _restoring = false;
 
+  bool _dailyOn = true;
+  bool _weeklyOn = true;
+
+  static const _prefsDaily = 'notif_daily_on';
+  static const _prefsWeekly = 'notif_weekly_on';
+
   static const supportedLocales = <Locale>[
     Locale('en'),
     Locale('es'),
@@ -52,6 +61,7 @@ class _SettingsPageState extends State<SettingsPage> {
   void initState() {
     super.initState();
     _loadVersion();
+    _loadNotifPrefs();
   }
 
   Future<void> _loadVersion() async {
@@ -59,6 +69,15 @@ class _SettingsPageState extends State<SettingsPage> {
     if (!mounted) return;
     setState(() {
       _appVersion = '${info.version} (${info.buildNumber})';
+    });
+  }
+
+  Future<void> _loadNotifPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
+    setState(() {
+      _dailyOn = prefs.getBool(_prefsDaily) ?? true;
+      _weeklyOn = prefs.getBool(_prefsWeekly) ?? true;
     });
   }
 
@@ -110,6 +129,32 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
+  Future<void> _toggleDaily(bool v) async {
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _dailyOn = v);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_prefsDaily, v);
+      await NotificationService().scheduleDailyNineAM(enabled: v);
+    } catch (e) {
+      setState(() => _dailyOn = !v);
+      messenger.showSnackBar(SnackBar(content: Text('Daily reminder error: $e')));
+    }
+  }
+
+  Future<void> _toggleWeekly(bool v) async {
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _weeklyOn = v);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_prefsWeekly, v);
+      await NotificationService().scheduleWeeklyReportMondayNineAM(enabled: v);
+    } catch (e) {
+      setState(() => _weeklyOn = !v);
+      messenger.showSnackBar(SnackBar(content: Text('Weekly report reminder error: $e')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
@@ -130,6 +175,7 @@ class _SettingsPageState extends State<SettingsPage> {
         padding: const EdgeInsets.all(24),
         child: ListView(
           children: [
+            // Emotion history
             ListTile(
               leading: const Icon(Icons.history),
               title: Text(loc.emotionHistoryTitle),
@@ -148,6 +194,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
             const Divider(height: 32),
 
+            // Language
             Text(loc.language, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 12),
 
@@ -168,6 +215,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
             const SizedBox(height: 24),
 
+            // Theme
             Text(loc.darkMode, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 4),
             SwitchListTile.adaptive(
@@ -179,6 +227,39 @@ class _SettingsPageState extends State<SettingsPage> {
 
             const SizedBox(height: 32),
 
+            // Reports & Notifications
+            Text('Reports & notifications', style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 12),
+
+            ListTile(
+              leading: const Icon(Icons.insights),
+              title: const Text('Open Weekly Report'),
+              subtitle: const Text('See last 7 days trend'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const ReportPage()));
+              },
+            ),
+            SwitchListTile.adaptive(
+              contentPadding: EdgeInsets.zero,
+              title: const Text('Daily reminder (9:00)'),
+              subtitle: const Text('Keep your check-in streak'),
+              value: _dailyOn,
+              onChanged: _toggleDaily,
+              secondary: const Icon(Icons.alarm),
+            ),
+            SwitchListTile.adaptive(
+              contentPadding: EdgeInsets.zero,
+              title: const Text('Weekly report reminder (Mon 9:00)'),
+              subtitle: const Text('Get your weekly summary'),
+              value: _weeklyOn,
+              onChanged: _toggleWeekly,
+              secondary: const Icon(Icons.event_note),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Legal
             Text(loc.other, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 12),
 
@@ -207,6 +288,7 @@ class _SettingsPageState extends State<SettingsPage> {
               onTap: () => _openLegalPage(loc.faqTitle, 'faq.html'),
             ),
 
+            // Manage subscription
             ListTile(
               leading: const Icon(Icons.manage_accounts),
               title: const Text('Manage subscription (Play Store)'),
@@ -216,6 +298,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
             const Divider(height: 32),
 
+            // Restore purchases
             ListTile(
               leading: const Icon(Icons.restore),
               title: Text(loc.restorePurchasesTitle),

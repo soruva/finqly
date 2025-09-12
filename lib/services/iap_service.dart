@@ -1,6 +1,7 @@
 // lib/services/iap_service.dart
 import 'dart:async';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:flutter/foundation.dart';
 
 typedef IapVerifiedCallback = void Function(PurchaseDetails purchase);
 typedef IapErrorCallback = void Function(Object error, [StackTrace? stack]);
@@ -25,13 +26,19 @@ class IapService {
   bool _available = false;
   bool _inited = false;
 
+  bool _entitlementActive = false;
+
+  final ValueNotifier<bool> subscriptionSkuAvailable = ValueNotifier(false);
+
   IapVerifiedCallback? _onVerified;
   IapErrorCallback? _onError;
 
   StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
 
   bool get isAvailable => _available;
+  bool get hasSubscriptionSku => subscriptionSkuAvailable.value;
   List<ProductDetails> get products => List.unmodifiable(_products);
+
   Stream<List<PurchaseDetails>> get purchaseStream => _iap.purchaseStream;
 
   void setCallbacks({IapVerifiedCallback? onVerified, IapErrorCallback? onError}) {
@@ -53,9 +60,25 @@ class IapService {
       ..clear()
       ..addAll(resp.productDetails);
 
+    subscriptionSkuAvailable.value = _products.any((p) => p.id == subscriptionId);
+
     _purchaseSub ??= purchaseStream.listen((purchases) async {
       for (final p in purchases) {
         try {
+          if (p.productID == subscriptionId) {
+            switch (p.status) {
+              case PurchaseStatus.purchased:
+              case PurchaseStatus.restored:
+                _entitlementActive = true;
+                break;
+              case PurchaseStatus.canceled:
+              case PurchaseStatus.error:
+                break;
+              case PurchaseStatus.pending:
+                break;
+            }
+          }
+
           switch (p.status) {
             case PurchaseStatus.purchased:
             case PurchaseStatus.restored:
@@ -68,6 +91,7 @@ class IapService {
             case PurchaseStatus.canceled:
               break;
           }
+
           if (p.pendingCompletePurchase) {
             await _iap.completePurchase(p);
           }
@@ -104,6 +128,9 @@ class IapService {
   // ===== Purchasing =====
   Future<void> buySubscription({required bool yearly}) async {
     if (!_available) return;
+    if (!hasSubscriptionSku) {
+      throw StateError('Subscription not available in this region');
+    }
     final pd = _find(subscriptionId);
     if (pd == null) throw StateError('Subscription product not found');
     final param = PurchaseParam(productDetails: pd);
@@ -125,9 +152,18 @@ class IapService {
     }
   }
 
-  Future<void> restorePurchases() async {
-    if (!_available) return;
-    await _iap.restorePurchases();
+  Future<bool> restorePurchases() async {
+    if (!_available) return false;
+    try {
+      final ok = await _iap.restorePurchases();
+      return ok;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<bool> hasActiveSubscription() async {
+    return _entitlementActive;
   }
 
   void dispose() {

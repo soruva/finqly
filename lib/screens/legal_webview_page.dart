@@ -1,3 +1,4 @@
+// lib/screens/legal_webview_page.dart
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -37,8 +38,13 @@ class _LegalWebViewPageState extends State<LegalWebViewPage> {
               _hasError = false;
             });
           },
-          onPageFinished: (_) {
+          onPageFinished: (_) async {
             if (!mounted) return;
+            try {
+              await _controller.runJavaScript(
+                "document.querySelectorAll('a[target=\"_blank\"]').forEach(a=>a.removeAttribute('target'));"
+              );
+            } catch (_) {}
             setState(() => _isLoading = false);
           },
           onWebResourceError: (_) {
@@ -59,16 +65,18 @@ class _LegalWebViewPageState extends State<LegalWebViewPage> {
             if (uri == null) return NavigationDecision.prevent;
 
             const allowed = {
-              'http', 'https',
-              'mailto', 'tel',
-              'market', 'geo', 'maps'
+              'http',
+              'https',
+              'mailto',
+              'tel',
+              'market',
+              'geo',
+              'maps',
             };
 
             if (allowed.contains(uri.scheme)) {
-              if (await canLaunchUrl(uri)) {
-                await launchUrl(uri, mode: LaunchMode.externalApplication);
-                return NavigationDecision.prevent;
-              }
+              final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+              return ok ? NavigationDecision.prevent : NavigationDecision.prevent;
             }
 
             return NavigationDecision.prevent;
@@ -137,7 +145,7 @@ class _LegalWebViewPageState extends State<LegalWebViewPage> {
                     const SizedBox(height: 8),
                     ElevatedButton.icon(
                       icon: const Icon(Icons.arrow_back),
-                      label: const Text("Back"),
+                      label: const Text('Back'),
                       onPressed: _handleBack,
                     ),
                   ],
@@ -147,10 +155,7 @@ class _LegalWebViewPageState extends State<LegalWebViewPage> {
               WebViewWidget(controller: _controller),
 
             if (_isLoading && !_hasError)
-              Container(
-                color: Colors.white70,
-                child: const Center(child: CircularProgressIndicator()),
-              ),
+              const LinearProgressIndicator(minHeight: 2),
           ],
         ),
       ),

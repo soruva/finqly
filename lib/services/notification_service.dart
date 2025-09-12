@@ -15,6 +15,8 @@ class NotificationService {
 
   static const _channelIdDaily = 'finqly_daily';
   static const _channelIdWeekly = 'finqly_weekly';
+  static const _idDaily = 9001;
+  static const _idWeekly = 9002;
 
   bool _initialized = false;
 
@@ -22,7 +24,7 @@ class NotificationService {
     if (_initialized) return;
     _initialized = true;
 
-    // ---- Timezone init: device local → fallback UTC
+    // ---- Timezone init
     tzdata.initializeTimeZones();
     try {
       final localName = tz.local.name;
@@ -44,14 +46,16 @@ class NotificationService {
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
 
-    // Android 13+ permissions
+    // Android 13+ notifications permission
     await _fln
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
         ?.requestNotificationsPermission();
 
     // ---- Channels
     final android = _fln
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
 
     await android?.createNotificationChannel(const AndroidNotificationChannel(
       _channelIdDaily,
@@ -71,7 +75,7 @@ class NotificationService {
   // Background tap handler must be a static/top-level entry point
   @pragma('vm:entry-point')
   static void notificationTapBackground(NotificationResponse resp) {
-    // no-op (handled when app is foregrounded)
+    // no-op
   }
 
   NotificationDetails _dailyDetails() => const NotificationDetails(
@@ -96,7 +100,8 @@ class NotificationService {
 
   tz.TZDateTime _nextDailyAt(int hour, int minute) {
     final now = tz.TZDateTime.now(tz.local);
-    var scheduled = tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
+    var scheduled =
+        tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
     if (scheduled.isBefore(now)) {
       scheduled = scheduled.add(const Duration(days: 1));
     }
@@ -106,7 +111,8 @@ class NotificationService {
   // weekday: Monday=1 ... Sunday=7
   tz.TZDateTime _nextWeekdayAt(int weekday, int hour, int minute) {
     final now = tz.TZDateTime.now(tz.local);
-    var scheduled = tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
+    var scheduled =
+        tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
     while (scheduled.weekday != weekday || scheduled.isBefore(now)) {
       scheduled = scheduled.add(const Duration(days: 1));
     }
@@ -115,12 +121,11 @@ class NotificationService {
 
   Future<void> scheduleDailyNineAM({bool enabled = true}) async {
     await init();
-    const id = 9001;
-    await _fln.cancel(id);
+    await _fln.cancel(_idDaily);
     if (!enabled) return;
 
     await _fln.zonedSchedule(
-      id,
+      _idDaily,
       'Finqly',
       'Take today’s check-in – keep your streak!',
       _nextDailyAt(9, 0),
@@ -135,12 +140,11 @@ class NotificationService {
 
   Future<void> scheduleWeeklyReportMondayNineAM({bool enabled = true}) async {
     await init();
-    const id = 9002;
-    await _fln.cancel(id);
+    await _fln.cancel(_idWeekly);
     if (!enabled) return;
 
     await _fln.zonedSchedule(
-      id,
+      _idWeekly,
       'Your weekly report is ready',
       'Tap to see last week’s emotion trend.',
       _nextWeekdayAt(DateTime.monday, 9, 0),
@@ -150,6 +154,25 @@ class NotificationService {
           UILocalNotificationDateInterpretation.wallClockTime,
       matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
       payload: 'open_report',
+    );
+  }
+
+  Future<void> cancelDaily() => _fln.cancel(_idDaily);
+  Future<void> cancelWeekly() => _fln.cancel(_idWeekly);
+
+  Future<void> scheduleTestIn(Duration delay, {String payload = 'open_home'}) async {
+    await init();
+    final when = tz.TZDateTime.now(tz.local).add(delay);
+    await _fln.zonedSchedule(
+      9999,
+      'Test notification',
+      'This is a quick test.',
+      when,
+      _dailyDetails(),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.wallClockTime,
+      payload: payload,
     );
   }
 

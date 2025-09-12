@@ -13,6 +13,7 @@ class PremiumPlansPage extends StatefulWidget {
 
 class _PremiumPlansPageState extends State<PremiumPlansPage> {
   late final IapService _iap;
+
   bool _loading = true;
   bool _isPurchasing = false;
   String? _error;
@@ -22,7 +23,7 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
   @override
   void initState() {
     super.initState();
-    _iap = IapService();
+    _iap = IapService(); // = IapService.instance
     _initIap();
   }
 
@@ -34,10 +35,12 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
     });
     try {
       await _iap.init();
+
       final hasSubs = _pd(IapService.subscriptionId) != null;
-      if (!hasSubs) {
-        _subsProductMissing = true;
-      }
+      if (!mounted) return;
+      setState(() {
+        _subsProductMissing = !hasSubs;
+      });
     } catch (e) {
       if (!mounted) return;
       setState(() => _error = e.toString());
@@ -48,7 +51,6 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
 
   @override
   void dispose() {
-    _iap.dispose();
     super.dispose();
   }
 
@@ -76,6 +78,7 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
     if (_isPurchasing) return;
 
     final messenger = ScaffoldMessenger.of(context);
+
     setState(() {
       _isPurchasing = true;
       _error = null;
@@ -100,6 +103,9 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
 
   @override
   Widget build(BuildContext context) {
+    final subsPdExists = _pd(IapService.subscriptionId) != null;
+    final canPurchase = _iap.isAvailable && !_isPurchasing;
+
     final items = [
       {
         'key': 'monthly',
@@ -134,9 +140,6 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
         'requiresSubsProduct': false,
       },
     ];
-
-    final subsPdExists = _pd(IapService.subscriptionId) != null;
-    final canPurchase = _iap.isAvailable && !_isPurchasing;
 
     return Scaffold(
       appBar: AppBar(
@@ -177,11 +180,11 @@ class _PremiumPlansPageState extends State<PremiumPlansPage> {
                 color: const Color(0xFFFFF3E0),
                 elevation: 0,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                child: Padding(
-                  padding: const EdgeInsets.all(14),
+                child: const Padding(
+                  padding: EdgeInsets.all(14),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Subscriptions are not available yet.',
                         style: TextStyle(fontWeight: FontWeight.w800),

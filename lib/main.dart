@@ -10,23 +10,24 @@ import 'package:finqly/screens/report_page.dart';
 import 'package:finqly/services/subscription_manager.dart';
 import 'package:finqly/services/iap_service.dart';
 import 'package:finqly/services/notification_service.dart';
+import 'package:finqly/services/purchase_verification.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const FinqlyApp());
 
-  unawaited(_initNotifications());
-}
-
-Future<void> _initNotifications() async {
-  try {
-    final ns = NotificationService();
-    await ns.init();
-    await ns.scheduleDailyNineAM(enabled: true);
-    await ns.scheduleWeeklyReportMondayNineAM(enabled: true);
-  } catch (_) {
-    // Swallow the error to avoid startup failure
-  }
+  // ignore: unawaited_futures
+  Future(() async {
+    try {
+      final notif = NotificationService();
+      await notif.init();
+      await notif.scheduleDailyNineAM(enabled: true);
+      await notif.scheduleWeeklyReportMondayNineAM(enabled: true);
+    } catch (_) {
+      // no-op
+    }
+  });
 }
 
 class FinqlyApp extends StatefulWidget {
@@ -38,8 +39,8 @@ class FinqlyApp extends StatefulWidget {
 
 class _FinqlyAppState extends State<FinqlyApp> {
   final _navKey = GlobalKey<NavigatorState>();
-  final SubscriptionManager _subscriptionManager = SubscriptionManager();
 
+  final SubscriptionManager _subscriptionManager = SubscriptionManager();
   Locale _locale = const Locale('en');
   ThemeMode _themeMode = ThemeMode.light;
 
@@ -55,17 +56,19 @@ class _FinqlyAppState extends State<FinqlyApp> {
     super.initState();
 
     _subscriptionManager.init();
-    IapService.instance.init();
 
+    IapService.instance.init();
     _purchaseSub = IapService.instance.purchaseStream.listen((purchases) async {
       for (final p in purchases) {
         switch (p.status) {
           case PurchaseStatus.purchased:
           case PurchaseStatus.restored:
-            await _subscriptionManager.setSubscribed(true);
+            final ok = await PurchaseVerification.verify(p);
+            if (ok) {
+              await _subscriptionManager.setSubscribed(true);
+            }  
             break;
           case PurchaseStatus.error:
-            break;
           case PurchaseStatus.pending:
           case PurchaseStatus.canceled:
             break;
@@ -102,15 +105,12 @@ class _FinqlyAppState extends State<FinqlyApp> {
       navigatorKey: _navKey,
       debugShowCheckedModeBanner: false,
       title: 'Finqly',
-
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: _themeMode,
-
       locale: _locale,
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
-
       home: SplashScreen(
         subscriptionManager: _subscriptionManager,
         currentLocale: _locale,
