@@ -260,5 +260,32 @@
   "@goPremiumSubtitle": { "description": "Sous-titre de l’option Premium" },
 
   "purchaseErrorPrefix": "Erreur d’achat :",
-  "@purchaseErrorPrefix": { "description": "Préfixe d’erreur pour la Snackbar d’achat" }
+  "@purchaseErrorPrefix": { "description": "Préfixe d’erreur pour la Snackbar d’achat" },
+
+  "reportsTitle": "Rapports et notifications",
+  "@reportsTitle": { "description": "Section rapports et notifications" },
+
+  "openWeeklyReport": "Ouvrir le rapport hebdomadaire",
+  "@openWeeklyReport": { "description": "Ouvrir la page du rapport hebdomadaire" },
+
+  "openWeeklyReportSub": "Voir la tendance des 7 derniers jours",
+  "@openWeeklyReportSub": { "description": "Sous-titre pour le rapport hebdomadaire" },
+
+  "dailyReminderTitle": "Rappel quotidien (9h00)",
+  "@dailyReminderTitle": { "description": "Titre du switch pour le rappel quotidien" },
+
+  "dailyReminderSub": "Gardez votre série de check-ins",
+  "@dailyReminderSub": { "description": "Sous-titre pour le rappel quotidien" },
+
+  "weeklyReminderTitle": "Rappel du rapport hebdomadaire (lun. 9h00)",
+  "@weeklyReminderTitle": { "description": "Titre du switch pour le rappel hebdomadaire" },
+
+  "weeklyReminderSub": "Recevez votre résumé hebdomadaire",
+  "@weeklyReminderSub": { "description": "Sous-titre pour le rappel hebdomadaire" },
+
+  "manageSubscription": "Gérer l’abonnement (Play Store)",
+  "@manageSubscription": { "description": "Étiquette pour gérer l’abonnement dans les paramètres" },
+
+  "about": "À propos",
+  "@about": { "description": "Élément 'À propos' dans les paramètres" }
 }

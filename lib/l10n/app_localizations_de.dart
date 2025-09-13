@@ -254,4 +254,31 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get purchaseErrorPrefix => 'Kauf-Fehler:';
+
+  @override
+  String get reportsTitle => 'Reports & notifications';
+
+  @override
+  String get openWeeklyReport => 'Open Weekly Report';
+
+  @override
+  String get openWeeklyReportSub => 'See last 7 days trend';
+
+  @override
+  String get dailyReminderTitle => 'Daily reminder (9:00)';
+
+  @override
+  String get dailyReminderSub => 'Keep your check-in streak';
+
+  @override
+  String get weeklyReminderTitle => 'Weekly report reminder (Mon 9:00)';
+
+  @override
+  String get weeklyReminderSub => 'Get your weekly summary';
+
+  @override
+  String get manageSubscription => 'Manage subscription (Play Store)';
+
+  @override
+  String get about => 'About';
 }

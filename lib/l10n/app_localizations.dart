@@ -586,6 +586,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Purchase error:'**
   String get purchaseErrorPrefix;
+
+  /// Section title for reports and notifications
+  ///
+  /// In en, this message translates to:
+  /// **'Reports & notifications'**
+  String get reportsTitle;
+
+  /// Settings: button to open weekly report page
+  ///
+  /// In en, this message translates to:
+  /// **'Open Weekly Report'**
+  String get openWeeklyReport;
+
+  /// Subtitle for opening weekly report
+  ///
+  /// In en, this message translates to:
+  /// **'See last 7 days trend'**
+  String get openWeeklyReportSub;
+
+  /// Toggle title for daily reminder
+  ///
+  /// In en, this message translates to:
+  /// **'Daily reminder (9:00)'**
+  String get dailyReminderTitle;
+
+  /// Subtitle for daily reminder
+  ///
+  /// In en, this message translates to:
+  /// **'Keep your check-in streak'**
+  String get dailyReminderSub;
+
+  /// Toggle title for weekly reminder
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly report reminder (Mon 9:00)'**
+  String get weeklyReminderTitle;
+
+  /// Subtitle for weekly reminder
+  ///
+  /// In en, this message translates to:
+  /// **'Get your weekly summary'**
+  String get weeklyReminderSub;
+
+  /// Label for subscription management in settings
+  ///
+  /// In en, this message translates to:
+  /// **'Manage subscription (Play Store)'**
+  String get manageSubscription;
+
+  /// Settings: about item
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get about;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

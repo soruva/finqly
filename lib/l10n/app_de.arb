@@ -248,5 +248,32 @@
   "@goPremiumSubtitle": { "description": "Paywall: Untertitel für Premium-Option" },
 
   "purchaseErrorPrefix": "Kauf-Fehler:",
-  "@purchaseErrorPrefix": { "description": "Prefix in Snackbar bei Kauf-Fehlern" }
+  "@purchaseErrorPrefix": { "description": "Prefix in Snackbar bei Kauf-Fehlern" },
+
+  "reportsTitle": "Berichte & Benachrichtigungen",
+  "@reportsTitle": { "description": "Abschnittstitel für Berichte und Benachrichtigungen" },
+
+  "openWeeklyReport": "Wochenbericht öffnen",
+  "@openWeeklyReport": { "description": "Button zum Öffnen des Wochenberichts" },
+
+  "openWeeklyReportSub": "Trend der letzten 7 Tage ansehen",
+  "@openWeeklyReportSub": { "description": "Untertitel zum Wochenbericht öffnen" },
+
+  "dailyReminderTitle": "Tägliche Erinnerung (9:00)",
+  "@dailyReminderTitle": { "description": "Toggle-Titel für tägliche Erinnerung" },
+
+  "dailyReminderSub": "Behalten Sie Ihre Check-in-Serie bei",
+  "@dailyReminderSub": { "description": "Untertitel für tägliche Erinnerung" },
+
+  "weeklyReminderTitle": "Wochenbericht-Erinnerung (Mo 9:00)",
+  "@weeklyReminderTitle": { "description": "Toggle-Titel für wöchentliche Erinnerung" },
+
+  "weeklyReminderSub": "Ihre Wochenzusammenfassung erhalten",
+  "@weeklyReminderSub": { "description": "Untertitel für wöchentliche Erinnerung" },
+
+  "manageSubscription": "Abo verwalten (Play Store)",
+  "@manageSubscription": { "description": "Label für Aboverwaltung in den Einstellungen" },
+
+  "about": "Über",
+  "@about": { "description": "Einstellungen: Über-Eintrag" }
 }

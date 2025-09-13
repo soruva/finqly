@@ -248,5 +248,32 @@
   "@goPremiumSubtitle": { "description": "Paywall: premium option subtitle" },
 
   "purchaseErrorPrefix": "Purchase error:",
-  "@purchaseErrorPrefix": { "description": "Snackbar prefix for purchase errors" }
+  "@purchaseErrorPrefix": { "description": "Snackbar prefix for purchase errors" },
+
+  "reportsTitle": "Reports & notifications",
+  "@reportsTitle": { "description": "Section title for reports and notifications" },
+
+  "openWeeklyReport": "Open Weekly Report",
+  "@openWeeklyReport": { "description": "Settings: button to open weekly report page" },
+
+  "openWeeklyReportSub": "See last 7 days trend",
+  "@openWeeklyReportSub": { "description": "Subtitle for opening weekly report" },
+
+  "dailyReminderTitle": "Daily reminder (9:00)",
+  "@dailyReminderTitle": { "description": "Toggle title for daily reminder" },
+
+  "dailyReminderSub": "Keep your check-in streak",
+  "@dailyReminderSub": { "description": "Subtitle for daily reminder" },
+
+  "weeklyReminderTitle": "Weekly report reminder (Mon 9:00)",
+  "@weeklyReminderTitle": { "description": "Toggle title for weekly reminder" },
+
+  "weeklyReminderSub": "Get your weekly summary",
+  "@weeklyReminderSub": { "description": "Subtitle for weekly reminder" },
+
+  "manageSubscription": "Manage subscription (Play Store)",
+  "@manageSubscription": { "description": "Label for subscription management in settings" },
+
+  "about": "About",
+  "@about": { "description": "Settings: about item" }
 }

@@ -260,5 +260,32 @@
   "@goPremiumSubtitle": { "description": "Subtítulo da opção Premium" },
 
   "purchaseErrorPrefix": "Erro de compra:",
-  "@purchaseErrorPrefix": { "description": "Prefixo de erro para Snackbar de compra" }
+  "@purchaseErrorPrefix": { "description": "Prefixo de erro para Snackbar de compra" },
+
+  "reportsTitle": "Relatórios e notificações",
+  "@reportsTitle": { "description": "Seção para relatórios e lembretes" },
+
+  "openWeeklyReport": "Abrir relatório semanal",
+  "@openWeeklyReport": { "description": "Abrir a tela de relatório semanal" },
+
+  "openWeeklyReportSub": "Ver a tendência dos últimos 7 dias",
+  "@openWeeklyReportSub": { "description": "Subtítulo para relatório semanal" },
+
+  "dailyReminderTitle": "Lembrete diário (09:00)",
+  "@dailyReminderTitle": { "description": "Título do switch de lembrete diário" },
+
+  "dailyReminderSub": "Mantenha sua sequência de check-ins",
+  "@dailyReminderSub": { "description": "Subtítulo para lembrete diário" },
+
+  "weeklyReminderTitle": "Lembrete semanal (seg. 09:00)",
+  "@weeklyReminderTitle": { "description": "Título do switch de lembrete semanal" },
+
+  "weeklyReminderSub": "Receba seu resumo semanal",
+  "@weeklyReminderSub": { "description": "Subtítulo para lembrete semanal" },
+
+  "manageSubscription": "Gerenciar assinatura (Play Store)",
+  "@manageSubscription": { "description": "Rótulo para acessar gerenciamento de assinatura" },
+
+  "about": "Sobre",
+  "@about": { "description": "Item 'Sobre' na tela de configurações" }
 }
