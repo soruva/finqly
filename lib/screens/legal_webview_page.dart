@@ -42,7 +42,7 @@ class _LegalWebViewPageState extends State<LegalWebViewPage> {
             if (!mounted) return;
             try {
               await _controller.runJavaScript(
-                "document.querySelectorAll('a[target=\"_blank\"]').forEach(a=>a.removeAttribute('target'));"
+                "document.querySelectorAll('a').forEach(a=>a.removeAttribute('target'));",
               );
             } catch (_) {}
             setState(() => _isLoading = false);
@@ -62,23 +62,11 @@ class _LegalWebViewPageState extends State<LegalWebViewPage> {
             }
 
             final uri = Uri.tryParse(url);
-            if (uri == null) return NavigationDecision.prevent;
-
-            const allowed = {
-              'http',
-              'https',
-              'mailto',
-              'tel',
-              'market',
-              'geo',
-              'maps',
-            };
-
-            if (allowed.contains(uri.scheme)) {
-              final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
-              return ok ? NavigationDecision.prevent : NavigationDecision.prevent;
+            if (uri != null) {
+              final ok =
+                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+              if (ok) return NavigationDecision.prevent;
             }
-
             return NavigationDecision.prevent;
           },
         ),
@@ -99,7 +87,7 @@ class _LegalWebViewPageState extends State<LegalWebViewPage> {
       await _controller.goBack();
     } else {
       if (!mounted) return;
-      Navigator.of(context).maybePop();
+      Navigator.of(context).pop();
     }
   }
 
@@ -108,11 +96,13 @@ class _LegalWebViewPageState extends State<LegalWebViewPage> {
     const failedText = 'Failed to load page.';
     const reloadText = 'Reload';
 
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, _) async {
-        if (didPop) return;
-        await _handleBack();
+    return WillPopScope(
+      onWillPop: () async {
+        if (await _controller.canGoBack()) {
+          await _controller.goBack();
+          return false;
+        }
+        return true;
       },
       child: Scaffold(
         appBar: AppBar(
@@ -129,7 +119,8 @@ class _LegalWebViewPageState extends State<LegalWebViewPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.error_outline, color: Colors.red, size: 36),
+                    const Icon(Icons.error_outline,
+                        color: Colors.red, size: 36),
                     const SizedBox(height: 12),
                     const Text(
                       failedText,

@@ -195,32 +195,53 @@ class MyHomePage extends StatelessWidget {
         ),
       ),
 
+      // --- Bottom area ---
       bottomNavigationBar: SafeArea(
-        minimum: const EdgeInsets.fromLTRB(18, 0, 18, 18),
-        child: ValueListenableBuilder<bool>(
-          valueListenable: subscriptionManager.isSubscribedNotifier,
-          builder: (context, isPremium, _) {
-            if (isPremium) return const SizedBox.shrink();
-            return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              decoration: BoxDecoration(
-                color: const Color(0xFF5D33C4),
-                borderRadius: BorderRadius.circular(18),
-              ),
-              child: Row(
-                children: [
-                  const Icon(Icons.lock, color: Colors.amber),
-                  const SizedBox(width: 12),
-                  const Expanded(
-                    child: Text(
-                      "You're close to unlocking even better insights.",
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
-                    ),
+        minimum: const EdgeInsets.fromLTRB(18, 0, 18, 12),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Premium誘導バー（非購読時のみ）
+            ValueListenableBuilder<bool>(
+              valueListenable: subscriptionManager.isSubscribedNotifier,
+              builder: (context, isPremium, _) {
+                if (isPremium) return const SizedBox.shrink();
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF5D33C4),
+                    borderRadius: BorderRadius.circular(18),
                   ),
-                ],
+                  child: Row(
+                    children: [
+                      const Icon(Icons.lock, color: Colors.amber),
+                      const SizedBox(width: 12),
+                      const Expanded(
+                        child: Text(
+                          "You're close to unlocking even better insights.",
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.w700),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 8),
+
+            // --- SoruvaLab ブランドラベル ---
+            const Text(
+              "SoruvaLab",
+              style: TextStyle(
+                color: Colors.white70,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 1.1,
               ),
-            );
-          },
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );

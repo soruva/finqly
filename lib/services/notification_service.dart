@@ -3,13 +3,15 @@ import 'dart:async';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tzdata;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationService {
   NotificationService._();
   static final NotificationService _i = NotificationService._();
   factory NotificationService() => _i;
 
-  final FlutterLocalNotificationsPlugin _fln = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _fln =
+      FlutterLocalNotificationsPlugin();
   final _tappedPayload = StreamController<String>.broadcast();
   Stream<String> get onTap => _tappedPayload.stream;
 
@@ -17,6 +19,9 @@ class NotificationService {
   static const _channelIdWeekly = 'finqly_weekly';
   static const _idDaily = 9001;
   static const _idWeekly = 9002;
+
+  static const _prefsDaily = 'notif_daily_enabled';
+  static const _prefsWeekly = 'notif_weekly_enabled';
 
   bool _initialized = false;
 
@@ -27,8 +32,7 @@ class NotificationService {
     // ---- Timezone init
     tzdata.initializeTimeZones();
     try {
-      final localName = tz.local.name;
-      tz.setLocalLocation(tz.getLocation(localName));
+      tz.setLocalLocation(tz.getLocation(tz.local.name));
     } catch (_) {
       tz.setLocalLocation(tz.getLocation('UTC'));
     }
@@ -108,7 +112,6 @@ class NotificationService {
     return scheduled;
   }
 
-  // weekday: Monday=1 ... Sunday=7
   tz.TZDateTime _nextWeekdayAt(int weekday, int hour, int minute) {
     final now = tz.TZDateTime.now(tz.local);
     var scheduled =
@@ -119,8 +122,13 @@ class NotificationService {
     return scheduled;
   }
 
+  // === Public API ===
+
   Future<void> scheduleDailyNineAM({bool enabled = true}) async {
     await init();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_prefsDaily, enabled);
+
     await _fln.cancel(_idDaily);
     if (!enabled) return;
 
@@ -140,6 +148,9 @@ class NotificationService {
 
   Future<void> scheduleWeeklyReportMondayNineAM({bool enabled = true}) async {
     await init();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_prefsWeekly, enabled);
+
     await _fln.cancel(_idWeekly);
     if (!enabled) return;
 
@@ -157,10 +168,29 @@ class NotificationService {
     );
   }
 
-  Future<void> cancelDaily() => _fln.cancel(_idDaily);
-  Future<void> cancelWeekly() => _fln.cancel(_idWeekly);
+  Future<void> cancelDaily() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_prefsDaily, false);
+    await _fln.cancel(_idDaily);
+  }
 
-  Future<void> scheduleTestIn(Duration delay, {String payload = 'open_home'}) async {
+  Future<void> cancelWeekly() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_prefsWeekly, false);
+    await _fln.cancel(_idWeekly);
+  }
+
+  // Load persisted states (for toggles)
+  Future<Map<String, bool>> getEnabledStates() async {
+    final prefs = await SharedPreferences.getInstance();
+    return {
+      'daily': prefs.getBool(_prefsDaily) ?? true,
+      'weekly': prefs.getBool(_prefsWeekly) ?? true,
+    };
+  }
+
+  Future<void> scheduleTestIn(Duration delay,
+      {String payload = 'open_home'}) async {
     await init();
     final when = tz.TZDateTime.now(tz.local).add(delay);
     await _fln.zonedSchedule(
@@ -176,5 +206,10 @@ class NotificationService {
     );
   }
 
-  Future<void> cancelAll() async => _fln.cancelAll();
+  Future<void> cancelAll() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_prefsDaily, false);
+    await prefs.setBool(_prefsWeekly, false);
+    await _fln.cancelAll();
+  }
 }
