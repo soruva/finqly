@@ -2,13 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:finqly/l10n/app_localizations.dart';
 import 'package:finqly/services/subscription_manager.dart';
 import 'package:finqly/screens/legal_webview_page.dart';
 import 'package:finqly/screens/emotion_history_page.dart';
-import 'package:finqly/screens/report_page.dart';
 import 'package:finqly/services/notification_service.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -35,11 +33,9 @@ class _SettingsPageState extends State<SettingsPage> {
   String? _appVersion;
   bool _restoring = false;
 
-  bool _dailyOn = true;
-  bool _weeklyOn = true;
-
-  static const _prefsDaily = 'notif_daily_on';
-  static const _prefsWeekly = 'notif_weekly_on';
+  bool _loadingReminders = true;
+  bool _dailyEnabled = true;
+  bool _weeklyEnabled = true;
 
   static const supportedLocales = <Locale>[
     Locale('en'),
@@ -61,7 +57,22 @@ class _SettingsPageState extends State<SettingsPage> {
   void initState() {
     super.initState();
     _loadVersion();
-    _loadNotifPrefs();
+    _loadReminderStates();
+  }
+
+  Future<void> _loadReminderStates() async {
+    try {
+      final states = await NotificationService().getEnabledStates();
+      if (!mounted) return;
+      setState(() {
+        _dailyEnabled = states['daily'] ?? true;
+        _weeklyEnabled = states['weekly'] ?? true;
+        _loadingReminders = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _loadingReminders = false);
+    }
   }
 
   Future<void> _loadVersion() async {
@@ -69,15 +80,6 @@ class _SettingsPageState extends State<SettingsPage> {
     if (!mounted) return;
     setState(() {
       _appVersion = '${info.version} (${info.buildNumber})';
-    });
-  }
-
-  Future<void> _loadNotifPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (!mounted) return;
-    setState(() {
-      _dailyOn = prefs.getBool(_prefsDaily) ?? true;
-      _weeklyOn = prefs.getBool(_prefsWeekly) ?? true;
     });
   }
 
@@ -129,29 +131,39 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
-  Future<void> _toggleDaily(bool v) async {
+  Future<void> _onDailyToggled(bool value) async {
+    final svc = NotificationService();
     final messenger = ScaffoldMessenger.of(context);
-    setState(() => _dailyOn = v);
+    setState(() => _dailyEnabled = value);
     try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool(_prefsDaily, v);
-      await NotificationService().scheduleDailyNineAM(enabled: v);
+      if (value) {
+        await svc.scheduleDailyNineAM(enabled: true);
+        messenger.showSnackBar(const SnackBar(content: Text('Daily reminder enabled')));
+      } else {
+        await svc.cancelDaily();
+        messenger.showSnackBar(const SnackBar(content: Text('Daily reminder disabled')));
+      }
     } catch (e) {
-      setState(() => _dailyOn = !v);
-      messenger.showSnackBar(SnackBar(content: Text('Daily reminder error: $e')));
+      setState(() => _dailyEnabled = !value);
+      messenger.showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
 
-  Future<void> _toggleWeekly(bool v) async {
+  Future<void> _onWeeklyToggled(bool value) async {
+    final svc = NotificationService();
     final messenger = ScaffoldMessenger.of(context);
-    setState(() => _weeklyOn = v);
+    setState(() => _weeklyEnabled = value);
     try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool(_prefsWeekly, v);
-      await NotificationService().scheduleWeeklyReportMondayNineAM(enabled: v);
+      if (value) {
+        await svc.scheduleWeeklyReportMondayNineAM(enabled: true);
+        messenger.showSnackBar(const SnackBar(content: Text('Weekly report reminder enabled')));
+      } else {
+        await svc.cancelWeekly();
+        messenger.showSnackBar(const SnackBar(content: Text('Weekly report reminder disabled')));
+      }
     } catch (e) {
-      setState(() => _weeklyOn = !v);
-      messenger.showSnackBar(SnackBar(content: Text('Weekly report reminder error: $e')));
+      setState(() => _weeklyEnabled = !value);
+      messenger.showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
 
@@ -175,7 +187,6 @@ class _SettingsPageState extends State<SettingsPage> {
         padding: const EdgeInsets.all(24),
         child: ListView(
           children: [
-            // Emotion history
             ListTile(
               leading: const Icon(Icons.history),
               title: Text(loc.emotionHistoryTitle),
@@ -194,7 +205,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
             const Divider(height: 32),
 
-            // Language
             Text(loc.language, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 12),
 
@@ -215,7 +225,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
             const SizedBox(height: 24),
 
-            // Theme
             Text(loc.darkMode, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 4),
             SwitchListTile.adaptive(
@@ -227,39 +236,69 @@ class _SettingsPageState extends State<SettingsPage> {
 
             const SizedBox(height: 32),
 
-            // Reports & Notifications
-            Text('Reports & notifications', style: Theme.of(context).textTheme.titleLarge),
+            Text(
+              (AppLocalizations.of(context)?.reportsTitle) ?? 'Reports & notifications',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
             const SizedBox(height: 12),
 
             ListTile(
               leading: const Icon(Icons.insights),
-              title: const Text('Open Weekly Report'),
-              subtitle: const Text('See last 7 days trend'),
+              title: Text(
+                (AppLocalizations.of(context)?.openWeeklyReport) ?? 'Open Weekly Report',
+              ),
+              subtitle: Text(
+                (AppLocalizations.of(context)?.openWeeklyReportSub) ?? 'See last 7 days trend',
+              ),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => const ReportPage()));
+                // weekly report
               },
             ),
-            SwitchListTile.adaptive(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('Daily reminder (9:00)'),
-              subtitle: const Text('Keep your check-in streak'),
-              value: _dailyOn,
-              onChanged: _toggleDaily,
-              secondary: const Icon(Icons.alarm),
-            ),
-            SwitchListTile.adaptive(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('Weekly report reminder (Mon 9:00)'),
-              subtitle: const Text('Get your weekly summary'),
-              value: _weeklyOn,
-              onChanged: _toggleWeekly,
-              secondary: const Icon(Icons.event_note),
-            ),
+
+            _loadingReminders
+                ? const ListTile(
+                    leading: SizedBox(
+                      height: 24,
+                      width: 24,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                    title: Text('Loading reminders...'),
+                  )
+                : SwitchListTile.adaptive(
+                    contentPadding: EdgeInsets.zero,
+                    secondary: const Icon(Icons.alarm),
+                    title: Text(
+                      (AppLocalizations.of(context)?.dailyReminderTitle) ??
+                          'Daily reminder (9:00)',
+                    ),
+                    subtitle: Text(
+                      (AppLocalizations.of(context)?.dailyReminderSub) ??
+                          'Keep your check-in streak',
+                    ),
+                    value: _dailyEnabled,
+                    onChanged: _onDailyToggled,
+                  ),
+
+            if (!_loadingReminders)
+              SwitchListTile.adaptive(
+                contentPadding: EdgeInsets.zero,
+                secondary: const Icon(Icons.date_range),
+                title: Text(
+                  (AppLocalizations.of(context)?.weeklyReminderTitle) ??
+                      'Weekly report reminder (Mon 9:00)',
+                ),
+                subtitle: Text(
+                  (AppLocalizations.of(context)?.weeklyReminderSub) ??
+                      'Get your weekly summary',
+                ),
+                value: _weeklyEnabled,
+                onChanged: _onWeeklyToggled,
+              ),
 
             const SizedBox(height: 24),
 
-            // Legal
+            // ▼ その他
             Text(loc.other, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 12),
 
@@ -288,17 +327,18 @@ class _SettingsPageState extends State<SettingsPage> {
               onTap: () => _openLegalPage(loc.faqTitle, 'faq.html'),
             ),
 
-            // Manage subscription
             ListTile(
               leading: const Icon(Icons.manage_accounts),
-              title: const Text('Manage subscription (Play Store)'),
+              title: Text(
+                (AppLocalizations.of(context)?.manageSubscription) ??
+                    'Manage subscription (Play Store)',
+              ),
               trailing: const Icon(Icons.open_in_new),
               onTap: _openManageSubscriptions,
             ),
 
             const Divider(height: 32),
 
-            // Restore purchases
             ListTile(
               leading: const Icon(Icons.restore),
               title: Text(loc.restorePurchasesTitle),
@@ -335,7 +375,9 @@ class _SettingsPageState extends State<SettingsPage> {
               applicationIcon: const Icon(Icons.apps),
               applicationName: 'Finqly',
               applicationVersion: _appVersion ?? '1.0.0',
-              child: const Text('About'),
+              child: Text(
+                (AppLocalizations.of(context)?.about) ?? 'About',
+              ),
             ),
           ],
         ),
