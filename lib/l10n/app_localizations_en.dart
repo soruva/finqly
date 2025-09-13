@@ -69,34 +69,42 @@ class AppLocalizationsEn extends AppLocalizations {
   String get investmentTips1 => 'Diversify your investments to reduce risk.';
 
   @override
-  String get investmentTips2 => 'Don’t let short-term emotions drive long-term decisions.';
+  String get investmentTips2 =>
+      'Don’t let short-term emotions drive long-term decisions.';
 
   @override
-  String get investmentTips3 => 'Understand your risk tolerance before investing.';
+  String get investmentTips3 =>
+      'Understand your risk tolerance before investing.';
 
   @override
   String get investmentTips4 => 'Stay informed but avoid panic-selling.';
 
   @override
-  String get investmentTips5 => 'Investing is a long-term journey — not a sprint.';
+  String get investmentTips5 =>
+      'Investing is a long-term journey — not a sprint.';
 
   @override
   String get tapToFlip => 'Tap to flip';
 
   @override
-  String get investmentTipsExplanation1 => 'Diversification is the golden rule!';
+  String get investmentTipsExplanation1 =>
+      'Diversification is the golden rule!';
 
   @override
-  String get investmentTipsExplanation2 => 'Stay focused on the long term, not short-term feelings.';
+  String get investmentTipsExplanation2 =>
+      'Stay focused on the long term, not short-term feelings.';
 
   @override
-  String get investmentTipsExplanation3 => 'Knowing your risk tolerance reduces mistakes.';
+  String get investmentTipsExplanation3 =>
+      'Knowing your risk tolerance reduces mistakes.';
 
   @override
-  String get investmentTipsExplanation4 => 'Stay informed. Avoid panic selling!';
+  String get investmentTipsExplanation4 =>
+      'Stay informed. Avoid panic selling!';
 
   @override
-  String get investmentTipsExplanation5 => 'Consistency builds your financial future.';
+  String get investmentTipsExplanation5 =>
+      'Consistency builds your financial future.';
 
   @override
   String get forecastTitle => 'Your Investment Forecast';
@@ -107,7 +115,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get premiumPrompt => 'You\'re close to unlocking even better insights.';
+  String get premiumPrompt =>
+      'You\'re close to unlocking even better insights.';
 
   @override
   String get premiumCTA => 'Get Premium Forecast';
@@ -149,7 +158,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get premiumUnlockTitle => 'Unlock Premium Insights';
 
   @override
-  String get premiumUnlockMessage => 'Get access to advanced forecasts, emotional trends, and expert tips.';
+  String get premiumUnlockMessage =>
+      'Get access to advanced forecasts, emotional trends, and expert tips.';
 
   @override
   String get premiumUnlockButton => 'Unlock Now';
@@ -194,13 +204,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get trendForecastTitle => 'Emotion Trend Chart';
 
   @override
-  String get premiumFeatureExplain => 'Premium unlocks all trend, chart, and pro tips features.';
+  String get premiumFeatureExplain =>
+      'Premium unlocks all trend, chart, and pro tips features.';
 
   @override
   String get noTrendData => 'No trend data available.';
 
   @override
-  String get trendForecastDescription => 'Your recent emotional trend is visualized below.';
+  String get trendForecastDescription =>
+      'Your recent emotional trend is visualized below.';
 
   @override
   String get privacyTitle => 'Privacy Policy';
@@ -221,10 +233,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get restorePurchasesDone => 'Purchases restored';
 
   @override
-  String get trendScoreLegend => 'Score Legend: 6=Excited, 5=Optimistic, 3=Neutral, 2=Confused, 1=Worried, 0=Cautious';
+  String get trendScoreLegend =>
+      'Score Legend: 6=Excited, 5=Optimistic, 3=Neutral, 2=Confused, 1=Worried, 0=Cautious';
 
   @override
-  String get premiumTrendUpsell => 'Unlock trend charts, performance tracking, and personalized insights with Finqly Plus!';
+  String get premiumTrendUpsell =>
+      'Unlock trend charts, performance tracking, and personalized insights with Finqly Plus!';
 
   @override
   String dayLabel(Object n) {
