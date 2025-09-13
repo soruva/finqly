@@ -201,38 +201,53 @@ class MyHomePage extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Premium誘導バー（非購読時のみ）
+            // Premium upsell bar (only when not subscribed)
             ValueListenableBuilder<bool>(
               valueListenable: subscriptionManager.isSubscribedNotifier,
               builder: (context, isPremium, _) {
                 if (isPremium) return const SizedBox.shrink();
-                return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF5D33C4),
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.lock, color: Colors.amber),
-                      const SizedBox(width: 12),
-                      const Expanded(
-                        child: Text(
-                          "You're close to unlocking even better insights.",
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.w700),
-                        ),
+                return InkWell(
+                  borderRadius: BorderRadius.circular(18),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            PremiumUnlockPage(subscriptionManager: subscriptionManager),
                       ),
-                    ],
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF5D33C4),
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    child: Row(
+                      children: const [
+                        Icon(Icons.lock, color: Colors.amber),
+                        SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            "You're close to unlocking even better insights.",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        Icon(Icons.chevron_right, color: Colors.white70),
+                      ],
+                    ),
                   ),
                 );
               },
             ),
             const SizedBox(height: 8),
 
-            // --- SoruvaLab ブランドラベル ---
+            // --- SoruvaLab brand label ---
             const Text(
-              "SoruvaLab",
+              "© SoruvaLab",
               style: TextStyle(
                 color: Colors.white70,
                 fontSize: 12,
@@ -256,9 +271,8 @@ class MyHomePage extends StatelessWidget {
     bool isPremiumStyle = false,
   }) {
     final fg = isPremiumStyle ? Colors.deepPurple : AppColors.primary;
-    final bg = isPremiumStyle
-        ? Colors.white.withOpacity(0.90)
-        : Colors.white.withOpacity(0.95);
+    final bg =
+        isPremiumStyle ? Colors.white.withOpacity(0.90) : Colors.white.withOpacity(0.95);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 4),
