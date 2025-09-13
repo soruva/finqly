@@ -275,5 +275,23 @@
   "@manageSubscription": { "description": "Label für Aboverwaltung in den Einstellungen" },
 
   "about": "Über",
-  "@about": { "description": "Einstellungen: Über-Eintrag" }
+  "@about": { "description": "Einstellungen: Über-Eintrag" },
+
+  "loadingReminders": "Erinnerungen werden geladen...",
+  "@loadingReminders": { "description": "Platzhaltertext während Reminder-Zustände geladen werden" },
+
+  "dailyReminderEnabledMsg": "Tägliche Erinnerung aktiviert",
+  "@dailyReminderEnabledMsg": { "description": "Snackbar: tägliche Erinnerung aktiviert" },
+
+  "dailyReminderDisabledMsg": "Tägliche Erinnerung deaktiviert",
+  "@dailyReminderDisabledMsg": { "description": "Snackbar: tägliche Erinnerung deaktiviert" },
+
+  "weeklyReminderEnabledMsg": "Wochenbericht-Erinnerung aktiviert",
+  "@weeklyReminderEnabledMsg": { "description": "Snackbar: wöchentliche Erinnerung aktiviert" },
+
+  "weeklyReminderDisabledMsg": "Wochenbericht-Erinnerung deaktiviert",
+  "@weeklyReminderDisabledMsg": { "description": "Snackbar: wöchentliche Erinnerung deaktiviert" },
+
+  "restoreErrorPrefix": "Wiederherstellungsfehler:"
+  ,"@restoreErrorPrefix": { "description": "Prefix für Restore-Fehler in Snackbar" }
 }

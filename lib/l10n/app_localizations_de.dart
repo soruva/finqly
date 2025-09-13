@@ -303,4 +303,22 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get about => 'Über';
+
+  @override
+  String get loadingReminders => 'Loading reminders...';
+
+  @override
+  String get dailyReminderEnabledMsg => 'Daily reminder enabled';
+
+  @override
+  String get dailyReminderDisabledMsg => 'Daily reminder disabled';
+
+  @override
+  String get weeklyReminderEnabledMsg => 'Weekly report reminder enabled';
+
+  @override
+  String get weeklyReminderDisabledMsg => 'Weekly report reminder disabled';
+
+  @override
+  String get restoreErrorPrefix => 'Restore error:';
 }

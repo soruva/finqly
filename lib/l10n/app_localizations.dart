@@ -643,6 +643,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'About'**
   String get about;
+
+  /// Shown while reading reminder toggle states
+  ///
+  /// In en, this message translates to:
+  /// **'Loading reminders...'**
+  String get loadingReminders;
+
+  /// Snackbar when daily reminder is turned on
+  ///
+  /// In en, this message translates to:
+  /// **'Daily reminder enabled'**
+  String get dailyReminderEnabledMsg;
+
+  /// Snackbar when daily reminder is turned off
+  ///
+  /// In en, this message translates to:
+  /// **'Daily reminder disabled'**
+  String get dailyReminderDisabledMsg;
+
+  /// Snackbar when weekly reminder is turned on
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly report reminder enabled'**
+  String get weeklyReminderEnabledMsg;
+
+  /// Snackbar when weekly reminder is turned off
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly report reminder disabled'**
+  String get weeklyReminderDisabledMsg;
+
+  /// Prefix for restore purchases error snackbar
+  ///
+  /// In en, this message translates to:
+  /// **'Restore error:'**
+  String get restoreErrorPrefix;
 }
 
 class _AppLocalizationsDelegate

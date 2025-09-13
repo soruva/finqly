@@ -275,5 +275,23 @@
   "@manageSubscription": { "description": "Label for subscription management in settings" },
 
   "about": "About",
-  "@about": { "description": "Settings: about item" }
+  "@about": { "description": "Settings: about item" },
+
+  "loadingReminders": "Loading reminders...",
+  "@loadingReminders": { "description": "Shown while reading reminder toggle states" },
+
+  "dailyReminderEnabledMsg": "Daily reminder enabled",
+  "@dailyReminderEnabledMsg": { "description": "Snackbar when daily reminder is turned on" },
+
+  "dailyReminderDisabledMsg": "Daily reminder disabled",
+  "@dailyReminderDisabledMsg": { "description": "Snackbar when daily reminder is turned off" },
+
+  "weeklyReminderEnabledMsg": "Weekly report reminder enabled",
+  "@weeklyReminderEnabledMsg": { "description": "Snackbar when weekly reminder is turned on" },
+
+  "weeklyReminderDisabledMsg": "Weekly report reminder disabled",
+  "@weeklyReminderDisabledMsg": { "description": "Snackbar when weekly reminder is turned off" },
+
+  "restoreErrorPrefix": "Restore error:",
+  "@restoreErrorPrefix": { "description": "Prefix for restore purchases error snackbar" }
 }
