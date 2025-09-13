@@ -129,10 +129,10 @@ class NotificationService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_prefsDaily, enabled);
 
-    await _fln.cancel(_idDaily);
+    await _fln.cancel<int>(_idDaily);
     if (!enabled) return;
 
-    await _fln.zonedSchedule(
+    await _fln.zonedSchedule<int>(
       _idDaily,
       'Finqly',
       'Take today’s check-in – keep your streak!',
@@ -151,10 +151,10 @@ class NotificationService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_prefsWeekly, enabled);
 
-    await _fln.cancel(_idWeekly);
+    await _fln.cancel<int>(_idWeekly);
     if (!enabled) return;
 
-    await _fln.zonedSchedule(
+    await _fln.zonedSchedule<int>(
       _idWeekly,
       'Your weekly report is ready',
       'Tap to see last week’s emotion trend.',
@@ -171,13 +171,13 @@ class NotificationService {
   Future<void> cancelDaily() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_prefsDaily, false);
-    await _fln.cancel(_idDaily);
+    await _fln.cancel<int>(_idDaily);
   }
 
   Future<void> cancelWeekly() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_prefsWeekly, false);
-    await _fln.cancel(_idWeekly);
+    await _fln.cancel<int>(_idWeekly);
   }
 
   // Load persisted states (for toggles)
@@ -193,7 +193,7 @@ class NotificationService {
       {String payload = 'open_home'}) async {
     await init();
     final when = tz.TZDateTime.now(tz.local).add(delay);
-    await _fln.zonedSchedule(
+    await _fln.zonedSchedule<int>(
       9999,
       'Test notification',
       'This is a quick test.',
