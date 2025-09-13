@@ -1,5 +1,6 @@
 // lib/main.dart
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
@@ -14,18 +15,17 @@ import 'package:finqly/services/purchase_verification.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   runApp(const FinqlyApp());
 
-  // ignore: unawaited_futures
+  // ignore: discarded_futures
   Future(() async {
     try {
       final notif = NotificationService();
       await notif.init();
       await notif.scheduleDailyNineAM(enabled: true);
       await notif.scheduleWeeklyReportMondayNineAM(enabled: true);
-    } catch (_) {
-      // no-op
+    } catch (e, st) {
+      debugPrint('Notification init/schedule failed: $e\n$st');
     }
   });
 }
@@ -41,7 +41,7 @@ class _FinqlyAppState extends State<FinqlyApp> {
   final _navKey = GlobalKey<NavigatorState>();
 
   final SubscriptionManager _subscriptionManager = SubscriptionManager();
-  Locale _locale = const Locale('en');
+  late Locale _locale;
   ThemeMode _themeMode = ThemeMode.light;
 
   StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
@@ -55,26 +55,37 @@ class _FinqlyAppState extends State<FinqlyApp> {
   void initState() {
     super.initState();
 
+    final deviceLocale = WidgetsBinding.instance.platformDispatcher.locale;
+    _locale = deviceLocale ?? const Locale('en');
+
     _subscriptionManager.init();
 
     IapService.instance.init();
     _purchaseSub = IapService.instance.purchaseStream.listen((purchases) async {
       for (final p in purchases) {
-        switch (p.status) {
-          case PurchaseStatus.purchased:
-          case PurchaseStatus.restored:
-            final ok = await PurchaseVerification.verify(p);
-            if (ok) {
-              await _subscriptionManager.setSubscribed(true);
-            }  
-            break;
-          case PurchaseStatus.error:
-          case PurchaseStatus.pending:
-          case PurchaseStatus.canceled:
-            break;
-        }
-        if (p.pendingCompletePurchase) {
-          await InAppPurchase.instance.completePurchase(p);
+        try {
+          switch (p.status) {
+            case PurchaseStatus.purchased:
+            case PurchaseStatus.restored:
+              final ok = await PurchaseVerification.verify(p);
+              if (ok) {
+                await _subscriptionManager.setSubscribed(true);
+              } else {
+                debugPrint('Purchase verification failed for ${p.productID}');
+              }
+              break;
+            case PurchaseStatus.error:
+              debugPrint('Purchase error: ${p.error}');
+              break;
+            case PurchaseStatus.pending:
+            case PurchaseStatus.canceled:
+              break;
+          }
+          if (p.pendingCompletePurchase) {
+            await InAppPurchase.instance.completePurchase(p);
+          }
+        } catch (e, st) {
+          debugPrint('Purchase handling failed: $e\n$st');
         }
       }
     });
@@ -83,11 +94,16 @@ class _FinqlyAppState extends State<FinqlyApp> {
       final nav = _navKey.currentState;
       if (nav == null) return;
 
+      if (nav.canPop()) {
+        nav.popUntil((r) => r.isFirst);
+      }
       if (payload == 'open_report') {
         nav.push(MaterialPageRoute(builder: (_) => const ReportPage()));
       } else if (payload == 'open_home') {
-        nav.popUntil((route) => route.isFirst);
+        // do nothing
       }
+    }, onError: (e, st) {
+      debugPrint('Notification tap stream error: $e\n$st');
     });
   }
 

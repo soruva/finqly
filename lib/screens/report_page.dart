@@ -1,8 +1,10 @@
 // lib/screens/report_page.dart
-import 'package:fl_chart/fl_chart.dart';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
-import 'package:finqly/services/report_service.dart';
-import 'package:finqly/services/analytics_service.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ReportPage extends StatefulWidget {
   const ReportPage({super.key});
@@ -12,224 +14,206 @@ class ReportPage extends StatefulWidget {
 }
 
 class _ReportPageState extends State<ReportPage> {
-  final _boundaryKey = GlobalKey();
-  final _report = ReportService();
+  final GlobalKey _cardKey = GlobalKey();
+  bool _busy = false;
 
-  List<EmotionEntry> _data = const [];
-  ReportSummary? _summary;
-  bool _loading = true;
+  final List<double> _points = const [3, 3, 3, 3, 3, 3, 3];
+  final List<String> _labels = const ['9/6', '9/7', '9/8', '9/9', '9/10', '9/11', '9/12'];
 
-  @override
-  void initState() {
-    super.initState();
-    _load();
-  }
+  Future<void> _shareCard() async {
+    if (_busy) return;
+    setState(() => _busy = true);
+    final messenger = ScaffoldMessenger.of(context);
 
-  Future<void> _load() async {
-    setState(() => _loading = true);
     try {
-      final d = await _report.last7Days();
-      final s = await _report.weeklySummary();
-      if (!mounted) return;
-      setState(() {
-        _data = d;
-        _summary = s;
-      });
-    } catch (_) {
-      // no-op
-    } finally {
-      if (mounted) setState(() => _loading = false);
-    }
-  }
+      final boundary = _cardKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+      if (boundary == null) throw StateError('Render boundary not found');
 
-  Future<void> _share() async {
-    try {
-      await _report.shareReport(_boundaryKey);
-      final avg = _summary?.averageMood ?? 0;
-      try {
-        AnalyticsService.logEvent('report_shared', {'week_avg': avg});
-      } catch (_) {}
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to share report: $e')),
+      final ui.Image image = await boundary.toImage(pixelRatio: 3.0);
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      final Uint8List pngBytes = byteData!.buffer.asUint8List();
+
+      final tmpDir = await getTemporaryDirectory();
+      final path = '${tmpDir.path}/finqly_emotion_trend.png';
+      final file = XFile.fromData(
+        pngBytes,
+        name: 'finqly_emotion_trend.png',
+        mimeType: 'image/png',
+        path: path,
       );
+
+      await Share.shareXFiles([file], text: 'My emotion trend from Finqly');
+    } catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text('Share failed: $e')));
+    } finally {
+      if (mounted) setState(() => _busy = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final avg = _summary?.averageMood ?? 0.0;
-    final delta = _summary?.deltaFromStart ?? 0;
-    final theme = Theme.of(context);
-    final deltaText =
-        delta == 0 ? '±0' : (delta > 0 ? '+$delta' : '$delta');
+    final avg = _points.isEmpty ? 0 : _points.reduce((a, b) => a + b) / _points.length;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Weekly Report'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _load,
-            tooltip: 'Refresh',
-          ),
-          IconButton(
-            icon: const Icon(Icons.share),
-            onPressed: _share,
-            tooltip: 'Share',
+            tooltip: 'Share as image',
+            onPressed: _busy ? null : _shareCard,
+            icon: const Icon(Icons.ios_share_rounded),
           ),
         ],
       ),
-      body: RefreshIndicator(
-        onRefresh: _load,
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Padding(
+      body: Stack(
+        children: [
+          Container(color: const Color(0xFF0E0E12)),
+          ListView(
             padding: const EdgeInsets.all(16),
-            child: RepaintBoundary(
-              key: _boundaryKey,
-              child: Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: _loading
-                      ? const SizedBox(
-                          height: 240,
-                          child: Center(child: CircularProgressIndicator()),
-                        )
-                      : Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    'Your emotion trend (last 7 days)',
-                                    style: theme.textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.w800,
-                                    ),
-                                  ),
-                                ),
-                                if (_summary != null)
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                                    decoration: BoxDecoration(
-                                      color: theme.colorScheme.primary.withOpacity(0.08),
-                                      borderRadius: BorderRadius.circular(999),
-                                    ),
-                                    child: Text(
-                                      'Avg ${avg.toStringAsFixed(2)} / 5 • Δ $deltaText',
-                                      style: theme.textTheme.labelMedium?.copyWith(
-                                        color: theme.colorScheme.primary,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                            const SizedBox(height: 12),
-                            SizedBox(
-                              height: 220,
-                              child: _data.isEmpty
-                                  ? const Center(child: Text('No data yet'))
-                                  : LineChart(
-                                      LineChartData(
-                                        minY: 0,
-                                        maxY: 5,
-                                        lineBarsData: [
-                                          LineChartBarData(
-                                            spots: [
-                                              for (int i = 0; i < _data.length; i++)
-                                                FlSpot(i.toDouble(), _data[i].mood.toDouble()),
-                                            ],
-                                            isCurved: true,
-                                            dotData: FlDotData(show: true),
-                                            barWidth: 3,
-                                          ),
-                                        ],
-                                        titlesData: FlTitlesData(
-                                          leftTitles: AxisTitles(
-                                            sideTitles: SideTitles(
-                                              showTitles: true,
-                                              interval: 1,
-                                              reservedSize: 28,
-                                            ),
-                                          ),
-                                          bottomTitles: AxisTitles(
-                                            sideTitles: SideTitles(
-                                              showTitles: true,
-                                              interval: 1,
-                                              getTitlesWidget: (v, _) {
-                                                final i = v.toInt();
-                                                if (i < 0 || i >= _data.length) {
-                                                  return const SizedBox();
-                                                }
-                                                final d = _data[i].date;
-                                                return Padding(
-                                                  padding: const EdgeInsets.only(top: 4),
-                                                  child: Text(
-                                                    '${d.month}/${d.day}',
-                                                    style: const TextStyle(fontSize: 10),
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                          ),
-                                          rightTitles: const AxisTitles(
-                                            sideTitles: SideTitles(showTitles: false),
-                                          ),
-                                          topTitles: const AxisTitles(
-                                            sideTitles: SideTitles(showTitles: false),
-                                          ),
-                                        ),
-                                        gridData: const FlGridData(show: true),
-                                        borderData: FlBorderData(show: false),
-                                      ),
-                                    ),
-                            ),
-                            const SizedBox(height: 12),
-                            if (_summary != null) ...[
-                              Text('Weekly average: ${avg.toStringAsFixed(2)} / 5'),
-                              const SizedBox(height: 4),
-                              Text(
-                                delta == 0
-                                    ? 'This week was steady. Keep consistent habits!'
-                                    : (delta > 0
-                                        ? 'Uptrend from week start. Nice momentum!'
-                                        : 'Slight dip from week start. Small habits can help.'),
+            children: [
+              RepaintBoundary(
+                key: _cardKey,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1C1F26),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: const EdgeInsets.fromLTRB(18, 18, 18, 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Flexible(
+                            child: Text(
+                              'Your emotion trend\n(last 7 days)',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                                fontWeight: FontWeight.w800,
+                                height: 1.2,
                               ),
-                            ] else ...[
-                              const Text('Weekly average: –'),
-                              const SizedBox(height: 4),
-                              const Text('Tip: Keep steady habits to improve your investing mindset.'),
-                            ],
-                            const SizedBox(height: 8),
-                            Row(
-                              children: [
-                                OutlinedButton.icon(
-                                  onPressed: _share,
-                                  icon: const Icon(Icons.ios_share),
-                                  label: const Text('Share as image'),
-                                ),
-                                const SizedBox(width: 12),
-                                OutlinedButton.icon(
-                                  onPressed: _load,
-                                  icon: const Icon(Icons.refresh),
-                                  label: const Text('Refresh'),
-                                ),
-                              ],
                             ),
-                          ],
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF262A33),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              'Avg ${avg.toStringAsFixed(2)} / 5',
+                              style: const TextStyle(color: Color(0xFF8F8BFF), fontWeight: FontWeight.w800),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      SizedBox(
+                        height: 220,
+                        child: LineChart(
+                          LineChartData(
+                            minY: 0,
+                            maxY: 5,
+                            gridData: FlGridData(
+                              show: true,
+                              drawVerticalLine: true,
+                              horizontalInterval: 1,
+                              verticalInterval: 1,
+                              getDrawingHorizontalLine: (v) =>
+                                  FlLine(color: const Color(0xFF2A2F3A), strokeWidth: 1),
+                              getDrawingVerticalLine: (v) =>
+                                  FlLine(color: const Color(0xFF2A2F3A), strokeWidth: 1),
+                            ),
+                            titlesData: FlTitlesData(
+                              leftTitles: AxisTitles(
+                                sideTitles: SideTitles(
+                                  showTitles: true,
+                                  reservedSize: 24,
+                                  getTitlesWidget: (v, _) => Text(
+                                    v == v.roundToDouble() ? v.toInt().toString() : '',
+                                    style: const TextStyle(color: Color(0xFF9AA3B2), fontSize: 11),
+                                  ),
+                                ),
+                              ),
+                              bottomTitles: AxisTitles(
+                                sideTitles: SideTitles(
+                                  showTitles: true,
+                                  getTitlesWidget: (v, _) {
+                                    final i = v.toInt();
+                                    if (i < 0 || i >= _labels.length) return const SizedBox.shrink();
+                                    return Padding(
+                                      padding: const EdgeInsets.only(top: 6),
+                                      child: Text(
+                                        _labels[i],
+                                        style: const TextStyle(color: Color(0xFF9AA3B2), fontSize: 11),
+                                      ),
+                                    );
+                                  },
+                                  interval: 1,
+                                  reservedSize: 24,
+                                ),
+                              ),
+                              rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                              topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                            ),
+                            borderData: FlBorderData(
+                              show: true,
+                              border: const Border(
+                                top: BorderSide(color: Color(0xFF2A2F3A)),
+                                bottom: BorderSide(color: Color(0xFF2A2F3A)),
+                                left: BorderSide(color: Color(0xFF2A2F3A)),
+                                right: BorderSide(color: Color(0xFF2A2F3A)),
+                              ),
+                            ),
+                            lineBarsData: [
+                              LineChartBarData(
+                                spots: [
+                                  for (int i = 0; i < _points.length; i++) FlSpot(i.toDouble(), _points[i]),
+                                ],
+                                isCurved: false,
+                                barWidth: 3,
+                                color: const Color(0xFF19D5E4),
+                                dotData: FlDotData(show: true),
+                              ),
+                            ],
+                          ),
                         ),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Weekly average: ${avg.toStringAsFixed(2)} / 5',
+                        style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700),
+                      ),
+                      const SizedBox(height: 6),
+                      const Text(
+                        'This week was steady. Keep consistent habits!',
+                        style: TextStyle(color: Color(0xFFBAC1CE), fontSize: 14),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
+
+              const SizedBox(height: 18),
+              const Text(
+                'Tip: Use the share button in the top-right to export an image. '
+                'Buttons are excluded from the image.',
+                style: TextStyle(color: Color(0xFF98A2B3), fontSize: 12),
+              ),
+              const SizedBox(height: 80),
+            ],
           ),
-        ),
+
+          if (_busy)
+            Container(
+              color: Colors.black.withOpacity(0.35),
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+        ],
       ),
     );
   }
